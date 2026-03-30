@@ -6,6 +6,9 @@ struct KeyManagerView: View {
     @Query private var keys: [SSHKey]
     @State private var showGenerateSheet = false
     @State private var showImportSheet = false
+    @State private var showImportWizard = false
+    @State private var showConfigImport = false
+    @State private var showMacGuide = false
     @State private var viewModel = KeyManagerViewModel()
 
     var body: some View {
@@ -68,8 +71,23 @@ struct KeyManagerView: View {
                     Button("Generate New Key", systemImage: "plus") {
                         showGenerateSheet = true
                     }
-                    Button("Import Key", systemImage: "square.and.arrow.down") {
+
+                    Divider()
+
+                    Button("Import Key (Paste)", systemImage: "square.and.arrow.down") {
                         showImportSheet = true
+                    }
+                    Button("Import Wizard", systemImage: "wand.and.stars") {
+                        showImportWizard = true
+                    }
+                    Button("Import SSH Config", systemImage: "doc.text") {
+                        showConfigImport = true
+                    }
+
+                    Divider()
+
+                    Button("Mac Setup Guide", systemImage: "laptopcomputer.and.iphone") {
+                        showMacGuide = true
                     }
                 } label: {
                     Image(systemName: "plus")
@@ -81,6 +99,15 @@ struct KeyManagerView: View {
         }
         .sheet(isPresented: $showImportSheet) {
             KeyImportView(viewModel: viewModel)
+        }
+        .sheet(isPresented: $showImportWizard) {
+            KeyImportWizardView()
+        }
+        .sheet(isPresented: $showConfigImport) {
+            SSHConfigImportView()
+        }
+        .sheet(isPresented: $showMacGuide) {
+            MacSetupGuideView()
         }
         .alert("Error", isPresented: .init(
             get: { viewModel.errorMessage != nil },

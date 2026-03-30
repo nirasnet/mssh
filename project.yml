@@ -48,6 +48,10 @@ targets:
       path: mssh/mssh.entitlements
       properties:
         com.apple.security.network.client: true
+        com.apple.developer.icloud-services:
+          - CloudKit
+        com.apple.developer.icloud-container-identifiers:
+          - iCloud.com.m4ck.mssh
 
 schemes:
   mssh:

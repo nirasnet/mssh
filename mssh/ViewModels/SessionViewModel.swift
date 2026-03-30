@@ -1,6 +1,7 @@
 import Foundation
 import Citadel
 import Observation
+import SwiftData
 
 @Observable
 @MainActor
@@ -13,8 +14,18 @@ final class SessionViewModel: Identifiable {
     var isConnected: Bool { bridge.isConnected }
     var statusMessage: String { bridge.statusMessage }
 
+    /// When non-nil, the UI should present the host key prompt overlay.
+    var pendingHostKeyPrompt: HostKeyPromptType?
+
     private let sshService = SSHService()
-    private var client: SSHClient?
+    private(set) var client: SSHClient?
+    private var hostKeyPromptContinuation: CheckedContinuation<HostKeyPromptResult, Never>?
+
+    /// Public accessor for the SSH client, used by SFTP browser
+    var sshClient: SSHClient? { client }
+
+    /// The SwiftData model container, injected before calling connect().
+    var modelContainer: ModelContainer?
 
     init(profile: ConnectionProfile) {
         self.profile = profile
@@ -22,15 +33,24 @@ final class SessionViewModel: Identifiable {
     }
 
     func connect() async {
+        guard let modelContainer else {
+            bridge.statusMessage = "Internal error: missing model container."
+            return
+        }
+
         do {
-            // Resolve credentials
             let authMethod = resolveAuthMethod()
 
             let client = try await sshService.connect(
                 host: profile.host,
                 port: profile.port,
                 username: profile.username,
-                authMethod: authMethod
+                authMethod: authMethod,
+                modelContainer: modelContainer,
+                hostKeyPrompt: { [weak self] promptType in
+                    guard let self else { return .reject }
+                    return await self.requestHostKeyDecision(promptType)
+                }
             )
             self.client = client
 
@@ -50,6 +70,34 @@ final class SessionViewModel: Identifiable {
             await sshService.disconnect()
         }
     }
+
+    // MARK: - Host Key Prompt
+
+    /// Called from the validator's background task. Suspends until the user
+    /// taps Accept or Reject in the UI.
+    @MainActor
+    private func requestHostKeyDecision(_ promptType: HostKeyPromptType) async -> HostKeyPromptResult {
+        return await withCheckedContinuation { continuation in
+            self.hostKeyPromptContinuation = continuation
+            self.pendingHostKeyPrompt = promptType
+        }
+    }
+
+    /// Called by the view when the user taps "Trust" / "Trust Anyway".
+    func acceptHostKey() {
+        pendingHostKeyPrompt = nil
+        hostKeyPromptContinuation?.resume(returning: .accept)
+        hostKeyPromptContinuation = nil
+    }
+
+    /// Called by the view when the user taps "Reject".
+    func rejectHostKey() {
+        pendingHostKeyPrompt = nil
+        hostKeyPromptContinuation?.resume(returning: .reject)
+        hostKeyPromptContinuation = nil
+    }
+
+    // MARK: - Private
 
     private func resolveAuthMethod() -> SSHAuthMethod {
         switch profile.authType {

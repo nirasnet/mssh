@@ -1,84 +1,112 @@
 import Foundation
 import CryptoKit
+import Crypto
 import SwiftData
+import Citadel
 
 final class KeyManagementService {
 
-    /// Generate an Ed25519 key pair, store private key in Keychain, return metadata
+    // MARK: - Ed25519 generation
+
     static func generateEd25519Key(label: String, modelContext: ModelContext) throws -> SSHKey {
         let privateKey = Curve25519.Signing.PrivateKey()
         let publicKey = privateKey.publicKey
-
         let keychainID = UUID().uuidString
-        let privateKeyRaw = privateKey.rawRepresentation
 
-        // Store private key in keychain
-        try KeychainService.savePrivateKey(id: keychainID, pemData: privateKeyRaw)
+        try KeychainService.savePrivateKey(id: keychainID, pemData: privateKey.rawRepresentation)
 
-        // Format public key in OpenSSH format
-        let publicKeyText = formatOpenSSHPublicKey(publicKey: publicKey.rawRepresentation, type: "ed25519", label: label)
-
-        let sshKey = SSHKey(
-            label: label,
-            keyType: "ed25519",
-            keychainID: keychainID,
-            publicKeyText: publicKeyText
+        let publicKeyText = formatOpenSSHPublicKey(
+            publicKey: publicKey.rawRepresentation, type: "ed25519", label: label
         )
+
+        let sshKey = SSHKey(label: label, keyType: "ed25519", keychainID: keychainID, publicKeyText: publicKeyText)
         modelContext.insert(sshKey)
         return sshKey
     }
 
-    /// Import a PEM private key from raw text
+    // MARK: - RSA generation
+    // Note: RSA key generation requires BoringSSL internals not accessible from the app target.
+    // Users should generate RSA keys on their Mac using ssh-keygen and import them.
+    // Ed25519 is recommended for new key generation (faster, more secure, smaller keys).
+
+    // MARK: - Import
+
     static func importKey(label: String, pemText: String, modelContext: ModelContext) throws -> SSHKey {
         guard let pemData = pemText.data(using: .utf8) else {
             throw KeyError.invalidPEM
         }
 
-        let keyType = detectKeyType(pem: pemText)
+        let keyType = PEMParser.detectKeyType(pem: pemText)
         let keychainID = UUID().uuidString
 
         try KeychainService.savePrivateKey(id: keychainID, pemData: pemData)
 
-        let sshKey = SSHKey(
-            label: label,
-            keyType: keyType,
-            keychainID: keychainID,
-            publicKeyText: "(imported \(keyType) key)"
-        )
+        let publicKeyText = derivePublicKeyText(pem: pemText, keyType: keyType, label: label)
+
+        let sshKey = SSHKey(label: label, keyType: keyType, keychainID: keychainID, publicKeyText: publicKeyText)
         modelContext.insert(sshKey)
         return sshKey
     }
+
+    // MARK: - Delete
 
     static func deleteKey(_ key: SSHKey, modelContext: ModelContext) {
         KeychainService.deleteItem(account: "key-\(key.keychainID)")
         modelContext.delete(key)
     }
 
-    private static func detectKeyType(pem: String) -> String {
-        if pem.contains("RSA") { return "rsa" }
-        if pem.contains("EC") { return "ecdsa" }
-        if pem.contains("OPENSSH") { return "ed25519" }
-        return "unknown"
+    // MARK: - Public key derivation
+
+    private static func derivePublicKeyText(pem: String, keyType: String, label: String) -> String {
+        switch keyType {
+        case "ed25519":
+            if pem.contains("BEGIN OPENSSH PRIVATE KEY"),
+               let rawKey = try? PEMParser.parseOpenSSHEd25519(pemString: pem),
+               let pk = try? Curve25519.Signing.PrivateKey(rawRepresentation: rawKey) {
+                return formatOpenSSHPublicKey(publicKey: pk.publicKey.rawRepresentation, type: "ed25519", label: label)
+            }
+        case "ecdsa-256":
+            if let pk = try? P256.Signing.PrivateKey(pemRepresentation: pem) {
+                return formatECDSAPublicKey(publicKeyData: pk.publicKey.rawRepresentation, curveName: "nistp256", label: label)
+            }
+        case "ecdsa-384":
+            if let pk = try? P384.Signing.PrivateKey(pemRepresentation: pem) {
+                return formatECDSAPublicKey(publicKeyData: pk.publicKey.rawRepresentation, curveName: "nistp384", label: label)
+            }
+        case "ecdsa-521":
+            if let pk = try? P521.Signing.PrivateKey(pemRepresentation: pem) {
+                return formatECDSAPublicKey(publicKeyData: pk.publicKey.rawRepresentation, curveName: "nistp521", label: label)
+            }
+        default:
+            break
+        }
+        return "(imported \(keyType) key)"
     }
 
+    // MARK: - OpenSSH public key formatting
+
     private static func formatOpenSSHPublicKey(publicKey: Data, type: String, label: String) -> String {
-        // Simplified OpenSSH public key encoding for ed25519
         var keyData = Data()
         let typeString = "ssh-\(type)"
         let typeBytes = typeString.data(using: .utf8)!
+        appendSSHString(&keyData, typeBytes)
+        appendSSHString(&keyData, publicKey)
+        return "ssh-\(type) \(keyData.base64EncodedString()) \(label)"
+    }
 
-        // Length-prefixed type string
-        var typeLen = UInt32(typeBytes.count).bigEndian
-        keyData.append(Data(bytes: &typeLen, count: 4))
-        keyData.append(typeBytes)
+    private static func formatECDSAPublicKey(publicKeyData: Data, curveName: String, label: String) -> String {
+        let typeString = "ecdsa-sha2-\(curveName)"
+        var keyData = Data()
+        appendSSHString(&keyData, typeString.data(using: .utf8)!)
+        appendSSHString(&keyData, curveName.data(using: .utf8)!)
+        appendSSHString(&keyData, publicKeyData)
+        return "\(typeString) \(keyData.base64EncodedString()) \(label)"
+    }
 
-        // Length-prefixed public key
-        var keyLen = UInt32(publicKey.count).bigEndian
-        keyData.append(Data(bytes: &keyLen, count: 4))
-        keyData.append(publicKey)
-
-        let base64 = keyData.base64EncodedString()
-        return "ssh-\(type) \(base64) \(label)"
+    private static func appendSSHString(_ data: inout Data, _ bytes: Data) {
+        var len = UInt32(bytes.count).bigEndian
+        data.append(Data(bytes: &len, count: 4))
+        data.append(bytes)
     }
 }
 

@@ -2,6 +2,8 @@ import SwiftUI
 
 struct TerminalSessionView: View {
     @Bindable var session: SessionViewModel
+    @Environment(\.modelContext) private var modelContext
+    @State private var showSFTPBrowser = false
 
     var body: some View {
         ZStack {
@@ -9,7 +11,7 @@ struct TerminalSessionView: View {
                 .ignoresSafeArea(.keyboard)
 
             // Connection status overlay
-            if !session.isConnected {
+            if !session.isConnected && session.pendingHostKeyPrompt == nil {
                 VStack(spacing: 12) {
                     ProgressView()
                     Text(session.statusMessage)
@@ -23,6 +25,22 @@ struct TerminalSessionView: View {
                 .padding()
                 .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
             }
+
+            // Host key verification prompt
+            if let promptType = session.pendingHostKeyPrompt {
+                Color.black.opacity(0.4)
+                    .ignoresSafeArea()
+
+                HostKeyPromptView(
+                    promptType: promptType,
+                    onAccept: { session.acceptHostKey() },
+                    onReject: { session.rejectHostKey() }
+                )
+                .transition(.scale.combined(with: .opacity))
+            }
+        }
+        .onAppear {
+            session.modelContainer = modelContext.container
         }
         .toolbar {
             ToolbarItem(placement: .principal) {
@@ -34,10 +52,22 @@ struct TerminalSessionView: View {
                         .foregroundStyle(.secondary)
                 }
             }
-            ToolbarItem(placement: .primaryAction) {
+            ToolbarItemGroup(placement: .primaryAction) {
+                Button {
+                    showSFTPBrowser = true
+                } label: {
+                    Image(systemName: "folder.fill")
+                }
+                .disabled(!session.isConnected || session.sshClient == nil)
+
                 Button(action: { session.disconnect() }) {
                     Image(systemName: "xmark.circle")
                 }
+            }
+        }
+        .sheet(isPresented: $showSFTPBrowser) {
+            if let client = session.sshClient {
+                SFTPBrowserView(client: client)
             }
         }
     }

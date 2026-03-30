@@ -4,6 +4,8 @@ import Security
 enum KeychainService {
     private static let serviceName = "com.m4ck.mssh"
 
+    // MARK: - Device-Only Password (original behavior)
+
     static func savePassword(for profileID: String, password: String) throws {
         guard let data = password.data(using: .utf8) else { return }
         let query: [String: Any] = [
@@ -34,6 +36,65 @@ enum KeychainService {
         return String(data: data, encoding: .utf8)
     }
 
+    // MARK: - Syncable Password (iCloud Keychain)
+
+    /// Saves a password that syncs across devices via iCloud Keychain.
+    /// Use the profile's `syncID` as the identifier so the password matches on every device.
+    static func savePasswordSyncable(for syncID: String, password: String) throws {
+        guard let data = password.data(using: .utf8) else { return }
+
+        // Delete any existing item first (must also specify synchronizable for deletion)
+        let deleteQuery: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: serviceName,
+            kSecAttrAccount as String: "pwd-sync-\(syncID)",
+            kSecAttrSynchronizable as String: kSecAttrSynchronizableAny
+        ]
+        SecItemDelete(deleteQuery as CFDictionary)
+
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: serviceName,
+            kSecAttrAccount as String: "pwd-sync-\(syncID)",
+            kSecValueData as String: data,
+            kSecAttrAccessible as String: kSecAttrAccessibleWhenUnlocked,
+            kSecAttrSynchronizable as String: true
+        ]
+        let status = SecItemAdd(query as CFDictionary, nil)
+        guard status == errSecSuccess else {
+            throw KeychainError.saveFailed(status)
+        }
+    }
+
+    /// Retrieves a syncable password from iCloud Keychain using the profile's `syncID`.
+    static func getPasswordSyncable(for syncID: String) -> String? {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: serviceName,
+            kSecAttrAccount as String: "pwd-sync-\(syncID)",
+            kSecReturnData as String: true,
+            kSecMatchLimit as String: kSecMatchLimitOne,
+            kSecAttrSynchronizable as String: true
+        ]
+        var result: AnyObject?
+        let status = SecItemCopyMatching(query as CFDictionary, &result)
+        guard status == errSecSuccess, let data = result as? Data else { return nil }
+        return String(data: data, encoding: .utf8)
+    }
+
+    /// Deletes a syncable password from iCloud Keychain.
+    static func deletePasswordSyncable(for syncID: String) {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: serviceName,
+            kSecAttrAccount as String: "pwd-sync-\(syncID)",
+            kSecAttrSynchronizable as String: kSecAttrSynchronizableAny
+        ]
+        SecItemDelete(query as CFDictionary)
+    }
+
+    // MARK: - Private Keys (device-only, never synced)
+
     static func savePrivateKey(id: String, pemData: Data) throws {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
@@ -62,6 +123,8 @@ enum KeychainService {
         guard status == errSecSuccess, let data = result as? Data else { return nil }
         return data
     }
+
+    // MARK: - Host Keys (device-only)
 
     static func saveHostKey(host: String, port: Int, keyData: Data) throws {
         let account = "hostkey-\(host):\(port)"
@@ -93,6 +156,8 @@ enum KeychainService {
         guard status == errSecSuccess, let data = result as? Data else { return nil }
         return data
     }
+
+    // MARK: - Deletion
 
     static func deleteItem(account: String) {
         let query: [String: Any] = [
