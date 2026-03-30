@@ -65,5 +65,13 @@ struct TerminalViewWrapper: UIViewRepresentable {
                 UIApplication.shared.open(url)
             }
         }
+
+        func clipboardCopy(source: TerminalView, content: Data) {
+            if let text = String(data: content, encoding: .utf8) {
+                UIPasteboard.general.string = text
+            }
+        }
+
+        func rangeChanged(source: TerminalView, startY: Int, endY: Int) {}
     }
 }

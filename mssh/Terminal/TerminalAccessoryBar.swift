@@ -97,14 +97,14 @@ final class TerminalAccessoryBar: UIView {
         if ctrlActive && key.1.count == 1 {
             // Send Ctrl+key: for printable ASCII, Ctrl version is (char & 0x1F)
             let ctrlByte = key.1[0] & 0x1F
-            terminal?.feed(byteArray: ArraySlice([ctrlByte]))
+            terminal?.terminalDelegate?.send(source: terminal!, data: ArraySlice([ctrlByte]))
             ctrlActive = false
             ctrlButton?.backgroundColor = UIColor.secondarySystemBackground
         } else {
-            // Send the raw bytes
+            // Send the raw bytes through the delegate
             let data = ArraySlice(key.1)
             if let terminalView = terminal {
-                terminalView.send(data)
+                terminalView.terminalDelegate?.send(source: terminalView, data: data)
             }
         }
     }

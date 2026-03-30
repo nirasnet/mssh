@@ -2,7 +2,7 @@ name: mssh
 options:
   bundleIdPrefix: com.m4ck
   deploymentTarget:
-    iOS: "17.0"
+    iOS: "18.0"
   xcodeVersion: "16.0"
   generateEmptyDirectories: true
 
@@ -15,10 +15,10 @@ settings:
 packages:
   SwiftTerm:
     url: https://github.com/migueldeicaza/SwiftTerm
-    from: "2.0.0"
+    from: "1.13.0"
   Citadel:
     url: https://github.com/orlandos-nl/Citadel
-    from: "0.7.0"
+    from: "0.9.0"
 
 targets:
   mssh:
@@ -31,11 +31,18 @@ targets:
         product: SwiftTerm
       - package: Citadel
         product: Citadel
+    info:
+      path: mssh/Info.plist
+      properties:
+        CFBundleDisplayName: mSSH
+        UILaunchScreen: {}
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.m4ck.mssh
-        INFOPLIST_KEY_CFBundleDisplayName: mSSH
-        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: true
         DEVELOPMENT_TEAM: ""
     entitlements:
       path: mssh/mssh.entitlements

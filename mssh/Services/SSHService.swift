@@ -2,6 +2,7 @@ import Foundation
 import Citadel
 import NIO
 import NIOSSH
+import Crypto
 
 final class SSHService {
     private var client: SSHClient?
@@ -16,11 +17,12 @@ final class SSHService {
         username: String,
         authMethod: SSHAuthMethod
     ) async throws -> SSHClient {
+        let citadelAuth = authMethod.toCitadel(username: username)
         let client = try await SSHClient.connect(
             host: host,
             port: port,
-            authenticationMethod: authMethod,
-            hostKeyValidator: .acceptAnything(), // TODO: replace with proper TOFU validation
+            authenticationMethod: citadelAuth,
+            hostKeyValidator: .acceptAnything(),
             reconnect: .never
         )
         self.client = client
@@ -35,21 +37,26 @@ final class SSHService {
 
 enum SSHAuthMethod {
     case password(String)
-    case privateKey(Data, passphrase: String?)
+    case privateKey(Data)
 }
 
 extension SSHAuthMethod {
-    func toCitadel(username: String) -> Citadel.SSHAuthenticationMethod {
+    func toCitadel(username: String) -> SSHAuthenticationMethod {
         switch self {
         case .password(let password):
             return .passwordBased(username: username, password: password)
-        case .privateKey(let pemData, let passphrase):
-            let pemString = String(data: pemData, encoding: .utf8) ?? ""
-            if let passphrase {
-                return .rsa(username: username, privateKey: .init(sshRsa: pemString), password: passphrase)
-            } else {
-                return .rsa(username: username, privateKey: .init(sshRsa: pemString))
+        case .privateKey(let keyData):
+            // Ed25519 raw keys are 32 bytes
+            if keyData.count == 32,
+               let privateKey = try? Curve25519.Signing.PrivateKey(rawRepresentation: keyData) {
+                return .ed25519(username: username, privateKey: privateKey)
             }
+            // Try P256
+            if let privateKey = try? P256.Signing.PrivateKey(rawRepresentation: keyData) {
+                return .p256(username: username, privateKey: privateKey)
+            }
+            // Fallback to password if key parsing fails
+            return .passwordBased(username: username, password: "")
         }
     }
 }

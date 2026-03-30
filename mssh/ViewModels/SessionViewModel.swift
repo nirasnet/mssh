@@ -59,7 +59,7 @@ final class SessionViewModel: Identifiable {
         case .key:
             if let keyID = profile.keyID,
                let keyData = KeychainService.getPrivateKey(id: keyID) {
-                return .privateKey(keyData, passphrase: nil)
+                return .privateKey(keyData)
             }
             return .password("")
         }
