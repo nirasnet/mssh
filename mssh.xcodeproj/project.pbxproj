@@ -282,7 +282,7 @@
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					FB4BB98B799997D3C5A3581D = {
-						DevelopmentTeam = "";
+						DevelopmentTeam = CC24ZA67DK;
 					};
 				};
 			};
@@ -435,7 +435,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = mssh/mssh.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = CC24ZA67DK;
 				INFOPLIST_FILE = mssh/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -453,7 +453,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = mssh/mssh.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = CC24ZA67DK;
 				INFOPLIST_FILE = mssh/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

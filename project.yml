@@ -43,7 +43,7 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.m4ck.mssh
-        DEVELOPMENT_TEAM: ""
+        DEVELOPMENT_TEAM: CC24ZA67DK
     entitlements:
       path: mssh/mssh.entitlements
       properties:
