@@ -72,6 +72,11 @@ final class SessionViewModel: Identifiable {
 
     func disconnect() {
         bridge.disconnect()
+        // If a host key prompt is pending, reject it so the connection task
+        // does not hang indefinitely waiting for user input.
+        if hostKeyPromptContinuation != nil {
+            rejectHostKey()
+        }
         Task {
             await sshService.disconnect()
         }

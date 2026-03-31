@@ -3,7 +3,7 @@ import SwiftTerm
 
 /// UIViewRepresentable wrapper for SwiftTerm's TerminalView
 struct TerminalViewWrapper: UIViewRepresentable {
-    let bridge: SSHTerminalBridge
+    @ObservedObject var bridge: SSHTerminalBridge
     var theme: TerminalTheme = .default
 
     func makeUIView(context: Context) -> TerminalView {
@@ -22,12 +22,26 @@ struct TerminalViewWrapper: UIViewRepresentable {
         // Link bridge to terminal view
         bridge.terminalView = terminal
 
+        // If already connected (e.g. returning to an existing session),
+        // request focus after a brief delay to let the view hierarchy settle.
+        if bridge.isConnected {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                terminal.becomeFirstResponder()
+            }
+        }
+
         return terminal
     }
 
     func updateUIView(_ uiView: TerminalView, context: Context) {
         uiView.nativeBackgroundColor = UIColor(theme.background)
         uiView.nativeForegroundColor = UIColor(theme.foreground)
+
+        // Auto-focus the terminal when the bridge reports connected,
+        // so the keyboard activates and typing works immediately.
+        if bridge.isConnected && !uiView.isFirstResponder {
+            uiView.becomeFirstResponder()
+        }
     }
 
     func makeCoordinator() -> Coordinator {

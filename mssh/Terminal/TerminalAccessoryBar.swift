@@ -21,17 +21,34 @@ final class TerminalAccessoryBar: UIView {
 
     private var ctrlActive = false
     private var ctrlButton: UIButton?
+    private let feedbackGenerator = UIImpactFeedbackGenerator(style: .light)
 
     init(terminal: TerminalView) {
         self.terminal = terminal
         super.init(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44))
         autoresizingMask = .flexibleWidth
-        backgroundColor = UIColor.systemBackground.withAlphaComponent(0.95)
+        setupAppearance()
         setupKeys()
+        feedbackGenerator.prepare()
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) not implemented")
+    }
+
+    private func setupAppearance() {
+        backgroundColor = UIColor.secondarySystemBackground
+        // Add a subtle top border
+        let separator = UIView()
+        separator.backgroundColor = UIColor.separator
+        separator.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(separator)
+        NSLayoutConstraint.activate([
+            separator.topAnchor.constraint(equalTo: topAnchor),
+            separator.leadingAnchor.constraint(equalTo: leadingAnchor),
+            separator.trailingAnchor.constraint(equalTo: trailingAnchor),
+            separator.heightAnchor.constraint(equalToConstant: 0.5),
+        ])
     }
 
     private func setupKeys() {
@@ -40,11 +57,27 @@ final class TerminalAccessoryBar: UIView {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(scrollView)
 
+        // Dismiss keyboard button pinned to right edge
+        let dismissButton = UIButton(type: .system)
+        let dismissConfig = UIImage.SymbolConfiguration(pointSize: 16, weight: .medium)
+        dismissButton.setImage(UIImage(systemName: "chevron.down", withConfiguration: dismissConfig), for: .normal)
+        dismissButton.tintColor = .label
+        dismissButton.translatesAutoresizingMaskIntoConstraints = false
+        dismissButton.addTarget(self, action: #selector(dismissKeyboard), for: .touchUpInside)
+        dismissButton.backgroundColor = UIColor.tertiarySystemBackground
+        dismissButton.layer.cornerRadius = 6
+        dismissButton.widthAnchor.constraint(equalToConstant: 44).isActive = true
+        addSubview(dismissButton)
+
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: topAnchor),
             scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: dismissButton.leadingAnchor, constant: -4),
+
+            dismissButton.topAnchor.constraint(equalTo: topAnchor, constant: 4),
+            dismissButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4),
+            dismissButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -6),
         ])
 
         let stack = UIStackView()
@@ -68,11 +101,16 @@ final class TerminalAccessoryBar: UIView {
             let button = UIButton(type: .system)
             button.setTitle(key.0, for: .normal)
             button.titleLabel?.font = .systemFont(ofSize: 15, weight: .medium)
+            button.tintColor = .label
             button.tag = index
             button.addTarget(self, action: #selector(keyTapped(_:)), for: .touchUpInside)
-            button.backgroundColor = UIColor.secondarySystemBackground
+            button.backgroundColor = UIColor.tertiarySystemBackground
             button.layer.cornerRadius = 6
-            button.contentEdgeInsets = UIEdgeInsets(top: 6, left: 10, bottom: 6, right: 10)
+            button.layer.shadowColor = UIColor.black.cgColor
+            button.layer.shadowOffset = CGSize(width: 0, height: 1)
+            button.layer.shadowRadius = 0.5
+            button.layer.shadowOpacity = 0.15
+            button.contentEdgeInsets = UIEdgeInsets(top: 6, left: 12, bottom: 6, right: 12)
 
             if key.0 == "Ctrl" {
                 ctrlButton = button
@@ -82,15 +120,25 @@ final class TerminalAccessoryBar: UIView {
         }
     }
 
+    @objc private func dismissKeyboard() {
+        feedbackGenerator.impactOccurred()
+        terminal?.resignFirstResponder()
+    }
+
     @objc private func keyTapped(_ sender: UIButton) {
+        feedbackGenerator.impactOccurred()
+
         let index = sender.tag
         let key = keys[index]
 
         if key.0 == "Ctrl" {
             ctrlActive.toggle()
-            ctrlButton?.backgroundColor = ctrlActive
-                ? UIColor.systemBlue.withAlphaComponent(0.3)
-                : UIColor.secondarySystemBackground
+            UIView.animate(withDuration: 0.15) {
+                self.ctrlButton?.backgroundColor = self.ctrlActive
+                    ? UIColor.systemBlue.withAlphaComponent(0.3)
+                    : UIColor.tertiarySystemBackground
+                self.ctrlButton?.tintColor = self.ctrlActive ? .systemBlue : .label
+            }
             return
         }
 
@@ -99,12 +147,24 @@ final class TerminalAccessoryBar: UIView {
             let ctrlByte = key.1[0] & 0x1F
             terminal?.terminalDelegate?.send(source: terminal!, data: ArraySlice([ctrlByte]))
             ctrlActive = false
-            ctrlButton?.backgroundColor = UIColor.secondarySystemBackground
+            UIView.animate(withDuration: 0.15) {
+                self.ctrlButton?.backgroundColor = UIColor.tertiarySystemBackground
+                self.ctrlButton?.tintColor = .label
+            }
         } else {
             // Send the raw bytes through the delegate
             let data = ArraySlice(key.1)
             if let terminalView = terminal {
                 terminalView.terminalDelegate?.send(source: terminalView, data: data)
+            }
+        }
+
+        // Brief press animation
+        UIView.animate(withDuration: 0.08, animations: {
+            sender.transform = CGAffineTransform(scaleX: 0.92, y: 0.92)
+        }) { _ in
+            UIView.animate(withDuration: 0.08) {
+                sender.transform = .identity
             }
         }
     }
