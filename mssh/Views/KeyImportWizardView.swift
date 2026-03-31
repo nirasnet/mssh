@@ -59,6 +59,9 @@ struct KeyImportWizardView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
+    /// Callback fired after successful import so the parent can refresh.
+    var onImported: (() -> Void)?
+
     @State private var step: WizardStep = .chooseSource
     @State private var selectedSource: KeyImportSource?
     @State private var keySelections: [KeySelection] = []
@@ -114,10 +117,11 @@ struct KeyImportWizardView: View {
             }
             .alert("Import Complete", isPresented: .init(
                 get: { importResults != nil },
-                set: { if !$0 { importResults = nil; dismiss() } }
+                set: { if !$0 { importResults = nil } }
             )) {
                 Button("Done") {
                     importResults = nil
+                    onImported?()
                     dismiss()
                 }
             } message: {
@@ -440,22 +444,48 @@ struct KeyImportWizardView: View {
         let selected = keySelections.filter(\.selected)
         var importedCount = 0
         var errorCount = 0
+        var lastError: String?
 
         for selection in selected {
+            guard let pemData = selection.preview.rawPEM.data(using: .utf8) else {
+                errorCount += 1
+                lastError = "Invalid key data for \(selection.label)"
+                continue
+            }
+
             do {
-                try SSHKeyImporter.importKey(
-                    preview: selection.preview,
+                let keychainID = UUID().uuidString
+                try KeychainService.savePrivateKey(id: keychainID, pemData: pemData)
+
+                let sshKey = SSHKey(
                     label: selection.label,
-                    modelContext: modelContext
+                    keyType: selection.preview.keyType.rawValue,
+                    keychainID: keychainID,
+                    publicKeyText: selection.preview.publicKeyText ?? "(imported \(selection.preview.keyType.shortName) key)"
                 )
+                modelContext.insert(sshKey)
                 importedCount += 1
             } catch {
                 errorCount += 1
+                lastError = error.localizedDescription
             }
         }
 
+        // Force save
+        do {
+            try modelContext.save()
+        } catch {
+            lastError = "Save failed: \(error.localizedDescription)"
+            errorCount += 1
+        }
+
         isImporting = false
-        importResults = (imported: importedCount, errors: errorCount)
+
+        if importedCount == 0 {
+            errorMessage = lastError ?? "Import failed"
+        } else {
+            importResults = (imported: importedCount, errors: errorCount)
+        }
     }
 }
 

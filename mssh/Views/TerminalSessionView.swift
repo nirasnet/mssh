@@ -2,29 +2,13 @@ import SwiftUI
 
 struct TerminalSessionView: View {
     @Bindable var session: SessionViewModel
+    @Environment(SessionManager.self) private var sessionManager
     @Environment(\.modelContext) private var modelContext
     @State private var showSFTPBrowser = false
 
     var body: some View {
         ZStack {
             TerminalViewWrapper(bridge: session.bridge)
-                .ignoresSafeArea(.keyboard)
-
-            // Connection status overlay
-            if !session.isConnected && session.pendingHostKeyPrompt == nil {
-                VStack(spacing: 12) {
-                    ProgressView()
-                    Text(session.statusMessage)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    Button("Reconnect") {
-                        Task { await session.connect() }
-                    }
-                    .buttonStyle(.bordered)
-                }
-                .padding()
-                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
-            }
 
             // Host key verification prompt
             if let promptType = session.pendingHostKeyPrompt {
@@ -60,7 +44,9 @@ struct TerminalSessionView: View {
                 }
                 .disabled(!session.isConnected || session.sshClient == nil)
 
-                Button(action: { session.disconnect() }) {
+                Button {
+                    sessionManager.closeSession(session.id)
+                } label: {
                     Image(systemName: "xmark.circle")
                 }
             }

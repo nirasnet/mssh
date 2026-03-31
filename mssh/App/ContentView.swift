@@ -4,26 +4,59 @@ import SwiftData
 struct ContentView: View {
     @Environment(SessionManager.self) private var sessionManager
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \ConnectionProfile.lastConnectedAt, order: .reverse) private var connections: [ConnectionProfile]
+    @Query private var connections: [ConnectionProfile]
     @State private var showAddConnection = false
     @State private var selectedConnection: ConnectionProfile?
     @State private var showSettings = false
+    @State private var showTerminal = false
 
-    var body: some View {
-        NavigationSplitView {
-            sidebar
-        } detail: {
-            detail
+    private var sortedConnections: [ConnectionProfile] {
+        connections.sorted {
+            ($0.lastConnectedAt ?? .distantPast) > ($1.lastConnectedAt ?? .distantPast)
         }
     }
 
-    @ViewBuilder
-    private var sidebar: some View {
-        List(selection: $selectedConnection) {
-            Section("Connections") {
-                ForEach(connections) { connection in
-                    ConnectionRow(profile: connection)
-                        .tag(connection)
+    var body: some View {
+        NavigationStack {
+            List {
+                // Active Sessions
+                if !sessionManager.sessions.isEmpty {
+                    Section("Active Sessions") {
+                        ForEach(sessionManager.sessions) { session in
+                            Button {
+                                sessionManager.activeSessionID = session.id
+                                showTerminal = true
+                            } label: {
+                                Label {
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(session.title)
+                                            .foregroundStyle(.primary)
+                                        Text(session.isConnected ? "Connected" : session.statusMessage)
+                                            .font(.caption2)
+                                            .foregroundStyle(session.isConnected ? .green : .secondary)
+                                    }
+                                } icon: {
+                                    Image(systemName: session.isConnected ? "terminal.fill" : "terminal")
+                                        .foregroundStyle(session.isConnected ? .green : .secondary)
+                                }
+                            }
+                        }
+                        .onDelete { indexSet in
+                            for index in indexSet {
+                                sessionManager.closeSession(sessionManager.sessions[index].id)
+                            }
+                        }
+                    }
+                }
+
+                // Saved Connections
+                Section("Connections") {
+                    ForEach(sortedConnections) { connection in
+                        Button {
+                            connect(to: connection)
+                        } label: {
+                            ConnectionRow(profile: connection)
+                        }
                         .contextMenu {
                             Button("Connect") {
                                 connect(to: connection)
@@ -34,79 +67,57 @@ struct ContentView: View {
                             }
                             Button("Delete", role: .destructive) {
                                 modelContext.delete(connection)
+                                try? modelContext.save()
                             }
                         }
-                }
-                .onDelete { indexSet in
-                    for index in indexSet {
-                        modelContext.delete(connections[index])
+                    }
+                    .onDelete { indexSet in
+                        let toDelete = indexSet.map { sortedConnections[$0] }
+                        for item in toDelete {
+                            modelContext.delete(item)
+                        }
+                        try? modelContext.save()
                     }
                 }
             }
-
-            if !sessionManager.sessions.isEmpty {
-                Section("Active Sessions") {
-                    ForEach(sessionManager.sessions) { session in
-                        Label(session.title, systemImage: "terminal")
-                            .onTapGesture {
-                                sessionManager.activeSessionID = session.id
-                            }
+            .navigationTitle("mSSH")
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button(action: { showAddConnection = true }) {
+                        Image(systemName: "plus")
+                    }
+                }
+                ToolbarItem(placement: .bottomBar) {
+                    HStack {
+                        Button(action: { showSettings = true }) {
+                            Image(systemName: "gear")
+                        }
+                        Spacer()
+                        NavigationLink(destination: KeyManagerView()) {
+                            Image(systemName: "key")
+                        }
                     }
                 }
             }
-        }
-        .navigationTitle("mSSH")
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button(action: { showAddConnection = true }) {
-                    Image(systemName: "plus")
+            .navigationDestination(isPresented: $showTerminal) {
+                if let session = sessionManager.activeSession {
+                    TerminalSessionView(session: session)
                 }
             }
-            ToolbarItem(placement: .bottomBar) {
-                HStack {
-                    Button(action: { showSettings = true }) {
-                        Image(systemName: "gear")
-                    }
-                    Spacer()
-                    NavigationLink(destination: KeyManagerView()) {
-                        Image(systemName: "key")
-                    }
-                }
+            .sheet(isPresented: $showAddConnection) {
+                ConnectionFormView(existingProfile: selectedConnection)
+                    .onDisappear { selectedConnection = nil }
             }
-        }
-        .sheet(isPresented: $showAddConnection) {
-            ConnectionFormView(existingProfile: selectedConnection)
-        }
-        .sheet(isPresented: $showSettings) {
-            SettingsView()
-        }
-    }
-
-    @ViewBuilder
-    private var detail: some View {
-        if sessionManager.sessions.isEmpty {
-            VStack(spacing: 16) {
-                Image(systemName: "terminal")
-                    .font(.system(size: 64))
-                    .foregroundStyle(.secondary)
-                Text("No Active Sessions")
-                    .font(.title2)
-                    .foregroundStyle(.secondary)
-                if let first = connections.first {
-                    Button("Connect to \(first.label)") {
-                        connect(to: first)
-                    }
-                    .buttonStyle(.borderedProminent)
-                }
+            .sheet(isPresented: $showSettings) {
+                SettingsView()
             }
-        } else {
-            SessionTabView()
         }
     }
 
     private func connect(to profile: ConnectionProfile) {
         let session = sessionManager.createSession(for: profile)
         sessionManager.activeSessionID = session.id
+        showTerminal = true
         Task {
             await session.connect()
         }
@@ -120,6 +131,7 @@ struct ConnectionRow: View {
         VStack(alignment: .leading, spacing: 2) {
             Text(profile.label)
                 .font(.headline)
+                .foregroundStyle(.primary)
             Text("\(profile.username)@\(profile.host):\(profile.port)")
                 .font(.caption)
                 .foregroundStyle(.secondary)

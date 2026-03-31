@@ -8,7 +8,12 @@ enum BiometricType {
 }
 
 enum BiometricService {
+    private static var hasFaceIDUsageDescription: Bool {
+        Bundle.main.object(forInfoDictionaryKey: "NSFaceIDUsageDescription") != nil
+    }
+
     static func biometricType() -> BiometricType {
+        guard hasFaceIDUsageDescription else { return .none }
         let context = LAContext()
         var error: NSError?
         guard context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
@@ -27,12 +32,14 @@ enum BiometricService {
     }
 
     static func canUseBiometrics() -> Bool {
+        guard hasFaceIDUsageDescription else { return false }
         let context = LAContext()
         var error: NSError?
         return context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
     }
 
     static func authenticate(reason: String) async -> Bool {
+        guard hasFaceIDUsageDescription else { return false }
         let context = LAContext()
         context.localizedCancelTitle = "Cancel"
         var error: NSError?

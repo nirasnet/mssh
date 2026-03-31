@@ -102,6 +102,7 @@ struct KeyManagerView: View {
         }
         .sheet(isPresented: $showImportWizard) {
             KeyImportWizardView()
+                .modelContainer(modelContext.container)
         }
         .sheet(isPresented: $showConfigImport) {
             SSHConfigImportView()

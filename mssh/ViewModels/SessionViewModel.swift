@@ -11,8 +11,8 @@ final class SessionViewModel: Identifiable {
     let bridge = SSHTerminalBridge()
 
     var title: String
-    var isConnected: Bool { bridge.isConnected }
-    var statusMessage: String { bridge.statusMessage }
+    var isConnected: Bool = false
+    var statusMessage: String = "Disconnected"
 
     /// When non-nil, the UI should present the host key prompt overlay.
     var pendingHostKeyPrompt: HostKeyPromptType?
@@ -30,13 +30,19 @@ final class SessionViewModel: Identifiable {
     init(profile: ConnectionProfile) {
         self.profile = profile
         self.title = profile.label
+        bridge.onStateChange = { [weak self] connected, status in
+            self?.isConnected = connected
+            self?.statusMessage = status
+        }
     }
 
     func connect() async {
         guard let modelContainer else {
-            bridge.statusMessage = "Internal error: missing model container."
+            statusMessage = "Internal error: missing model container."
             return
         }
+
+        statusMessage = "Connecting..."
 
         do {
             let authMethod = resolveAuthMethod()
@@ -60,7 +66,7 @@ final class SessionViewModel: Identifiable {
             // Start terminal session with default size (will resize on layout)
             bridge.connect(client: client, cols: 80, rows: 24)
         } catch {
-            bridge.statusMessage = "Connection failed: \(error.localizedDescription)"
+            statusMessage = "Connection failed: \(error.localizedDescription)"
         }
     }
 
@@ -102,7 +108,7 @@ final class SessionViewModel: Identifiable {
     private func resolveAuthMethod() -> SSHAuthMethod {
         switch profile.authType {
         case .password:
-            let password = KeychainService.getPassword(for: profile.persistentModelID.hashValue.description) ?? ""
+            let password = KeychainService.getPassword(for: profile.syncID) ?? ""
             return .password(password)
         case .key:
             if let keyID = profile.keyID,

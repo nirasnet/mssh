@@ -21,6 +21,7 @@ final class KeyManagementService {
 
         let sshKey = SSHKey(label: label, keyType: "ed25519", keychainID: keychainID, publicKeyText: publicKeyText)
         modelContext.insert(sshKey)
+        try modelContext.save()
         return sshKey
     }
 
@@ -45,6 +46,7 @@ final class KeyManagementService {
 
         let sshKey = SSHKey(label: label, keyType: keyType, keychainID: keychainID, publicKeyText: publicKeyText)
         modelContext.insert(sshKey)
+        try modelContext.save()
         return sshKey
     }
 

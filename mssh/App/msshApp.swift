@@ -17,7 +17,8 @@ struct msshApp: App {
             let schema = Schema([ConnectionProfile.self, SSHKey.self, KnownHost.self])
             let config = ModelConfiguration(
                 schema: schema,
-                cloudKitDatabase: .automatic
+                isStoredInMemoryOnly: false,
+                cloudKitDatabase: .none
             )
             modelContainer = try ModelContainer(for: schema, configurations: [config])
         } catch {
@@ -41,7 +42,7 @@ struct msshApp: App {
                     }
                 }
                 .onAppear {
-                    if biometricEnabled {
+                    if biometricEnabled && BiometricService.canUseBiometrics() {
                         isLocked = true
                     }
                 }
@@ -50,7 +51,7 @@ struct msshApp: App {
         .onChange(of: scenePhase) { _, newPhase in
             switch newPhase {
             case .background:
-                if biometricEnabled && lockOnBackground {
+                if biometricEnabled && lockOnBackground && BiometricService.canUseBiometrics() {
                     isLocked = true
                 }
             default:

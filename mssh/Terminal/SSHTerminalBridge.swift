@@ -12,12 +12,20 @@ final class SSHTerminalBridge: NSObject, ObservableObject {
     @Published var isConnected = false
     @Published var statusMessage = "Disconnected"
 
-    private var stdinContinuation: AsyncStream<Data>.Continuation?
+    /// Called on MainActor whenever isConnected or statusMessage changes.
+    var onStateChange: ((_ connected: Bool, _ status: String) -> Void)?
+
     private var connectionTask: Task<Void, Never>?
     private var writer: TTYStdinWriter?
 
+    private func updateState(connected: Bool, status: String) {
+        isConnected = connected
+        statusMessage = status
+        onStateChange?(connected, status)
+    }
+
     func connect(client: SSHClient, cols: Int, rows: Int) {
-        statusMessage = "Connecting..."
+        updateState(connected: false, status: "Connecting...")
         connectionTask = Task { [weak self] in
             guard let self else { return }
             do {
@@ -25,13 +33,10 @@ final class SSHTerminalBridge: NSObject, ObservableObject {
             } catch is CancellationError {
                 // Normal disconnect
             } catch {
-                self.statusMessage = "Error: \(error.localizedDescription)"
+                self.updateState(connected: false, status: "Error: \(error.localizedDescription)")
             }
-            self.isConnected = false
             self.writer = nil
-            self.stdinContinuation?.finish()
-            self.stdinContinuation = nil
-            self.statusMessage = "Disconnected"
+            self.updateState(connected: false, status: "Disconnected")
         }
     }
 
@@ -41,23 +46,22 @@ final class SSHTerminalBridge: NSObject, ObservableObject {
     }
 
     nonisolated func sendToSSH(data: ArraySlice<UInt8>) {
-        let bytes = Data(data)
-        Task { @MainActor in
-            stdinContinuation?.yield(bytes)
+        let bytes = Array(data)
+        Task { @MainActor [weak self] in
+            guard let self, let writer = self.writer else { return }
+            let buffer = ByteBuffer(bytes: bytes)
+            try? await writer.write(buffer)
         }
     }
 
     nonisolated func resizeTerminal(cols: Int, rows: Int) {
-        Task { @MainActor in
-            guard let writer else { return }
+        Task { @MainActor [weak self] in
+            guard let self, let writer = self.writer else { return }
             try? await writer.changeSize(cols: cols, rows: rows, pixelWidth: 0, pixelHeight: 0)
         }
     }
 
     private func runPTYSession(client: SSHClient, cols: Int, rows: Int) async throws {
-        let (stdinStream, continuation) = AsyncStream.makeStream(of: Data.self)
-        self.stdinContinuation = continuation
-
         let ptyRequest = SSHChannelRequestEvent.PseudoTerminalRequest(
             wantReply: true,
             term: "xterm-256color",
@@ -73,36 +77,24 @@ final class SSHTerminalBridge: NSObject, ObservableObject {
 
             await MainActor.run {
                 self.writer = outbound
-                self.isConnected = true
-                self.statusMessage = "Connected"
+                self.updateState(connected: true, status: "Connected")
             }
 
-            // Read SSH output and feed to terminal
-            let outputTask = Task { [weak self] in
-                for try await chunk in inbound {
-                    switch chunk {
-                    case .stdout(let buffer):
-                        let bytes = Array(buffer.readableBytesView)
-                        await MainActor.run {
-                            self?.terminalView?.feed(byteArray: ArraySlice(bytes))
-                        }
-                    case .stderr(let buffer):
-                        let bytes = Array(buffer.readableBytesView)
-                        await MainActor.run {
-                            self?.terminalView?.feed(byteArray: ArraySlice(bytes))
-                        }
+            // Read SSH output and feed to terminal — this keeps the PTY alive
+            for try await chunk in inbound {
+                switch chunk {
+                case .stdout(let buffer):
+                    let bytes = Array(buffer.readableBytesView)
+                    await MainActor.run {
+                        self.terminalView?.feed(byteArray: ArraySlice(bytes))
+                    }
+                case .stderr(let buffer):
+                    let bytes = Array(buffer.readableBytesView)
+                    await MainActor.run {
+                        self.terminalView?.feed(byteArray: ArraySlice(bytes))
                     }
                 }
             }
-
-            // Write terminal input to SSH
-            for await data in stdinStream {
-                guard !Task.isCancelled else { break }
-                let buffer = ByteBuffer(data: data)
-                try await outbound.write(buffer)
-            }
-
-            outputTask.cancel()
         }
     }
 }

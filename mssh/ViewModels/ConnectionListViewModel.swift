@@ -38,10 +38,13 @@ final class ConnectionListViewModel {
             modelContext.insert(target)
         }
 
-        // Save password to keychain if using password auth
+        // Save to SwiftData first so the model is persisted
+        try? modelContext.save()
+
+        // Save password to keychain using stable syncID
         if authType == .password, let password, !password.isEmpty {
             try? KeychainService.savePassword(
-                for: target.persistentModelID.hashValue.description,
+                for: target.syncID,
                 password: password
             )
         }
