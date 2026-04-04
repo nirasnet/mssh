@@ -1,31 +1,59 @@
+#if os(iOS)
 import UIKit
 import SwiftTerm
 
-/// Custom keyboard accessory bar with special keys needed for terminal use on iOS
+/// Custom keyboard accessory bar with terminal-essential keys for iOS.
+/// Designed with minimal dark aesthetic matching the app theme.
 final class TerminalAccessoryBar: UIView {
     weak var terminal: TerminalView?
 
-    private let keys: [(String, [UInt8])] = [
-        ("Esc", [0x1B]),
-        ("Tab", [0x09]),
-        ("Ctrl", []),  // modifier
-        ("|", [0x7C]),
-        ("~", [0x7E]),
-        ("/", [0x2F]),
-        ("-", [0x2D]),
-        ("\u{2190}", [0x1B, 0x5B, 0x44]),  // Left arrow
-        ("\u{2191}", [0x1B, 0x5B, 0x41]),  // Up arrow
-        ("\u{2192}", [0x1B, 0x5B, 0x43]),  // Right arrow
-        ("\u{2193}", [0x1B, 0x5B, 0x42]),  // Down arrow
+    // Key definitions: (label, bytes to send, isSpecial)
+    private struct KeyDef {
+        let label: String
+        let bytes: [UInt8]
+        let isModifier: Bool
+        let icon: String?
+
+        init(_ label: String, _ bytes: [UInt8], isModifier: Bool = false, icon: String? = nil) {
+            self.label = label
+            self.bytes = bytes
+            self.isModifier = isModifier
+            self.icon = icon
+        }
+    }
+
+    private let keyDefs: [KeyDef] = [
+        KeyDef("Esc", [0x1B]),
+        KeyDef("Tab", [0x09]),
+        KeyDef("Ctrl", [], isModifier: true),
+        KeyDef("|", [0x7C]),
+        KeyDef("~", [0x7E]),
+        KeyDef("/", [0x2F]),
+        KeyDef("-", [0x2D]),
+        KeyDef("_", [0x5F]),
+        KeyDef(".", [0x2E]),
+        KeyDef(":", [0x3A]),
+        KeyDef("$", [0x24]),
+        KeyDef("\u{2190}", [0x1B, 0x5B, 0x44]),  // Left
+        KeyDef("\u{2191}", [0x1B, 0x5B, 0x41]),  // Up
+        KeyDef("\u{2193}", [0x1B, 0x5B, 0x42]),  // Down
+        KeyDef("\u{2192}", [0x1B, 0x5B, 0x43]),  // Right
     ]
 
     private var ctrlActive = false
     private var ctrlButton: UIButton?
     private let feedbackGenerator = UIImpactFeedbackGenerator(style: .light)
 
+    // Colors matching AppColors design system
+    private let bgColor = UIColor(red: 0.11, green: 0.11, blue: 0.14, alpha: 1)
+    private let keyColor = UIColor(red: 0.18, green: 0.18, blue: 0.22, alpha: 1)
+    private let keyTextColor = UIColor(red: 0.85, green: 0.85, blue: 0.88, alpha: 1)
+    private let accentColor = UIColor(red: 0.30, green: 0.85, blue: 0.85, alpha: 1)
+    private let borderColor = UIColor.white.withAlphaComponent(0.06)
+
     init(terminal: TerminalView) {
         self.terminal = terminal
-        super.init(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44))
+        super.init(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 46))
         autoresizingMask = .flexibleWidth
         setupAppearance()
         setupKeys()
@@ -37,17 +65,17 @@ final class TerminalAccessoryBar: UIView {
     }
 
     private func setupAppearance() {
-        backgroundColor = UIColor.secondarySystemBackground
-        // Add a subtle top border
-        let separator = UIView()
-        separator.backgroundColor = UIColor.separator
-        separator.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(separator)
+        backgroundColor = bgColor
+
+        let topBorder = UIView()
+        topBorder.backgroundColor = borderColor
+        topBorder.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(topBorder)
         NSLayoutConstraint.activate([
-            separator.topAnchor.constraint(equalTo: topAnchor),
-            separator.leadingAnchor.constraint(equalTo: leadingAnchor),
-            separator.trailingAnchor.constraint(equalTo: trailingAnchor),
-            separator.heightAnchor.constraint(equalToConstant: 0.5),
+            topBorder.topAnchor.constraint(equalTo: topAnchor),
+            topBorder.leadingAnchor.constraint(equalTo: leadingAnchor),
+            topBorder.trailingAnchor.constraint(equalTo: trailingAnchor),
+            topBorder.heightAnchor.constraint(equalToConstant: 0.5),
         ])
     }
 
@@ -57,35 +85,33 @@ final class TerminalAccessoryBar: UIView {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(scrollView)
 
-        // Dismiss keyboard button pinned to right edge
-        let dismissButton = UIButton(type: .system)
-        let dismissConfig = UIImage.SymbolConfiguration(pointSize: 16, weight: .medium)
-        dismissButton.setImage(UIImage(systemName: "chevron.down", withConfiguration: dismissConfig), for: .normal)
-        dismissButton.tintColor = .label
-        dismissButton.translatesAutoresizingMaskIntoConstraints = false
-        dismissButton.addTarget(self, action: #selector(dismissKeyboard), for: .touchUpInside)
-        dismissButton.backgroundColor = UIColor.tertiarySystemBackground
-        dismissButton.layer.cornerRadius = 6
-        dismissButton.widthAnchor.constraint(equalToConstant: 44).isActive = true
+        // Dismiss keyboard button
+        let dismissButton = makeKeyButton(
+            title: nil,
+            icon: "chevron.down",
+            width: 40,
+            action: #selector(dismissKeyboard)
+        )
         addSubview(dismissButton)
 
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: topAnchor),
+            scrollView.topAnchor.constraint(equalTo: topAnchor, constant: 1),
             scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: dismissButton.leadingAnchor, constant: -4),
 
-            dismissButton.topAnchor.constraint(equalTo: topAnchor, constant: 4),
-            dismissButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4),
+            dismissButton.topAnchor.constraint(equalTo: topAnchor, constant: 5),
+            dismissButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5),
             dismissButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -6),
+            dismissButton.widthAnchor.constraint(equalToConstant: 40),
         ])
 
         let stack = UIStackView()
         stack.axis = .horizontal
-        stack.spacing = 6
+        stack.spacing = 5
         stack.alignment = .center
         stack.translatesAutoresizingMaskIntoConstraints = false
-        stack.layoutMargins = UIEdgeInsets(top: 4, left: 8, bottom: 4, right: 8)
+        stack.layoutMargins = UIEdgeInsets(top: 5, left: 6, bottom: 5, right: 6)
         stack.isLayoutMarginsRelativeArrangement = true
         scrollView.addSubview(stack)
 
@@ -97,27 +123,61 @@ final class TerminalAccessoryBar: UIView {
             stack.heightAnchor.constraint(equalTo: scrollView.heightAnchor),
         ])
 
-        for (index, key) in keys.enumerated() {
+        for (index, keyDef) in keyDefs.enumerated() {
+            let isArrow = keyDef.label.unicodeScalars.first.map { $0.value >= 0x2190 && $0.value <= 0x2193 } ?? false
+            let minWidth: CGFloat = isArrow ? 36 : (keyDef.label.count > 2 ? 44 : 34)
+
             let button = UIButton(type: .system)
-            button.setTitle(key.0, for: .normal)
-            button.titleLabel?.font = .systemFont(ofSize: 15, weight: .medium)
-            button.tintColor = .label
+            button.setTitle(keyDef.label, for: .normal)
+
+            if keyDef.isModifier {
+                button.titleLabel?.font = .systemFont(ofSize: 12, weight: .bold)
+            } else if isArrow {
+                button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+            } else {
+                button.titleLabel?.font = .monospacedSystemFont(ofSize: 14, weight: .medium)
+            }
+
+            button.tintColor = keyTextColor
             button.tag = index
             button.addTarget(self, action: #selector(keyTapped(_:)), for: .touchUpInside)
-            button.backgroundColor = UIColor.tertiarySystemBackground
-            button.layer.cornerRadius = 6
-            button.layer.shadowColor = UIColor.black.cgColor
-            button.layer.shadowOffset = CGSize(width: 0, height: 1)
-            button.layer.shadowRadius = 0.5
-            button.layer.shadowOpacity = 0.15
-            button.contentEdgeInsets = UIEdgeInsets(top: 6, left: 12, bottom: 6, right: 12)
+            button.backgroundColor = keyColor
+            button.layer.cornerRadius = 5
+            button.layer.borderWidth = 0.5
+            button.layer.borderColor = borderColor.cgColor
 
-            if key.0 == "Ctrl" {
+            let widthConstraint = button.widthAnchor.constraint(greaterThanOrEqualToConstant: minWidth)
+            widthConstraint.isActive = true
+            var btnConfig = UIButton.Configuration.plain()
+            btnConfig.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 8, bottom: 0, trailing: 8)
+            button.configuration = btnConfig
+
+            if keyDef.isModifier {
                 ctrlButton = button
             }
 
             stack.addArrangedSubview(button)
         }
+    }
+
+    private func makeKeyButton(title: String?, icon: String?, width: CGFloat, action: Selector) -> UIButton {
+        let button = UIButton(type: .system)
+        if let title = title {
+            button.setTitle(title, for: .normal)
+            button.titleLabel?.font = .monospacedSystemFont(ofSize: 14, weight: .medium)
+        }
+        if let icon = icon {
+            let config = UIImage.SymbolConfiguration(pointSize: 13, weight: .semibold)
+            button.setImage(UIImage(systemName: icon, withConfiguration: config), for: .normal)
+        }
+        button.tintColor = keyTextColor
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: action, for: .touchUpInside)
+        button.backgroundColor = keyColor
+        button.layer.cornerRadius = 5
+        button.layer.borderWidth = 0.5
+        button.layer.borderColor = borderColor.cgColor
+        return button
     }
 
     @objc private func dismissKeyboard() {
@@ -129,43 +189,52 @@ final class TerminalAccessoryBar: UIView {
         feedbackGenerator.impactOccurred()
 
         let index = sender.tag
-        let key = keys[index]
+        let keyDef = keyDefs[index]
 
-        if key.0 == "Ctrl" {
+        if keyDef.isModifier {
             ctrlActive.toggle()
-            UIView.animate(withDuration: 0.15) {
+            UIView.animate(withDuration: 0.12) {
                 self.ctrlButton?.backgroundColor = self.ctrlActive
-                    ? UIColor.systemBlue.withAlphaComponent(0.3)
-                    : UIColor.tertiarySystemBackground
-                self.ctrlButton?.tintColor = self.ctrlActive ? .systemBlue : .label
+                    ? self.accentColor.withAlphaComponent(0.25)
+                    : self.keyColor
+                self.ctrlButton?.tintColor = self.ctrlActive ? self.accentColor : self.keyTextColor
+                self.ctrlButton?.layer.borderColor = self.ctrlActive
+                    ? self.accentColor.withAlphaComponent(0.5).cgColor
+                    : self.borderColor.cgColor
             }
             return
         }
 
-        if ctrlActive && key.1.count == 1 {
-            // Send Ctrl+key: for printable ASCII, Ctrl version is (char & 0x1F)
-            let ctrlByte = key.1[0] & 0x1F
-            terminal?.terminalDelegate?.send(source: terminal!, data: ArraySlice([ctrlByte]))
-            ctrlActive = false
-            UIView.animate(withDuration: 0.15) {
-                self.ctrlButton?.backgroundColor = UIColor.tertiarySystemBackground
-                self.ctrlButton?.tintColor = .label
-            }
+        guard let terminal else { return }
+
+        if ctrlActive && keyDef.bytes.count == 1 {
+            let ctrlByte = keyDef.bytes[0] & 0x1F
+            terminal.terminalDelegate?.send(source: terminal, data: ArraySlice([ctrlByte]))
+            deactivateCtrl()
         } else {
-            // Send the raw bytes through the delegate
-            let data = ArraySlice(key.1)
-            if let terminalView = terminal {
-                terminalView.terminalDelegate?.send(source: terminalView, data: data)
-            }
+            terminal.terminalDelegate?.send(source: terminal, data: ArraySlice(keyDef.bytes))
         }
 
-        // Brief press animation
-        UIView.animate(withDuration: 0.08, animations: {
-            sender.transform = CGAffineTransform(scaleX: 0.92, y: 0.92)
+        // Subtle press animation
+        UIView.animate(withDuration: 0.06, animations: {
+            sender.transform = CGAffineTransform(scaleX: 0.93, y: 0.93)
+            sender.alpha = 0.7
         }) { _ in
-            UIView.animate(withDuration: 0.08) {
+            UIView.animate(withDuration: 0.06) {
                 sender.transform = .identity
+                sender.alpha = 1.0
             }
         }
     }
+
+    private func deactivateCtrl() {
+        ctrlActive = false
+        UIView.animate(withDuration: 0.12) {
+            self.ctrlButton?.backgroundColor = self.keyColor
+            self.ctrlButton?.tintColor = self.keyTextColor
+            self.ctrlButton?.layer.borderColor = self.borderColor.cgColor
+        }
+    }
 }
+
+#endif

@@ -41,9 +41,15 @@ final class ConnectionListViewModel {
         // Save to SwiftData first so the model is persisted
         try? modelContext.save()
 
-        // Save password to keychain using stable syncID
+        // Save password to both device-only and iCloud Keychain
         if authType == .password, let password, !password.isEmpty {
+            // Device-only (backwards compatible, always works)
             try? KeychainService.savePassword(
+                for: target.syncID,
+                password: password
+            )
+            // iCloud Keychain (syncs across devices)
+            try? KeychainService.savePasswordSyncable(
                 for: target.syncID,
                 password: password
             )

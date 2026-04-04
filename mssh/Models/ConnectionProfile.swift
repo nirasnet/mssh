@@ -1,6 +1,10 @@
 import Foundation
 import SwiftData
+#if os(iOS)
 import UIKit
+#elseif os(macOS)
+import AppKit
+#endif
 
 @Model
 final class ConnectionProfile {

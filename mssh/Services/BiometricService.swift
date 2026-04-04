@@ -9,7 +9,11 @@ enum BiometricType {
 
 enum BiometricService {
     private static var hasFaceIDUsageDescription: Bool {
-        Bundle.main.object(forInfoDictionaryKey: "NSFaceIDUsageDescription") != nil
+        #if os(macOS)
+        return true
+        #else
+        return Bundle.main.object(forInfoDictionaryKey: "NSFaceIDUsageDescription") != nil
+        #endif
     }
 
     static func biometricType() -> BiometricType {

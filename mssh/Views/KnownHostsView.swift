@@ -10,40 +10,49 @@ struct KnownHostsView: View {
     @State private var hostToDelete: KnownHost?
 
     var body: some View {
-        List {
+        Group {
             if knownHosts.isEmpty {
-                ContentUnavailableView(
-                    "No Known Hosts",
-                    systemImage: "server.rack",
-                    description: Text("Host keys will appear here after your first connection to a server.")
-                )
+                VStack(spacing: AppSpacing.md) {
+                    Spacer()
+                    Image(systemName: "server.rack")
+                        .font(.system(size: 36))
+                        .foregroundStyle(AppColors.textTertiary)
+                    Text("No Known Hosts")
+                        .font(AppFonts.subheading)
+                        .foregroundStyle(AppColors.textSecondary)
+                    Text("Host keys appear after your first connection")
+                        .font(.caption)
+                        .foregroundStyle(AppColors.textTertiary)
+                    Spacer()
+                }
             } else {
-                ForEach(knownHosts) { host in
-                    KnownHostRow(host: host)
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            selectedHost = host
-                        }
-                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                            Button(role: .destructive) {
-                                hostToDelete = host
-                                showDeleteConfirmation = true
+                ScrollView {
+                    VStack(spacing: AppSpacing.sm) {
+                        ForEach(knownHosts) { host in
+                            Button {
+                                selectedHost = host
                             } label: {
-                                Label("Delete", systemImage: "trash")
+                                KnownHostRow(host: host)
+                            }
+                            .buttonStyle(.plain)
+                            .contextMenu {
+                                Button(role: .destructive) {
+                                    hostToDelete = host
+                                    showDeleteConfirmation = true
+                                } label: {
+                                    Label("Remove", systemImage: "trash")
+                                }
                             }
                         }
+                    }
+                    .padding(.horizontal, AppSpacing.lg)
+                    .padding(.top, AppSpacing.sm)
                 }
             }
         }
+        .background(AppColors.background)
         .navigationTitle("Known Hosts")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                if !knownHosts.isEmpty {
-                    EditButton()
-                }
-            }
-        }
+        .iOSOnlyNavigationBarTitleDisplayMode()
         .sheet(item: $selectedHost) { host in
             KnownHostDetailView(host: host)
         }
@@ -56,7 +65,7 @@ struct KnownHostsView: View {
                 deleteHost(host)
             }
         } message: { host in
-            Text("Remove the trusted key for \(host.host):\(host.port)? You will be prompted to verify the key on the next connection.")
+            Text("Remove the trusted key for \(host.host):\(host.port)? You'll be prompted to verify on next connection.")
         }
     }
 
@@ -73,32 +82,40 @@ private struct KnownHostRow: View {
     let host: KnownHost
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: AppSpacing.xs) {
             HStack {
                 Text(host.host)
-                    .font(.body.bold())
+                    .font(.system(.subheadline, design: .monospaced).weight(.medium))
+                    .foregroundStyle(AppColors.textPrimary)
                 if host.port != 22 {
                     Text(":\(host.port)")
-                        .font(.body)
-                        .foregroundStyle(.secondary)
+                        .font(.system(.subheadline, design: .monospaced))
+                        .foregroundStyle(AppColors.textSecondary)
                 }
                 Spacer()
                 Text(host.keyTypeDescription)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
-                    .background(.quaternary)
+                    .font(.system(size: 10, weight: .bold, design: .monospaced))
+                    .foregroundStyle(AppColors.accent)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(AppColors.accentDim)
                     .clipShape(Capsule())
             }
 
             Text(host.fingerprintSHA256)
-                .font(.system(.caption2, design: .monospaced))
-                .foregroundStyle(.secondary)
+                .font(AppFonts.monoCaption)
+                .foregroundStyle(AppColors.textTertiary)
                 .lineLimit(1)
                 .truncationMode(.middle)
+
+            HStack(spacing: AppSpacing.md) {
+                Text("First: \(host.firstSeenAt.formatted(.relative(presentation: .named)))")
+                Text("Last: \(host.lastSeenAt.formatted(.relative(presentation: .named)))")
+            }
+            .font(.system(size: 10))
+            .foregroundStyle(AppColors.textTertiary)
         }
-        .padding(.vertical, 2)
+        .appCard()
     }
 }
 
@@ -110,7 +127,7 @@ private struct KnownHostDetailView: View {
 
     var body: some View {
         NavigationStack {
-            List {
+            Form {
                 Section("Connection") {
                     LabeledContent("Host", value: host.host)
                     LabeledContent("Port", value: "\(host.port)")
@@ -121,9 +138,10 @@ private struct KnownHostDetailView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Fingerprint")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(AppColors.textSecondary)
                         Text(host.fingerprintSHA256)
                             .font(.system(.body, design: .monospaced))
+                            .foregroundStyle(AppColors.textPrimary)
                             .textSelection(.enabled)
                     }
                 }
@@ -137,13 +155,17 @@ private struct KnownHostDetailView: View {
                     }
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(AppColors.background)
             .navigationTitle("Host Details")
-            .navigationBarTitleDisplayMode(.inline)
+            .iOSOnlyNavigationBarTitleDisplayMode()
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
+                        .fontWeight(.medium)
                 }
             }
         }
+        .appTheme()
     }
 }

@@ -38,7 +38,7 @@ struct SSHConfigImportView: View {
                 }
             }
             .navigationTitle("Import SSH Config")
-            .navigationBarTitleDisplayMode(.inline)
+            .iOSOnlyNavigationBarTitleDisplayMode()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
@@ -53,6 +53,7 @@ struct SSHConfigImportView: View {
                     }
                 }
             }
+            #if os(iOS)
             .fileImporter(
                 isPresented: $showFilePicker,
                 allowedContentTypes: [.plainText, .data, .item],
@@ -60,6 +61,10 @@ struct SSHConfigImportView: View {
             ) { result in
                 handleFilePickerResult(result)
             }
+            .sheet(isPresented: $showPasteOption) {
+                pasteConfigSheet
+            }
+            #endif
             .alert("Import Complete", isPresented: $showResult) {
                 Button("Done") { dismiss() }
             } message: {
@@ -73,11 +78,37 @@ struct SSHConfigImportView: View {
             } message: {
                 Text(errorMessage ?? "")
             }
-            .sheet(isPresented: $showPasteOption) {
-                pasteConfigSheet
-            }
         }
+        #if os(macOS)
+        .frame(minWidth: 500, minHeight: 400)
+        .onAppear { macOpenFilePicker() }
+        #endif
     }
+
+    #if os(macOS)
+    private func macOpenFilePicker() {
+        let panel = NSOpenPanel()
+        panel.title = "Select SSH Config"
+        panel.message = "Choose your ~/.ssh/config file"
+        panel.allowedContentTypes = [.plainText, .data, .item]
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        panel.directoryURL = FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent(".ssh")
+
+        guard panel.runModal() == .OK, let url = panel.url else {
+            dismiss()
+            return
+        }
+
+        guard let data = try? Data(contentsOf: url),
+              let text = String(data: data, encoding: .utf8) else {
+            errorMessage = "Could not read the file."
+            return
+        }
+        parseConfig(text)
+    }
+    #endif
 
     // MARK: - Source Selection
 
@@ -85,7 +116,11 @@ struct SSHConfigImportView: View {
         List {
             Section {
                 Button {
+                    #if os(macOS)
+                    macOpenFilePicker()
+                    #else
                     showFilePicker = true
+                    #endif
                 } label: {
                     Label {
                         VStack(alignment: .leading, spacing: 2) {
@@ -166,7 +201,7 @@ struct SSHConfigImportView: View {
                 }
             }
             .navigationTitle("Paste Config")
-            .navigationBarTitleDisplayMode(.inline)
+            .iOSOnlyNavigationBarTitleDisplayMode()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { showPasteOption = false }
@@ -180,7 +215,11 @@ struct SSHConfigImportView: View {
                 }
             }
         }
+        #if os(iOS)
         .presentationDetents([.large])
+        #else
+        .frame(minWidth: 500, minHeight: 400)
+        #endif
     }
 
     // MARK: - Preview
@@ -351,6 +390,7 @@ struct SSHConfigImportView: View {
             importedCount += 1
         }
 
+        try? modelContext.save()
         showResult = true
     }
 }

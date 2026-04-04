@@ -79,7 +79,7 @@ struct MacSetupGuideView: View {
                 .padding()
             }
             .navigationTitle("Mac Setup Guide")
-            .navigationBarTitleDisplayMode(.inline)
+            .iOSOnlyNavigationBarTitleDisplayMode()
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
@@ -267,7 +267,7 @@ private struct CommandBlock: View {
             Spacer()
 
             Button {
-                UIPasteboard.general.string = command
+                AppClipboard.copy(command)
                 withAnimation {
                     copied = true
                 }
@@ -282,7 +282,11 @@ private struct CommandBlock: View {
             .buttonStyle(.plain)
         }
         .padding(10)
+        #if os(iOS)
         .background(Color(.systemGray6))
+        #else
+        .background(Color.gray.opacity(0.15))
+        #endif
         .cornerRadius(8)
     }
 }

@@ -93,7 +93,7 @@ struct KeyImportWizardView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             .navigationTitle("Import SSH Keys")
-            .navigationBarTitleDisplayMode(.inline)
+            .iOSOnlyNavigationBarTitleDisplayMode()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
@@ -276,7 +276,9 @@ struct KeyImportWizardView: View {
                                         }
                                     }
                                 }
+                                #if os(iOS)
                                 .toggleStyle(.checkbox)
+                                #endif
                             }
                             .padding(.vertical, 2)
                         }
@@ -296,7 +298,7 @@ struct KeyImportWizardView: View {
                                     .foregroundStyle(.secondary)
                                     .frame(width: 100, alignment: .leading)
                                 TextField("Label", text: $selection.label)
-                                    .textInputAutocapitalization(.never)
+                                    .iOSOnlyTextInputAutocapitalization()
                             }
                         }
                     } header: {
@@ -390,7 +392,7 @@ struct KeyImportWizardView: View {
     }
 
     private func handleClipboard() {
-        guard let text = UIPasteboard.general.string, !text.isEmpty else {
+        guard let text = AppClipboard.paste(), !text.isEmpty else {
             errorMessage = "The clipboard is empty or does not contain text."
             return
         }

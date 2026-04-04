@@ -34,75 +34,80 @@ struct ConnectionFormView: View {
         !host.isEmpty && !username.isEmpty && parsedPort != nil
     }
 
-    private var selectedKeyName: String {
-        guard let keyID = selectedKeyID else { return "None" }
-        if let key = keys.first(where: { $0.keychainID == keyID }) {
-            return "\(key.label) (\(key.keyType))"
-        }
-        return "Unknown Key"
-    }
-
     var body: some View {
         NavigationStack {
             Form {
-                Section("Server") {
-                    TextField("Label (auto-filled if empty)", text: $label)
-                        .textInputAutocapitalization(.never)
-                    TextField("Host", text: $host)
-                        .textInputAutocapitalization(.never)
-                        .keyboardType(.URL)
-                        .onChange(of: host) { updateAutoLabel() }
+                // Server section
+                Section {
+                    formField("Label", text: $label, placeholder: "My Server", autocap: false)
+                    #if os(iOS)
+                    formField("Host", text: $host, placeholder: "192.168.1.1 or host.com", keyboard: UIKeyboardType.URL, autocap: false)
+                    #else
+                    formField("Host", text: $host, placeholder: "192.168.1.1 or host.com", autocap: false)
+                    #endif
                     HStack {
-                        TextField("Port", text: $port)
-                            .keyboardType(.numberPad)
-                            .onChange(of: port) {
-                                validatePort()
-                            }
+                        #if os(iOS)
+                        formField("Port", text: $port, placeholder: "22", keyboard: UIKeyboardType.numberPad)
+                            .onChange(of: port) { validatePort() }
+                        #else
+                        formField("Port", text: $port, placeholder: "22")
+                            .onChange(of: port) { validatePort() }
+                        #endif
                         if let error = portValidationError {
                             Text(error)
-                                .font(.caption2)
-                                .foregroundStyle(.red)
+                                .font(AppFonts.monoCaption)
+                                .foregroundStyle(AppColors.error)
                         }
                     }
-                    TextField("Username", text: $username)
-                        .textInputAutocapitalization(.never)
-                        .onChange(of: username) { updateAutoLabel() }
+                    formField("Username", text: $username, placeholder: "root", autocap: false)
+                } header: {
+                    Text("Server")
                 }
 
-                Section("Authentication") {
+                // Authentication section
+                Section {
                     Picker("Method", selection: $authType) {
-                        Text("Password").tag(AuthenticationType.password)
-                        Text("SSH Key").tag(AuthenticationType.key)
+                        Label("Password", systemImage: "lock.fill")
+                            .tag(AuthenticationType.password)
+                        Label("SSH Key", systemImage: "key.fill")
+                            .tag(AuthenticationType.key)
                     }
+                    .pickerStyle(.segmented)
 
                     if authType == .password {
                         SecureField("Password", text: $password)
+                            .font(.system(.body, design: .monospaced))
                     } else {
                         Picker("Key", selection: $selectedKeyID) {
-                            Text("None").tag(String?.none)
+                            Text("Select a key...").tag(String?.none)
                             ForEach(keys) { key in
-                                Text("\(key.label) (\(key.keyType))")
-                                    .tag(Optional(key.keychainID))
+                                HStack {
+                                    Text(key.label)
+                                    Text("(\(key.keyType))")
+                                        .foregroundStyle(.secondary)
+                                }
+                                .tag(Optional(key.keychainID))
                             }
                         }
-                        if let keyID = selectedKeyID, keys.contains(where: { $0.keychainID == keyID }) {
-                            HStack {
-                                Image(systemName: "key.fill")
-                                    .foregroundStyle(.secondary)
-                                    .font(.caption)
-                                Text(selectedKeyName)
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
+
                         if keys.isEmpty {
-                            NavigationLink("Manage Keys") {
+                            NavigationLink {
                                 KeyManagerView()
+                            } label: {
+                                HStack {
+                                    Image(systemName: "key.fill")
+                                        .foregroundStyle(AppColors.accent)
+                                    Text("Manage SSH Keys")
+                                        .foregroundStyle(AppColors.accent)
+                                }
                             }
                         }
                     }
+                } header: {
+                    Text("Authentication")
                 }
 
+                // Test connection
                 Section {
                     Button {
                         testConnection()
@@ -111,16 +116,18 @@ struct ConnectionFormView: View {
                             if isTestingConnection {
                                 ProgressView()
                                     .controlSize(.small)
+                                    .tint(AppColors.accent)
                                 Text("Testing...")
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(AppColors.textSecondary)
                             } else {
                                 Image(systemName: "antenna.radiowaves.left.and.right")
+                                    .foregroundStyle(AppColors.accent)
                                 Text("Test Connection")
                             }
                             Spacer()
                             if let result = testResult {
                                 Image(systemName: result.success ? "checkmark.circle.fill" : "xmark.circle.fill")
-                                    .foregroundStyle(result.success ? .green : .red)
+                                    .foregroundStyle(result.success ? AppColors.connected : AppColors.error)
                             }
                         }
                     }
@@ -128,31 +135,39 @@ struct ConnectionFormView: View {
 
                     if let result = testResult {
                         Text(result.message)
-                            .font(.caption)
-                            .foregroundStyle(result.success ? .green : .red)
+                            .font(AppFonts.monoCaption)
+                            .foregroundStyle(result.success ? AppColors.connected : AppColors.error)
                     }
                 }
 
-                if !label.isEmpty || (!host.isEmpty && !username.isEmpty) {
+                // Preview
+                if !host.isEmpty && !username.isEmpty {
                     Section("Preview") {
                         let effectiveLabel = label.isEmpty ? "\(username)@\(host)" : label
-                        HStack {
+                        HStack(spacing: AppSpacing.md) {
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                    .fill(AppColors.accentDim)
+                                    .frame(width: 36, height: 36)
+                                Image(systemName: "server.rack")
+                                    .font(.system(size: 14))
+                                    .foregroundStyle(AppColors.accent)
+                            }
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(effectiveLabel)
-                                    .font(.headline)
+                                    .font(.system(.subheadline, design: .monospaced).weight(.medium))
                                 Text("\(username)@\(host):\(port)")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    .font(AppFonts.monoCaption)
+                                    .foregroundStyle(AppColors.textSecondary)
                             }
-                            Spacer()
-                            Image(systemName: "server.rack")
-                                .foregroundStyle(.secondary)
                         }
                     }
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(AppColors.background)
             .navigationTitle(existingProfile == nil ? "New Connection" : "Edit Connection")
-            .navigationBarTitleDisplayMode(.inline)
+            .iOSOnlyNavigationBarTitleDisplayMode()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
@@ -162,6 +177,7 @@ struct ConnectionFormView: View {
                         save()
                         dismiss()
                     }
+                    .fontWeight(.semibold)
                     .disabled(!isFormValid)
                 }
             }
@@ -176,6 +192,17 @@ struct ConnectionFormView: View {
                 }
             }
         }
+        .appTheme()
+    }
+
+    // MARK: - Helpers
+
+    private func formField(_ title: String, text: Binding<String>, placeholder: String = "", keyboard: Any? = nil, autocap: Bool = true) -> some View {
+        TextField(title, text: text, prompt: Text(placeholder).foregroundStyle(AppColors.textTertiary))
+            .font(.system(.body, design: .monospaced))
+            .iOSOnlyTextInputAutocapitalization(autocap)
+            .autocorrectionDisabled()
+            .iOSOnlyKeyboardType(keyboard)
     }
 
     private func validatePort() {
@@ -184,23 +211,9 @@ struct ConnectionFormView: View {
             return
         }
         if let p = Int(port) {
-            if p < 1 || p > 65535 {
-                portValidationError = "1-65535"
-            } else {
-                portValidationError = nil
-            }
+            portValidationError = (p < 1 || p > 65535) ? "1-65535" : nil
         } else {
             portValidationError = "Invalid"
-        }
-    }
-
-    private func updateAutoLabel() {
-        // Only auto-fill if the user has not manually entered a label
-        // We detect this by checking if the label matches the auto-generated pattern
-        // or is empty
-        let autoPattern = "\(username)@\(host)"
-        if label.isEmpty || label == autoPattern {
-            // Don't set it yet - it will be applied on save
         }
     }
 
@@ -211,13 +224,11 @@ struct ConnectionFormView: View {
 
         Task {
             do {
-                let connection = try await withThrowingTaskGroup(of: Bool.self) { group in
+                let _ = try await withThrowingTaskGroup(of: Bool.self) { group in
                     group.addTask {
-                        // Try a basic TCP connection to the host:port
-                        let stream = try await URLSession.shared.bytes(
+                        let _ = try await URLSession.shared.bytes(
                             from: URL(string: "http://\(host):\(portInt)")!
                         )
-                        // If we get here, port is reachable (though HTTP will fail, that's fine)
                         return true
                     }
                     group.addTask {
@@ -230,20 +241,19 @@ struct ConnectionFormView: View {
                 }
                 testResult = ConnectionTestResult(
                     success: true,
-                    message: "Host \(host):\(portInt) is reachable"
+                    message: "\(host):\(portInt) reachable"
                 )
             } catch {
-                // Even a connection refused means the host exists
                 let errorDesc = error.localizedDescription.lowercased()
                 if errorDesc.contains("refused") || errorDesc.contains("reset") {
                     testResult = ConnectionTestResult(
                         success: true,
-                        message: "Host \(host):\(portInt) is reachable (port responded)"
+                        message: "\(host):\(portInt) reachable (port responded)"
                     )
                 } else {
                     testResult = ConnectionTestResult(
                         success: false,
-                        message: "Cannot reach \(host):\(portInt) - \(error.localizedDescription)"
+                        message: "Cannot reach \(host):\(portInt)"
                     )
                 }
             }

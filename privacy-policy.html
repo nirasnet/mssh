@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - mSSH</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #0a0e27;
+            color: #e0e0e0;
+            line-height: 1.8;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #1e2847;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .meta {
+            font-size: 14px;
+            color: #a0a0a0;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin: 30px 0 20px 0;
+            color: #ffffff;
+        }
+
+        h2 {
+            font-size: 22px;
+            margin: 40px 0 20px 0;
+            color: #00d4ff;
+            display: flex;
+            align-items: center;
+        }
+
+        h2::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            background: #00d4ff;
+            border-radius: 50%;
+            margin-right: 12px;
+        }
+
+        h3 {
+            font-size: 18px;
+            margin: 25px 0 15px 0;
+            color: #e0e0e0;
+        }
+
+        p {
+            margin: 15px 0;
+            color: #b0b0b0;
+        }
+
+        ul, ol {
+            margin: 15px 0 15px 30px;
+        }
+
+        li {
+            margin: 10px 0;
+            color: #b0b0b0;
+        }
+
+        strong {
+            color: #ffffff;
+        }
+
+        .highlight-box {
+            background: rgba(0, 212, 255, 0.05);
+            border-left: 4px solid #00d4ff;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 4px;
+        }
+
+        .highlight-box h3 {
+            margin-top: 0;
+            color: #00d4ff;
+        }
+
+        .feature-list {
+            display: grid;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .feature-item {
+            background: rgba(30, 40, 71, 0.5);
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 3px solid #0099ff;
+        }
+
+        .feature-item strong {
+            display: block;
+            color: #00d4ff;
+            margin-bottom: 5px;
+        }
+
+        .section {
+            margin: 30px 0;
+        }
+
+        .contact-section {
+            background: rgba(0, 212, 255, 0.08);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            padding: 30px;
+            border-radius: 6px;
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        .contact-section h2 {
+            justify-content: center;
+            margin-top: 0;
+        }
+
+        a {
+            color: #00d4ff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #00ffff;
+            text-decoration: underline;
+        }
+
+        .toc {
+            background: rgba(30, 40, 71, 0.3);
+            padding: 25px;
+            border-radius: 6px;
+            margin: 30px 0;
+        }
+
+        .toc h3 {
+            margin-top: 0;
+            color: #00d4ff;
+        }
+
+        .toc ol {
+            margin-left: 20px;
+        }
+
+        .toc li {
+            margin: 8px 0;
+        }
+
+        .toc a {
+            color: #0099ff;
+        }
+
+        footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #1e2847;
+            text-align: center;
+            font-size: 13px;
+            color: #606080;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(0, 212, 255, 0.1);
+            color: #00d4ff;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin: 5px 5px 5px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            h2 {
+                font-size: 18px;
+            }
+
+            .contact-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">mSSH</div>
+            <p class="meta">Privacy Policy</p>
+        </header>
+
+        <p style="font-size: 16px; margin-bottom: 30px;"><strong>Effective Date:</strong> April 1, 2026</p>
+
+        <p style="font-size: 15px; color: #a0a0a0; margin-bottom: 30px;">
+            This Privacy Policy explains how <strong>mSSH</strong> (the "App"), developed by <strong>m4ck</strong>, collects, uses, and protects your information when you use our iOS SSH terminal application.
+        </p>
+
+        <div class="toc">
+            <h3>Quick Links</h3>
+            <ol>
+                <li><a href="#data-collection">Data We Collect</a></li>
+                <li><a href="#data-usage">How We Use Data</a></li>
+                <li><a href="#data-storage">Data Storage & Security</a></li>
+                <li><a href="#third-parties">Third-Party Sharing</a></li>
+                <li><a href="#icloud">iCloud Sync</a></li>
+                <li><a href="#gdpr-ccpa">GDPR & CCPA</a></li>
+                <li><a href="#contact">Contact Us</a></li>
+            </ol>
+        </div>
+
+        <h1>Privacy Policy</h1>
+
+        <div class="highlight-box">
+            <h3>Our Commitment</h3>
+            <p>We believe your privacy is fundamental. mSSH is designed with privacy-first principles: we do not collect analytics, do not track your activity, do not use third-party SDKs for data collection, and do not share your data with anyone.</p>
+        </div>
+
+        <section class="section" id="data-collection">
+            <h2>1. Data We Collect</h2>
+
+            <h3>Information You Provide</h3>
+            <p>When you add SSH connection profiles to mSSH, you provide:</p>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <strong>Connection Details</strong>
+                    Host address, port number, and username for SSH servers you connect to
+                </div>
+                <div class="feature-item">
+                    <strong>Authentication Credentials</strong>
+                    SSH passwords and private keys (optional, for authentication)
+                </div>
+                <div class="feature-item">
+                    <strong>Connection Profiles</strong>
+                    Named profiles you create to organize and manage your SSH connections
+                </div>
+            </div>
+
+            <h3>Automatically Collected Information</h3>
+            <p><strong>Device-level biometric data:</strong> If you enable Face ID for app lock, iOS's Face ID framework processes your biometric data. This data never leaves your device and is managed entirely by iOS.</p>
+
+            <p><strong>Host key fingerprints:</strong> When you connect to SSH servers, the server's host key is stored locally on your device for security verification (Trust On First Use).</p>
+
+            <h3>What We Do NOT Collect</h3>
+            <ul>
+                <li>Analytics or usage data</li>
+                <li>Tracking information or user identifiers</li>
+                <li>Device information (UDID, Apple ID, etc.)</li>
+                <li>Location data</li>
+                <li>Browsing history or app activity logs</li>
+                <li>Personal identifiers beyond what you explicitly enter</li>
+                <li>Contents of SSH terminals or command history</li>
+            </ul>
+        </section>
+
+        <section class="section" id="data-usage">
+            <h2>2. How We Use Your Data</h2>
+
+            <h3>Primary Purpose</h3>
+            <p>All data you provide is used <strong>solely</strong> to enable the core functionality of mSSH:</p>
+            <ul>
+                <li>Establishing SSH connections to remote servers</li>
+                <li>Storing connection profiles for your convenience</li>
+                <li>Verifying server authenticity via host key validation</li>
+                <li>Providing biometric app lock via Face ID</li>
+            </ul>
+
+            <h3>No Secondary Uses</h3>
+            <p>We do not use your data for:</p>
+            <ul>
+                <li>Marketing or promotional purposes</li>
+                <li>Building user profiles or analytics</li>
+                <li>Improving algorithms or machine learning</li>
+                <li>Selling, renting, or sharing with third parties</li>
+                <li>Any purpose beyond providing the App functionality</li>
+            </ul>
+        </section>
+
+        <section class="section" id="data-storage">
+            <h2>3. Data Storage & Security</h2>
+
+            <h3>Local Device Storage</h3>
+            <p>All your data is stored <strong>exclusively</strong> on your iOS device using Apple's native frameworks:</p>
+
+            <div class="feature-list">
+                <div class="feature-item">
+                    <strong>Connection Profiles (Host, Port, Username)</strong>
+                    Stored in SwiftData, a local database encrypted by iOS file system
+                </div>
+                <div class="feature-item">
+                    <strong>SSH Passwords & Private Keys</strong>
+                    Stored in iOS Keychain with device-only protection
+                </div>
+                <div class="feature-item">
+                    <strong>Known Host Keys</strong>
+                    Stored in iOS Keychain and local SwiftData database
+                </div>
+                <div class="feature-item">
+                    <strong>Face ID Data</strong>
+                    Managed by iOS's secure enclave; never accessible to mSSH
+                </div>
+            </div>
+
+            <h3>Encryption Standards</h3>
+            <ul>
+                <li><strong>In Transit:</strong> All SSH connections use standard SSH2 protocol with end-to-end encryption. Data is encrypted from your device to the remote server.</li>
+                <li><strong>At Rest:</strong> Sensitive credentials are protected by iOS Keychain's `kSecAttrAccessibleWhenUnlockedThisDeviceOnly` policy—they are only accessible when the device is unlocked.</li>
+                <li><strong>Device Storage:</strong> iOS encrypts all app data using FileVault and device-level encryption.</li>
+            </ul>
+
+            <h3>No Server-Side Storage</h3>
+            <p>mSSH does not maintain any servers, databases, or cloud infrastructure (except optional iCloud sync—see below). Your data is yours alone.</p>
+        </section>
+
+        <section class="section" id="icloud">
+            <h2>4. iCloud Sync (Optional)</h2>
+
+            <h3>Enabling iCloud Sync</h3>
+            <p>mSSH offers optional iCloud synchronization for your connection profiles. This feature is <strong>disabled by default</strong>.</p>
+
+            <h3>What Gets Synced</h3>
+            <p><strong>Connection profiles only:</strong></p>
+            <ul>
+                <li>Host address, port, and username</li>
+            </ul>
+
+            <h3>What Does NOT Get Synced</h3>
+            <p><strong>Never shared with iCloud:</strong></p>
+            <ul>
+                <li>SSH passwords</li>
+                <li>Private SSH keys</li>
+                <li>Keychain credentials</li>
+                <li>Any sensitive authentication data</li>
+            </ul>
+
+            <h3>CloudKit Privacy</h3>
+            <p>iCloud sync uses Apple CloudKit with the following settings:</p>
+            <ul>
+                <li>CloudKit database is configured with `cloudKitDatabase: .none` to exclude sensitive profiles if desired</li>
+                <li>Your iCloud account is the only entity with access to your synced data</li>
+                <li>Apple's privacy commitments apply: <a href="https://www.apple.com/privacy/" target="_blank">apple.com/privacy</a></li>
+            </ul>
+
+            <h3>Disabling iCloud Sync</h3>
+            <p>You can disable iCloud sync at any time in the App settings. Disabling sync does not delete data from your device.</p>
+        </section>
+
+        <section class="section" id="third-parties">
+            <h2>5. Third-Party Sharing</h2>
+
+            <h3>We Do Not Share Your Data</h3>
+            <p>mSSH does not sell, rent, trade, or share any of your personal data with third parties, including:</p>
+            <ul>
+                <li>Analytics providers</li>
+                <li>Advertising networks</li>
+                <li>Data brokers</li>
+                <li>Marketing companies</li>
+                <li>Service providers or contractors</li>
+            </ul>
+
+            <h3>No Third-Party SDKs</h3>
+            <p>mSSH does not integrate any third-party SDKs for analytics, tracking, or data collection. The App uses only open-source libraries for SSH protocol support (Citadel) and terminal emulation (SwiftTerm), neither of which collect user data.</p>
+
+            <h3>Legal Compliance Exceptions</h3>
+            <p>We may disclose your data if required by law (e.g., court order, government request), but we will not proactively volunteer information and will comply with applicable law.</p>
+        </section>
+
+        <section class="section" id="gdpr-ccpa">
+            <h2>6. GDPR & CCPA Compliance</h2>
+
+            <h3>GDPR (European Users)</h3>
+            <p>If you are located in the European Union or European Economic Area, the following rights apply under GDPR:</p>
+
+            <div class="feature-list">
+                <div class="feature-item">
+                    <strong>Right of Access</strong>
+                    You can request a copy of your data stored on your device at any time
+                </div>
+                <div class="feature-item">
+                    <strong>Right to Erasure</strong>
+                    You can delete all data by uninstalling the App or clearing App data in Settings
+                </div>
+                <div class="feature-item">
+                    <strong>Right to Portability</strong>
+                    Your connection profiles are stored in standard formats and can be exported
+                </div>
+                <div class="feature-item">
+                    <strong>Right to Object</strong>
+                    You can disable iCloud sync at any time or refuse biometric unlock
+                </div>
+            </div>
+
+            <p><strong>Legal Basis for Processing:</strong> All data processing is based on performance of contract (providing SSH functionality) and your explicit consent.</p>
+
+            <h3>CCPA (California Residents)</h3>
+            <p>If you are a California resident, you have the following rights under CCPA:</p>
+
+            <ul>
+                <li><strong>Right to Know:</strong> You have the right to know what personal information is collected. See "Data We Collect" above.</li>
+                <li><strong>Right to Delete:</strong> You can delete your data by uninstalling the App or clearing its data in iOS Settings.</li>
+                <li><strong>Right to Opt-Out:</strong> mSSH does not sell personal information, so this right does not apply.</li>
+                <li><strong>Right to Non-Discrimination:</strong> We do not discriminate based on privacy choices.</li>
+            </ul>
+
+            <h3>How to Exercise Your Rights</h3>
+            <p>To exercise any of these rights, contact us at <strong><a href="mailto:tmtgwdx@gmail.com">tmtgwdx@gmail.com</a></strong> with details of your request.</p>
+        </section>
+
+        <section class="section" id="data-deletion">
+            <h2>7. Data Deletion</h2>
+
+            <h3>Deleting Your Data</h3>
+            <p>You have complete control over your data. To delete all data stored by mSSH:</p>
+            <ol>
+                <li>On your iOS device, go to <strong>Settings → General → iPhone Storage</strong></li>
+                <li>Find and select <strong>mSSH</strong></li>
+                <li>Tap <strong>Offload App</strong> (keeps data temporarily) or <strong>Delete App</strong> (removes everything)</li>
+            </ol>
+
+            <h3>iCloud Data</h3>
+            <p>If you have iCloud sync enabled, deleting the App does not automatically delete synced connection profiles from iCloud. You can manually delete them via <strong>Settings → [Your Name] → iCloud → Manage Storage</strong>.</p>
+        </section>
+
+        <section class="section" id="security">
+            <h2>8. Security Practices</h2>
+
+            <h3>App Security</h3>
+            <ul>
+                <li>mSSH uses industry-standard SSH2 encryption for all remote connections</li>
+                <li>Private keys are protected by iOS Keychain with device-only access policies</li>
+                <li>Host key verification (TOFU) prevents man-in-the-middle attacks</li>
+                <li>Optional Face ID lock adds biometric protection to the App</li>
+            </ul>
+
+            <h3>Our Responsibility</h3>
+            <p>We are responsible for protecting data stored within mSSH. However, the security of your remote SSH servers and credentials depends on how you manage them. We recommend:</p>
+            <ul>
+                <li>Using strong, unique SSH key passphrases</li>
+                <li>Keeping your iOS device updated with the latest security patches</li>
+                <li>Using device encryption (standard on modern iOS)</li>
+                <li>Enabling Face ID or passcode lock for the App</li>
+            </ul>
+
+            <h3>No Guarantees</h3>
+            <p>While we implement reasonable security measures, no system is 100% secure. mSSH is provided "as is" without warranty of absolute security.</p>
+        </section>
+
+        <section class="section" id="children">
+            <h2>9. Children's Privacy</h2>
+
+            <p>mSSH is not directed to children under 13 (or the applicable age of digital consent in your jurisdiction). We do not knowingly collect data from children. If we become aware that a child has provided data, we will delete it immediately.</p>
+
+            <p>This App is a terminal utility designed for technical users and developers. It is not appropriate for children.</p>
+        </section>
+
+        <section class="section" id="changes">
+            <h2>10. Changes to This Privacy Policy</h2>
+
+            <h3>Updates</h3>
+            <p>We may update this Privacy Policy periodically to reflect changes in our practices or legal requirements. The "Effective Date" at the top will be updated accordingly.</p>
+
+            <h3>How We Notify You</h3>
+            <p>Significant changes will be communicated via App Store release notes or in-App notifications. Continued use of mSSH after changes constitutes your acceptance of the updated policy.</p>
+        </section>
+
+        <div class="contact-section" id="contact">
+            <h2>Questions or Concerns?</h2>
+            <p style="margin: 15px 0;">If you have any questions about this Privacy Policy, your data, or how mSSH handles your information, please contact:</p>
+            <p style="font-size: 18px; margin: 20px 0;"><strong><a href="mailto:tmtgwdx@gmail.com">tmtgwdx@gmail.com</a></strong></p>
+            <p style="font-size: 13px; color: #a0a0a0; margin-top: 20px;">We aim to respond to privacy inquiries within 30 days.</p>
+        </div>
+
+        <section class="section" id="summary">
+            <h2>Privacy Summary</h2>
+            <p>Here's what you need to know about mSSH:</p>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <strong>✓ Local Storage Only</strong>
+                    All data lives on your device by default
+                </div>
+                <div class="feature-item">
+                    <strong>✓ No Tracking</strong>
+                    We do not collect analytics or usage data
+                </div>
+                <div class="feature-item">
+                    <strong>✓ No Third Parties</strong>
+                    Your data is never shared with anyone
+                </div>
+                <div class="feature-item">
+                    <strong>✓ Optional iCloud</strong>
+                    Sync is opt-in and excludes credentials
+                </div>
+                <div class="feature-item">
+                    <strong>✓ Strong Encryption</strong>
+                    SSH2 end-to-end encryption for all connections
+                </div>
+                <div class="feature-item">
+                    <strong>✓ You Control Your Data</strong>
+                    Delete anytime via App Settings
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 m4ck. All rights reserved.</p>
+            <p>mSSH Privacy Policy | Last Updated: April 1, 2026</p>
+        </footer>
+    </div>
+</body>
+</html>

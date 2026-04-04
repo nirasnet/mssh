@@ -7,9 +7,9 @@ struct TerminalTheme: Equatable {
     var name: String
 
     static let `default` = TerminalTheme(
-        background: Color(red: 0.1, green: 0.1, blue: 0.12),
-        foreground: Color(red: 0.9, green: 0.9, blue: 0.9),
-        cursorColor: .green,
+        background: Color(red: 0.06, green: 0.06, blue: 0.08),
+        foreground: Color(red: 0.88, green: 0.88, blue: 0.90),
+        cursorColor: Color(red: 0.30, green: 0.85, blue: 0.85),
         name: "Default"
     )
 
@@ -21,7 +21,7 @@ struct TerminalTheme: Equatable {
     )
 
     static let monokai = TerminalTheme(
-        background: Color(red: 0.16, green: 0.16, blue: 0.16),
+        background: Color(red: 0.15, green: 0.15, blue: 0.15),
         foreground: Color(red: 0.97, green: 0.97, blue: 0.95),
         cursorColor: Color(red: 0.97, green: 0.15, blue: 0.31),
         name: "Monokai"
@@ -34,5 +34,21 @@ struct TerminalTheme: Equatable {
         name: "Nord"
     )
 
-    static let allThemes: [TerminalTheme] = [.default, .solarizedDark, .monokai, .nord]
+    static let dracula = TerminalTheme(
+        background: Color(red: 0.16, green: 0.16, blue: 0.21),
+        foreground: Color(red: 0.97, green: 0.97, blue: 0.95),
+        cursorColor: Color(red: 0.74, green: 0.58, blue: 0.98),
+        name: "Dracula"
+    )
+
+    static let tokyoNight = TerminalTheme(
+        background: Color(red: 0.10, green: 0.11, blue: 0.17),
+        foreground: Color(red: 0.66, green: 0.70, blue: 0.84),
+        cursorColor: Color(red: 0.49, green: 0.51, blue: 0.98),
+        name: "Tokyo Night"
+    )
+
+    static let allThemes: [TerminalTheme] = [
+        .default, .solarizedDark, .monokai, .nord, .dracula, .tokyoNight
+    ]
 }

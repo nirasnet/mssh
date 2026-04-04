@@ -1,5 +1,5 @@
 import Foundation
-import CryptoKit
+import Crypto
 import SwiftData
 
 /// Detected format of an SSH private key.

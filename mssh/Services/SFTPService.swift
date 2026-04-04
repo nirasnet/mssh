@@ -66,7 +66,7 @@ final class SFTPService: Sendable {
                 try await file.readAll()
             }
 
-            let bytes = Data(buffer: data)
+            let bytes = data.data
             try bytes.write(to: localURL)
         }
     }
@@ -78,7 +78,7 @@ final class SFTPService: Sendable {
                 filePath: remotePath,
                 flags: [.write, .create, .truncate]
             ) { file in
-                var buffer = ByteBuffer(data: fileData)
+                let buffer = ByteBuffer(data: fileData)
                 try await file.write(buffer)
             }
         }

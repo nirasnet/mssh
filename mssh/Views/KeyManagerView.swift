@@ -12,85 +12,54 @@ struct KeyManagerView: View {
     @State private var viewModel = KeyManagerViewModel()
 
     var body: some View {
-        List {
+        Group {
             if keys.isEmpty {
-                ContentUnavailableView(
-                    "No SSH Keys",
-                    systemImage: "key",
-                    description: Text("Generate or import keys to use key-based authentication.")
-                )
-            }
-
-            ForEach(keys) { key in
-                VStack(alignment: .leading, spacing: 4) {
-                    HStack {
-                        Text(key.label)
-                            .font(.headline)
-                        Spacer()
-                        Text(key.keyType.uppercased())
-                            .font(.caption)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(Color.accentColor.opacity(0.15))
-                            .cornerRadius(4)
-                    }
-
-                    Text(key.publicKeyText)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(2)
-
-                    Text("Created \(key.createdAt.formatted(.relative(presentation: .named)))")
-                        .font(.caption2)
-                        .foregroundStyle(.tertiary)
-                }
-                .padding(.vertical, 4)
-                .contextMenu {
-                    Button {
-                        UIPasteboard.general.string = key.publicKeyText
-                    } label: {
-                        Label("Copy Public Key", systemImage: "doc.on.doc")
-                    }
-                    Button(role: .destructive) {
-                        viewModel.deleteKey(key, modelContext: modelContext)
-                    } label: {
-                        Label("Delete", systemImage: "trash")
-                    }
-                }
-            }
-            .onDelete { indexSet in
-                for index in indexSet {
-                    viewModel.deleteKey(keys[index], modelContext: modelContext)
-                }
+                emptyState
+            } else {
+                keyList
             }
         }
+        .background(AppColors.background)
         .navigationTitle("SSH Keys")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Menu {
-                    Button("Generate New Key", systemImage: "plus") {
-                        showGenerateSheet = true
+                    Section("Create") {
+                        Button {
+                            showGenerateSheet = true
+                        } label: {
+                            Label("Generate Ed25519 Key", systemImage: "plus.circle")
+                        }
                     }
 
-                    Divider()
-
-                    Button("Import Key (Paste)", systemImage: "square.and.arrow.down") {
-                        showImportSheet = true
+                    Section("Import") {
+                        Button {
+                            showImportSheet = true
+                        } label: {
+                            Label("Paste Key", systemImage: "doc.on.clipboard")
+                        }
+                        Button {
+                            showImportWizard = true
+                        } label: {
+                            Label("Import Wizard", systemImage: "wand.and.stars")
+                        }
+                        Button {
+                            showConfigImport = true
+                        } label: {
+                            Label("SSH Config", systemImage: "doc.text")
+                        }
                     }
-                    Button("Import Wizard", systemImage: "wand.and.stars") {
-                        showImportWizard = true
-                    }
-                    Button("Import SSH Config", systemImage: "doc.text") {
-                        showConfigImport = true
-                    }
 
-                    Divider()
-
-                    Button("Mac Setup Guide", systemImage: "laptopcomputer.and.iphone") {
-                        showMacGuide = true
+                    Section("Help") {
+                        Button {
+                            showMacGuide = true
+                        } label: {
+                            Label("Mac Setup Guide", systemImage: "laptopcomputer.and.iphone")
+                        }
                     }
                 } label: {
-                    Image(systemName: "plus")
+                    Image(systemName: "plus.circle.fill")
+                        .symbolRenderingMode(.hierarchical)
                 }
             }
         }
@@ -119,7 +88,125 @@ struct KeyManagerView: View {
             Text(viewModel.errorMessage ?? "")
         }
     }
+
+    // MARK: - Empty State
+
+    private var emptyState: some View {
+        VStack(spacing: AppSpacing.lg) {
+            Spacer()
+
+            Image(systemName: "key.fill")
+                .font(.system(size: 48))
+                .foregroundStyle(AppColors.textTertiary)
+
+            Text("No SSH Keys")
+                .font(AppFonts.heading)
+                .foregroundStyle(AppColors.textPrimary)
+
+            Text("Generate or import keys for\npasswordless authentication")
+                .font(.subheadline)
+                .foregroundStyle(AppColors.textSecondary)
+                .multilineTextAlignment(.center)
+
+            VStack(spacing: AppSpacing.sm) {
+                Button {
+                    showGenerateSheet = true
+                } label: {
+                    HStack {
+                        Image(systemName: "plus.circle.fill")
+                        Text("Generate Ed25519 Key")
+                    }
+                    .frame(maxWidth: 260)
+                }
+                .buttonStyle(.borderedProminent)
+
+                Button {
+                    showImportWizard = true
+                } label: {
+                    HStack {
+                        Image(systemName: "square.and.arrow.down")
+                        Text("Import Existing Key")
+                    }
+                    .frame(maxWidth: 260)
+                }
+                .buttonStyle(.bordered)
+
+                Button {
+                    showMacGuide = true
+                } label: {
+                    Text("Mac Setup Guide")
+                        .font(.caption)
+                        .foregroundStyle(AppColors.accent)
+                }
+                .padding(.top, AppSpacing.xs)
+            }
+            .padding(.top, AppSpacing.md)
+
+            Spacer()
+        }
+    }
+
+    // MARK: - Key List
+
+    private var keyList: some View {
+        ScrollView {
+            VStack(spacing: AppSpacing.sm) {
+                ForEach(keys) { key in
+                    keyCard(key)
+                }
+            }
+            .padding(.horizontal, AppSpacing.lg)
+            .padding(.top, AppSpacing.sm)
+            .padding(.bottom, AppSpacing.xxl)
+        }
+    }
+
+    private func keyCard(_ key: SSHKey) -> some View {
+        VStack(alignment: .leading, spacing: AppSpacing.sm) {
+            HStack {
+                Text(key.label)
+                    .font(.system(.subheadline, design: .monospaced).weight(.medium))
+                    .foregroundStyle(AppColors.textPrimary)
+                Spacer()
+                Text(key.keyType.uppercased())
+                    .font(.system(size: 10, weight: .bold, design: .monospaced))
+                    .foregroundStyle(AppColors.accent)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(AppColors.accentDim)
+                    .clipShape(Capsule())
+            }
+
+            Text(key.publicKeyText)
+                .font(AppFonts.monoCaption)
+                .foregroundStyle(AppColors.textTertiary)
+                .lineLimit(2)
+
+            HStack {
+                Text("Created \(key.createdAt.formatted(.relative(presentation: .named)))")
+                    .font(.system(size: 10))
+                    .foregroundStyle(AppColors.textTertiary)
+                Spacer()
+            }
+        }
+        .appCard()
+        .contextMenu {
+            Button {
+                AppClipboard.copy(key.publicKeyText)
+            } label: {
+                Label("Copy Public Key", systemImage: "doc.on.doc")
+            }
+            Divider()
+            Button(role: .destructive) {
+                viewModel.deleteKey(key, modelContext: modelContext)
+            } label: {
+                Label("Delete Key", systemImage: "trash")
+            }
+        }
+    }
 }
+
+// MARK: - Generate Key Sheet
 
 struct GenerateKeySheet: View {
     @Environment(\.modelContext) private var modelContext
@@ -130,17 +217,37 @@ struct GenerateKeySheet: View {
     var body: some View {
         NavigationStack {
             Form {
-                TextField("Key Label", text: $label)
-                    .textInputAutocapitalization(.never)
+                Section {
+                    TextField("Key Label", text: $label)
+                        .font(.system(.body, design: .monospaced))
+                        .iOSOnlyTextInputAutocapitalization()
+                } header: {
+                    Text("Name")
+                }
 
                 Section {
-                    Text("Generates an Ed25519 key pair. The private key is stored securely in the iOS Keychain.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    HStack(spacing: AppSpacing.md) {
+                        Image(systemName: "shield.checkered")
+                            .font(.title3)
+                            .foregroundStyle(AppColors.accent)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Ed25519")
+                                .font(.system(.subheadline, design: .monospaced).weight(.medium))
+                            Text("Modern, fast, and secure. Recommended for all use.")
+                                .font(.caption)
+                                .foregroundStyle(AppColors.textSecondary)
+                        }
+                    }
+                } header: {
+                    Text("Algorithm")
+                } footer: {
+                    Text("The private key is stored in the iOS Keychain and never leaves this device.")
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(AppColors.background)
             .navigationTitle("Generate Key")
-            .navigationBarTitleDisplayMode(.inline)
+            .iOSOnlyNavigationBarTitleDisplayMode()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
@@ -150,8 +257,10 @@ struct GenerateKeySheet: View {
                         viewModel.generateKey(label: label.isEmpty ? "My Key" : label, modelContext: modelContext)
                         dismiss()
                     }
+                    .fontWeight(.semibold)
                 }
             }
         }
+        .appTheme()
     }
 }

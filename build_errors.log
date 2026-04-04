@@ -1,0 +1,376 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild build -project mssh.xcodeproj -scheme mssh -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 17 Pro" CODE_SIGNING_ALLOWED=NO ONLY_ACTIVE_ARCH=YES
+
+Build settings from command line:
+    CODE_SIGNING_ALLOWED = NO
+    ONLY_ACTIVE_ARCH = YES
+    SDKROOT = iphonesimulator26.4
+
+Resolve Package Graph
+
+
+Resolved source packages:
+  Citadel: https://github.com/orlandos-nl/Citadel @ 0.12.0
+  swift-atomics: https://github.com/apple/swift-atomics.git @ 1.3.0
+  BigInt: https://github.com/attaswift/BigInt.git @ 5.7.0
+  swift-asn1: https://github.com/apple/swift-asn1.git @ 1.6.0
+  swift-collections: https://github.com/apple/swift-collections.git @ 1.4.1
+  swift-nio: https://github.com/apple/swift-nio.git @ 2.97.1
+  SwiftTerm: https://github.com/migueldeicaza/SwiftTerm @ 1.13.0
+  swift-nio-ssh: https://github.com/Joannis/swift-nio-ssh.git @ 0.3.5
+  swift-crypto: https://github.com/apple/swift-crypto.git @ 3.15.1
+  swift-system: https://github.com/apple/swift-system.git @ 1.6.4
+  swift-log: https://github.com/apple/swift-log.git @ 1.10.1
+  swift-argument-parser: https://github.com/apple/swift-argument-parser @ 1.7.1
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (53 targets)
+    Target 'mssh' in project 'mssh'
+        ➜ Explicit dependency on target 'SwiftTerm' in project 'SwiftTerm'
+        ➜ Explicit dependency on target 'Citadel' in project 'Citadel'
+    Target 'Citadel' in project 'Citadel'
+        ➜ Explicit dependency on target 'Citadel' in project 'Citadel'
+        ➜ Explicit dependency on target 'CCitadelBcrypt' in project 'Citadel'
+        ➜ Explicit dependency on target 'NIOSSH' in project 'swift-nio-ssh'
+        ➜ Explicit dependency on target 'Crypto' in project 'swift-crypto'
+        ➜ Explicit dependency on target '_CryptoExtras' in project 'swift-crypto'
+        ➜ Explicit dependency on target 'BigInt' in project 'BigInt'
+        ➜ Explicit dependency on target 'Logging' in project 'swift-log'
+    Target 'Citadel' in project 'Citadel'
+        ➜ Explicit dependency on target 'CCitadelBcrypt' in project 'Citadel'
+        ➜ Explicit dependency on target 'NIOSSH' in project 'swift-nio-ssh'
+        ➜ Explicit dependency on target 'Crypto' in project 'swift-crypto'
+        ➜ Explicit dependency on target '_CryptoExtras' in project 'swift-crypto'
+        ➜ Explicit dependency on target 'BigInt' in project 'BigInt'
+        ➜ Explicit dependency on target 'Logging' in project 'swift-log'
+    Target 'Logging' in project 'swift-log'
+        ➜ Explicit dependency on target 'Logging' in project 'swift-log'
+    Target 'Logging' in project 'swift-log' (no dependencies)
+    Target 'BigInt' in project 'BigInt'
+        ➜ Explicit dependency on target 'BigInt' in project 'BigInt'
+    Target 'BigInt' in project 'BigInt' (no dependencies)
+    Target '_CryptoExtras' in project 'swift-crypto'
+        ➜ Explicit dependency on target '_CryptoExtras' in project 'swift-crypto'
+        ➜ Explicit dependency on target 'swift-crypto__CryptoExtras' in project 'swift-crypto'
+        ➜ Explicit dependency on target 'CCryptoBoringSSL' in project 'swift-crypto'
+        ➜ Explicit dependency on target 'CCryptoBoringSSLShims' in project 'swift-crypto'
+        ➜ Explicit dependency on target 'CryptoBoringWrapper' in project 'swift-crypto'
+        ➜ Explicit dependency on target 'Crypto' in project 'swift-crypto'
+        ➜ Explicit dependency on target 'SwiftASN1' in project 'swift-asn1'
+    Target '_CryptoExtras' in project 'swift-crypto'
+        ➜ Explicit dependency on target 'swift-crypto__CryptoExtras' in project 'swift-crypto'
+        ➜ Explicit dependency on target 'CCryptoBoringSSL' in project 'swift-crypto'
+        ➜ Explicit dependency on target 'CCryptoBoringSSLShims' in project 'swift-crypto'
+        ➜ Explicit dependency on target 'CryptoBoringWrapper' in project 'swift-crypto'
+        ➜ Explicit dependency on target 'Crypto' in project 'swift-crypto'
+        ➜ Explicit dependency on target 'SwiftASN1' in project 'swift-asn1'
+    Target 'SwiftASN1' in project 'swift-asn1'
+        ➜ Explicit dependency on target 'SwiftASN1' in project 'swift-asn1'
+    Target 'SwiftASN1' in project 'swift-asn1' (no dependencies)
+    Target 'CryptoBoringWrapper' in project 'swift-crypto'
+        ➜ Explicit dependency on target 'swift-crypto_CryptoBoringWrapper' in project 'swift-crypto'
+        ➜ Explicit dependency on target 'CCryptoBoringSSL' in project 'swift-crypto'
+        ➜ Explicit dependency on target 'CCryptoBoringSSLShims' in project 'swift-crypto'
+    Target 'swift-crypto_CryptoBoringWrapper' in project 'swift-crypto' (no dependencies)
+    Target 'CCryptoBoringSSLShims' in project 'swift-crypto'
+        ➜ Explicit dependency on target 'swift-crypto_CCryptoBoringSSLShims' in project 'swift-crypto'
+        ➜ Explicit dependency on target 'CCryptoBoringSSL' in project 'swift-crypto'
+    Target 'swift-crypto_CCryptoBoringSSLShims' in project 'swift-crypto' (no dependencies)
+    Target 'CCryptoBoringSSL' in project 'swift-crypto'
+        ➜ Explicit dependency on target 'swift-crypto_CCryptoBoringSSL' in project 'swift-crypto'
+    Target 'swift-crypto_CCryptoBoringSSL' in project 'swift-crypto' (no dependencies)
+    Target 'swift-crypto__CryptoExtras' in project 'swift-crypto' (no dependencies)
+    Target 'NIOSSH' in project 'swift-nio-ssh'
+        ➜ Explicit dependency on target 'NIOSSH' in project 'swift-nio-ssh'
+        ➜ Explicit dependency on target 'NIOCore' in project 'swift-nio'
+        ➜ Explicit dependency on target 'NIOConcurrencyHelpers' in project 'swift-nio'
+        ➜ Explicit dependency on target 'NIOFoundationCompat' in project 'swift-nio'
+        ➜ Explicit dependency on target 'Crypto' in project 'swift-crypto'
+        ➜ Explicit dependency on target 'Atomics' in project 'swift-atomics'
+    Target 'NIOSSH' in project 'swift-nio-ssh'
+        ➜ Explicit dependency on target 'NIOCore' in project 'swift-nio'
+        ➜ Explicit dependency on target 'NIOConcurrencyHelpers' in project 'swift-nio'
+        ➜ Explicit dependency on target 'NIOFoundationCompat' in project 'swift-nio'
+        ➜ Explicit dependency on target 'Crypto' in project 'swift-crypto'
+        ➜ Explicit dependency on target 'Atomics' in project 'swift-atomics'
+    Target 'Crypto' in project 'swift-crypto'
+        ➜ Explicit dependency on target 'Crypto' in project 'swift-crypto'
+        ➜ Explicit dependency on target 'swift-crypto_Crypto' in project 'swift-crypto'
+    Target 'Crypto' in project 'swift-crypto'
+        ➜ Explicit dependency on target 'swift-crypto_Crypto' in project 'swift-crypto'
+    Target 'swift-crypto_Crypto' in project 'swift-crypto' (no dependencies)
+    Target 'NIOFoundationCompat' in project 'swift-nio'
+        ➜ Explicit dependency on target 'NIOFoundationCompat' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOAtomics' in project 'swift-nio'
+        ➜ Explicit dependency on target 'NIOConcurrencyHelpers' in project 'swift-nio'
+        ➜ Explicit dependency on target '_NIOBase64' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOOpenBSD' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIODarwin' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOLinux' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOWindows' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOWASI' in project 'swift-nio'
+        ➜ Explicit dependency on target '_NIODataStructures' in project 'swift-nio'
+        ➜ Explicit dependency on target 'NIOCore' in project 'swift-nio'
+        ➜ Explicit dependency on target 'NIOEmbedded' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOPosix' in project 'swift-nio'
+        ➜ Explicit dependency on target 'NIOPosix' in project 'swift-nio'
+        ➜ Explicit dependency on target 'NIO' in project 'swift-nio'
+        ➜ Explicit dependency on target 'DequeModule' in project 'swift-collections'
+        ➜ Explicit dependency on target 'Atomics' in project 'swift-atomics'
+    Target 'NIOFoundationCompat' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOAtomics' in project 'swift-nio'
+        ➜ Explicit dependency on target 'NIOConcurrencyHelpers' in project 'swift-nio'
+        ➜ Explicit dependency on target '_NIOBase64' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOOpenBSD' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIODarwin' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOLinux' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOWindows' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOWASI' in project 'swift-nio'
+        ➜ Explicit dependency on target '_NIODataStructures' in project 'swift-nio'
+        ➜ Explicit dependency on target 'NIOCore' in project 'swift-nio'
+        ➜ Explicit dependency on target 'NIOEmbedded' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOPosix' in project 'swift-nio'
+        ➜ Explicit dependency on target 'NIOPosix' in project 'swift-nio'
+        ➜ Explicit dependency on target 'NIO' in project 'swift-nio'
+        ➜ Explicit dependency on target 'DequeModule' in project 'swift-collections'
+        ➜ Explicit dependency on target 'Atomics' in project 'swift-atomics'
+    Target 'NIO' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOAtomics' in project 'swift-nio'
+        ➜ Explicit dependency on target 'NIOConcurrencyHelpers' in project 'swift-nio'
+        ➜ Explicit dependency on target '_NIOBase64' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOOpenBSD' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIODarwin' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOLinux' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOWindows' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOWASI' in project 'swift-nio'
+        ➜ Explicit dependency on target '_NIODataStructures' in project 'swift-nio'
+        ➜ Explicit dependency on target 'NIOCore' in project 'swift-nio'
+        ➜ Explicit dependency on target 'NIOEmbedded' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOPosix' in project 'swift-nio'
+        ➜ Explicit dependency on target 'NIOPosix' in project 'swift-nio'
+        ➜ Explicit dependency on target 'DequeModule' in project 'swift-collections'
+        ➜ Explicit dependency on target 'Atomics' in project 'swift-atomics'
+    Target 'NIOPosix' in project 'swift-nio'
+        ➜ Explicit dependency on target 'swift-nio_NIOPosix' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOOpenBSD' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOLinux' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIODarwin' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOWindows' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOAtomics' in project 'swift-nio'
+        ➜ Explicit dependency on target 'NIOConcurrencyHelpers' in project 'swift-nio'
+        ➜ Explicit dependency on target '_NIOBase64' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOWASI' in project 'swift-nio'
+        ➜ Explicit dependency on target '_NIODataStructures' in project 'swift-nio'
+        ➜ Explicit dependency on target 'NIOCore' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOPosix' in project 'swift-nio'
+        ➜ Explicit dependency on target 'DequeModule' in project 'swift-collections'
+        ➜ Explicit dependency on target 'Atomics' in project 'swift-atomics'
+    Target 'swift-nio_NIOPosix' in project 'swift-nio' (no dependencies)
+    Target 'CNIOPosix' in project 'swift-nio' (no dependencies)
+    Target 'NIOEmbedded' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOAtomics' in project 'swift-nio'
+        ➜ Explicit dependency on target 'NIOConcurrencyHelpers' in project 'swift-nio'
+        ➜ Explicit dependency on target '_NIOBase64' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOOpenBSD' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIODarwin' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOLinux' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOWindows' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOWASI' in project 'swift-nio'
+        ➜ Explicit dependency on target '_NIODataStructures' in project 'swift-nio'
+        ➜ Explicit dependency on target 'NIOCore' in project 'swift-nio'
+        ➜ Explicit dependency on target 'DequeModule' in project 'swift-collections'
+        ➜ Explicit dependency on target 'Atomics' in project 'swift-atomics'
+    Target 'NIOConcurrencyHelpers' in project 'swift-nio'
+        ➜ Explicit dependency on target 'NIOConcurrencyHelpers' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOAtomics' in project 'swift-nio'
+    Target 'NIOCore' in project 'swift-nio'
+        ➜ Explicit dependency on target 'NIOCore' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOAtomics' in project 'swift-nio'
+        ➜ Explicit dependency on target 'NIOConcurrencyHelpers' in project 'swift-nio'
+        ➜ Explicit dependency on target '_NIOBase64' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOOpenBSD' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIODarwin' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOLinux' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOWindows' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOWASI' in project 'swift-nio'
+        ➜ Explicit dependency on target '_NIODataStructures' in project 'swift-nio'
+        ➜ Explicit dependency on target 'DequeModule' in project 'swift-collections'
+        ➜ Explicit dependency on target 'Atomics' in project 'swift-atomics'
+    Target 'NIOCore' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOAtomics' in project 'swift-nio'
+        ➜ Explicit dependency on target 'NIOConcurrencyHelpers' in project 'swift-nio'
+        ➜ Explicit dependency on target '_NIOBase64' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOOpenBSD' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIODarwin' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOLinux' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOWindows' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOWASI' in project 'swift-nio'
+        ➜ Explicit dependency on target '_NIODataStructures' in project 'swift-nio'
+        ➜ Explicit dependency on target 'DequeModule' in project 'swift-collections'
+        ➜ Explicit dependency on target 'Atomics' in project 'swift-atomics'
+    Target 'Atomics' in project 'swift-atomics'
+        ➜ Explicit dependency on target 'Atomics' in project 'swift-atomics'
+        ➜ Explicit dependency on target '_AtomicsShims' in project 'swift-atomics'
+    Target 'Atomics' in project 'swift-atomics'
+        ➜ Explicit dependency on target '_AtomicsShims' in project 'swift-atomics'
+    Target '_AtomicsShims' in project 'swift-atomics' (no dependencies)
+    Target 'DequeModule' in project 'swift-collections'
+        ➜ Explicit dependency on target 'DequeModule' in project 'swift-collections'
+        ➜ Explicit dependency on target 'InternalCollectionsUtilities' in project 'swift-collections'
+        ➜ Explicit dependency on target 'ContainersPreview' in project 'swift-collections'
+    Target 'DequeModule' in project 'swift-collections'
+        ➜ Explicit dependency on target 'InternalCollectionsUtilities' in project 'swift-collections'
+        ➜ Explicit dependency on target 'ContainersPreview' in project 'swift-collections'
+    Target 'ContainersPreview' in project 'swift-collections'
+        ➜ Explicit dependency on target 'InternalCollectionsUtilities' in project 'swift-collections'
+    Target 'InternalCollectionsUtilities' in project 'swift-collections' (no dependencies)
+    Target '_NIODataStructures' in project 'swift-nio' (no dependencies)
+    Target 'CNIOWASI' in project 'swift-nio' (no dependencies)
+    Target 'CNIOWindows' in project 'swift-nio' (no dependencies)
+    Target 'CNIOLinux' in project 'swift-nio' (no dependencies)
+    Target 'CNIODarwin' in project 'swift-nio' (no dependencies)
+    Target 'CNIOOpenBSD' in project 'swift-nio' (no dependencies)
+    Target '_NIOBase64' in project 'swift-nio' (no dependencies)
+    Target 'NIOConcurrencyHelpers' in project 'swift-nio'
+        ➜ Explicit dependency on target 'CNIOAtomics' in project 'swift-nio'
+    Target 'CNIOAtomics' in project 'swift-nio' (no dependencies)
+    Target 'CCitadelBcrypt' in project 'Citadel' (no dependencies)
+    Target 'SwiftTerm' in project 'SwiftTerm'
+        ➜ Explicit dependency on target 'SwiftTerm' in project 'SwiftTerm'
+        ➜ Explicit dependency on target 'SwiftTerm_SwiftTerm' in project 'SwiftTerm'
+    Target 'SwiftTerm' in project 'SwiftTerm'
+        ➜ Explicit dependency on target 'SwiftTerm_SwiftTerm' in project 'SwiftTerm'
+    Target 'SwiftTerm_SwiftTerm' in project 'SwiftTerm' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.4.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.4.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/actool --print-asset-tag-combinations --output-format xml1 /Users/m4ck/Desktop/projects/mssh/mssh/Resources/Assets.xcassets
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.4.sdk -x c++ -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.4.sdk -x assembler-with-cpp -c /dev/null
+
+ReadFileContents /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/share/docc/features.json
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/actool --version --output-format xml1
+
+Build description signature: 05ff3eeacc8d801544a750c6f54cca61
+Build description path: /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/XCBuildData/05ff3eeacc8d801544a750c6f54cca61.xcbuilddata
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.4.sdk /Users/m4ck/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.4-23E237-688ef53f1462e2c8f657fdc38a81448f686eebb5dc1d8ecb277353a59184f4aa.sdkstatcache
+    cd /Users/m4ck/Desktop/projects/mssh/mssh.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.4.sdk -o /Users/m4ck/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.4-23E237-688ef53f1462e2c8f657fdc38a81448f686eebb5dc1d8ecb277353a59184f4aa.sdkstatcache
+
+ProcessInfoPlistFile /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/swift-crypto_Crypto.bundle/Info.plist /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/swift-crypto.build/Debug-iphonesimulator/swift-crypto_Crypto.build/empty-swift-crypto_Crypto.plist (in target 'swift-crypto_Crypto' from project 'swift-crypto')
+    cd /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/SourcePackages/checkouts/swift-crypto
+    builtin-infoPlistUtility /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/swift-crypto.build/Debug-iphonesimulator/swift-crypto_Crypto.build/empty-swift-crypto_Crypto.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphonesimulator -o /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/swift-crypto_Crypto.bundle/Info.plist
+
+ProcessInfoPlistFile /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/swift-crypto__CryptoExtras.bundle/Info.plist /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/swift-crypto.build/Debug-iphonesimulator/swift-crypto__CryptoExtras.build/empty-swift-crypto__CryptoExtras.plist (in target 'swift-crypto__CryptoExtras' from project 'swift-crypto')
+    cd /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/SourcePackages/checkouts/swift-crypto
+    builtin-infoPlistUtility /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/swift-crypto.build/Debug-iphonesimulator/swift-crypto__CryptoExtras.build/empty-swift-crypto__CryptoExtras.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphonesimulator -o /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/swift-crypto__CryptoExtras.bundle/Info.plist
+
+ProcessInfoPlistFile /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/SwiftTerm_SwiftTerm.bundle/Info.plist /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/SwiftTerm.build/Debug-iphonesimulator/SwiftTerm_SwiftTerm.build/empty-SwiftTerm_SwiftTerm.plist (in target 'SwiftTerm_SwiftTerm' from project 'SwiftTerm')
+    cd /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/SourcePackages/checkouts/SwiftTerm
+    builtin-infoPlistUtility /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/SwiftTerm.build/Debug-iphonesimulator/SwiftTerm_SwiftTerm.build/empty-SwiftTerm_SwiftTerm.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphonesimulator -o /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/SwiftTerm_SwiftTerm.bundle/Info.plist
+
+ProcessInfoPlistFile /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/swift-crypto_CryptoBoringWrapper.bundle/Info.plist /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/swift-crypto.build/Debug-iphonesimulator/swift-crypto_CryptoBoringWrapper.build/empty-swift-crypto_CryptoBoringWrapper.plist (in target 'swift-crypto_CryptoBoringWrapper' from project 'swift-crypto')
+    cd /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/SourcePackages/checkouts/swift-crypto
+    builtin-infoPlistUtility /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/swift-crypto.build/Debug-iphonesimulator/swift-crypto_CryptoBoringWrapper.build/empty-swift-crypto_CryptoBoringWrapper.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphonesimulator -o /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/swift-crypto_CryptoBoringWrapper.bundle/Info.plist
+
+ProcessInfoPlistFile /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/swift-nio_NIOPosix.bundle/Info.plist /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/swift-nio.build/Debug-iphonesimulator/swift-nio_NIOPosix.build/empty-swift-nio_NIOPosix.plist (in target 'swift-nio_NIOPosix' from project 'swift-nio')
+    cd /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/SourcePackages/checkouts/swift-nio
+    builtin-infoPlistUtility /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/swift-nio.build/Debug-iphonesimulator/swift-nio_NIOPosix.build/empty-swift-nio_NIOPosix.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphonesimulator -o /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/swift-nio_NIOPosix.bundle/Info.plist
+
+ProcessInfoPlistFile /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/swift-crypto_CCryptoBoringSSL.bundle/Info.plist /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/swift-crypto.build/Debug-iphonesimulator/swift-crypto_CCryptoBoringSSL.build/empty-swift-crypto_CCryptoBoringSSL.plist (in target 'swift-crypto_CCryptoBoringSSL' from project 'swift-crypto')
+    cd /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/SourcePackages/checkouts/swift-crypto
+    builtin-infoPlistUtility /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/swift-crypto.build/Debug-iphonesimulator/swift-crypto_CCryptoBoringSSL.build/empty-swift-crypto_CCryptoBoringSSL.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphonesimulator -o /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/swift-crypto_CCryptoBoringSSL.bundle/Info.plist
+
+ProcessInfoPlistFile /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/swift-crypto_CCryptoBoringSSLShims.bundle/Info.plist /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/swift-crypto.build/Debug-iphonesimulator/swift-crypto_CCryptoBoringSSLShims.build/empty-swift-crypto_CCryptoBoringSSLShims.plist (in target 'swift-crypto_CCryptoBoringSSLShims' from project 'swift-crypto')
+    cd /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/SourcePackages/checkouts/swift-crypto
+    builtin-infoPlistUtility /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/swift-crypto.build/Debug-iphonesimulator/swift-crypto_CCryptoBoringSSLShims.build/empty-swift-crypto_CCryptoBoringSSLShims.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphonesimulator -o /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/swift-crypto_CCryptoBoringSSLShims.bundle/Info.plist
+
+GenerateAssetSymbols /Users/m4ck/Desktop/projects/mssh/mssh/Resources/Assets.xcassets (in target 'mssh' from project 'mssh')
+    cd /Users/m4ck/Desktop/projects/mssh
+    /Applications/Xcode.app/Contents/Developer/usr/bin/actool /Users/m4ck/Desktop/projects/mssh/mssh/Resources/Assets.xcassets --compile /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/mssh.app --output-format human-readable-text --notices --warnings --export-dependency-info /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/assetcatalog_dependencies --output-partial-info-plist /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/assetcatalog_generated_info.plist --app-icon AppIcon --compress-pngs --enable-on-demand-resources YES --development-region en --target-device iphone --target-device ipad --minimum-deployment-target 18.0 --platform iphonesimulator --bundle-identifier com.m4ck.mssh --generate-swift-asset-symbol-extensions NO --generate-swift-asset-symbols /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/DerivedSources/GeneratedAssetSymbols.swift --generate-objc-asset-symbols /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/DerivedSources/GeneratedAssetSymbols.h --generate-asset-symbol-index /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/DerivedSources/GeneratedAssetSymbols-Index.plist
+/* com.apple.actool.compilation-results */
+/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/DerivedSources/GeneratedAssetSymbols-Index.plist
+/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/DerivedSources/GeneratedAssetSymbols.h
+/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/DerivedSources/GeneratedAssetSymbols.swift
+
+
+LinkAssetCatalog /Users/m4ck/Desktop/projects/mssh/mssh/Resources/Assets.xcassets (in target 'mssh' from project 'mssh')
+    cd /Users/m4ck/Desktop/projects/mssh
+    builtin-linkAssetCatalog --thinned /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/assetcatalog_output/thinned --thinned-dependencies /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/assetcatalog_dependencies_thinned --thinned-info-plist-content /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/assetcatalog_generated_info.plist_thinned --unthinned /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/assetcatalog_output/unthinned --unthinned-dependencies /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/assetcatalog_dependencies_unthinned --unthinned-info-plist-content /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/assetcatalog_generated_info.plist_unthinned --output /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/mssh.app --plist-output /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/assetcatalog_generated_info.plist
+note: Emplaced /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/mssh.app/Assets.car (in target 'mssh' from project 'mssh')
+note: Emplaced /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/mssh.app/AppIcon76x76@2x~ipad.png (in target 'mssh' from project 'mssh')
+note: Emplaced /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/mssh.app/AppIcon60x60@2x.png (in target 'mssh' from project 'mssh')
+
+ProcessInfoPlistFile /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/mssh.app/Info.plist /Users/m4ck/Desktop/projects/mssh/mssh/Info.plist (in target 'mssh' from project 'mssh')
+    cd /Users/m4ck/Desktop/projects/mssh
+    builtin-infoPlistUtility /Users/m4ck/Desktop/projects/mssh/mssh/Info.plist -producttype com.apple.product-type.application -genpkginfo /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/mssh.app/PkgInfo -expandbuildsettings -format binary -platform iphonesimulator -additionalcontentfile /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/assetcatalog_generated_info.plist -scanforprivacyfile /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/mssh.app/SwiftTerm_SwiftTerm.bundle -scanforprivacyfile /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/mssh.app/swift-crypto_CCryptoBoringSSL.bundle -scanforprivacyfile /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/mssh.app/swift-crypto_CCryptoBoringSSLShims.bundle -scanforprivacyfile /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/mssh.app/swift-crypto_Crypto.bundle -scanforprivacyfile /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/mssh.app/swift-crypto_CryptoBoringWrapper.bundle -scanforprivacyfile /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/mssh.app/swift-crypto__CryptoExtras.bundle -scanforprivacyfile /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/mssh.app/swift-nio_NIOPosix.bundle -o /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/mssh.app/Info.plist
+
+SwiftDriver mssh normal arm64 com.apple.xcode.tools.swift.compiler (in target 'mssh' from project 'mssh')
+    cd /Users/m4ck/Desktop/projects/mssh
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name mssh -Onone @/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/Objects-normal/arm64/mssh.SwiftFileList -DDEBUG -Xcc -fmodule-map-file\=/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/CNIOPosix.modulemap -Xcc -fmodule-map-file\=/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/CNIOWASI.modulemap -Xcc -fmodule-map-file\=/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/CNIOLinux.modulemap -Xcc -fmodule-map-file\=/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/CNIODarwin.modulemap -Xcc -fmodule-map-file\=/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/CNIOOpenBSD.modulemap -Xcc -fmodule-map-file\=/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/CNIOAtomics.modulemap -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.4.sdk -target arm64-apple-ios18.0-simulator -g -module-cache-path /Users/m4ck/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator -c -j8 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/m4ck/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.4-23E237-688ef53f1462e2c8f657fdc38a81448f686eebb5dc1d8ecb277353a59184f4aa.sdkstatcache -output-file-map /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/Objects-normal/arm64/mssh-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/m4ck/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Users/m4ck/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/Objects-normal/arm64/mssh.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/m4ck/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/Objects-normal/arm64/mssh_const_extract_protocols.json -Xcc -iquote -Xcc /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/mssh-generated-files.hmap -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/mssh-own-target-headers.hmap -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/mssh-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh-12daa42a10b7c36ab4051581bac0d8e9-VFS-iphonesimulator/all-product-headers.yaml -Xcc -iquote -Xcc /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/mssh-project-headers.hmap -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/SourcePackages/checkouts/swift-nio/Sources/CNIOPosix/include -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/SourcePackages/checkouts/swift-nio/Sources/CNIOWASI/include -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/SourcePackages/checkouts/swift-nio/Sources/CNIOWindows/include -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/SourcePackages/checkouts/swift-nio/Sources/CNIOLinux/include -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/SourcePackages/checkouts/swift-nio/Sources/CNIODarwin/include -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/SourcePackages/checkouts/swift-nio/Sources/CNIOOpenBSD/include -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/SourcePackages/checkouts/swift-nio/Sources/CNIOAtomics/include -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/SourcePackages/checkouts/swift-atomics/Sources/_AtomicsShims/include -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/SourcePackages/checkouts/swift-crypto/Sources/CCryptoBoringSSLShims/include -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/SourcePackages/checkouts/swift-crypto/Sources/CCryptoBoringSSL/include -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/SourcePackages/checkouts/Citadel/Sources/CCitadelBcrypt/include -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/include -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/DerivedSources-normal/arm64 -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/DerivedSources/arm64 -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/Objects-normal/arm64/mssh-Swift.h -working-directory /Users/m4ck/Desktop/projects/mssh -experimental-emit-module-separately -disable-cmo
+
+SwiftCompile normal arm64 Compiling\ GeneratedAssetSymbols.swift /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/DerivedSources/GeneratedAssetSymbols.swift (in target 'mssh' from project 'mssh')
+
+SwiftCompile normal arm64 /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/DerivedSources/GeneratedAssetSymbols.swift (in target 'mssh' from project 'mssh')
+    cd /Users/m4ck/Desktop/projects/mssh
+    
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ mssh (in target 'mssh' from project 'mssh')
+EmitSwiftModule normal arm64 (in target 'mssh' from project 'mssh')
+    cd /Users/m4ck/Desktop/projects/mssh
+    
+
+SwiftCompile normal arm64 Compiling\ SSHService.swift /Users/m4ck/Desktop/projects/mssh/mssh/Services/SSHService.swift (in target 'mssh' from project 'mssh')
+Failed frontend command:
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-frontend -frontend -c /Users/m4ck/Desktop/projects/mssh/mssh/Models/AuthenticationType.swift /Users/m4ck/Desktop/projects/mssh/mssh/Services/AutoImportService.swift /Users/m4ck/Desktop/projects/mssh/mssh/Services/BiometricService.swift /Users/m4ck/Desktop/projects/mssh/mssh/Utilities/ByteBufferExtensions.swift /Users/m4ck/Desktop/projects/mssh/mssh/Views/ConnectionFormView.swift /Users/m4ck/Desktop/projects/mssh/mssh/ViewModels/ConnectionListViewModel.swift /Users/m4ck/Desktop/projects/mssh/mssh/Models/ConnectionProfile.swift /Users/m4ck/Desktop/projects/mssh/mssh/App/ContentView.swift /Users/m4ck/Desktop/projects/mssh/mssh/App/DesignSystem.swift /Users/m4ck/Desktop/projects/mssh/mssh/Views/HostKeyPromptView.swift /Users/m4ck/Desktop/projects/mssh/mssh/Services/HostKeyValidator.swift /Users/m4ck/Desktop/projects/mssh/mssh/Views/KeyImportView.swift /Users/m4ck/Desktop/projects/mssh/mssh/Views/KeyImportWizardView.swift /Users/m4ck/Desktop/projects/mssh/mssh/Services/KeyManagementService.swift /Users/m4ck/Desktop/projects/mssh/mssh/Views/KeyManagerView.swift /Users/m4ck/Desktop/projects/mssh/mssh/ViewModels/KeyManagerViewModel.swift /Users/m4ck/Desktop/projects/mssh/mssh/Services/KeychainService.swift /Users/m4ck/Desktop/projects/mssh/mssh/Models/KnownHost.swift /Users/m4ck/Desktop/projects/mssh/mssh/Views/KnownHostsView.swift /Users/m4ck/Desktop/projects/mssh/mssh/Views/LockScreenView.swift /Users/m4ck/Desktop/projects/mssh/mssh/Views/MacSetupGuideView.swift /Users/m4ck/Desktop/projects/mssh/mssh/Utilities/PEMParser.swift /Users/m4ck/Desktop/projects/mssh/mssh/Views/SFTPBrowserView.swift /Users/m4ck/Desktop/projects/mssh/mssh/Models/SFTPFileItem.swift /Users/m4ck/Desktop/projects/mssh/mssh/Services/SFTPService.swift /Users/m4ck/Desktop/projects/mssh/mssh/Views/SFTPTransferView.swift /Users/m4ck/Desktop/projects/mssh/mssh/ViewModels/SFTPViewModel.swift /Users/m4ck/Desktop/projects/mssh/mssh/Views/SSHConfigImportView.swift /Users/m4ck/Desktop/projects/mssh/mssh/Utilities/SSHConfigParser.swift /Users/m4ck/Desktop/projects/mssh/mssh/Models/SSHKey.swift /Users/m4ck/Desktop/projects/mssh/mssh/Services/SSHKeyImporter.swift -primary-file /Users/m4ck/Desktop/projects/mssh/mssh/Services/SSHService.swift /Users/m4ck/Desktop/projects/mssh/mssh/Terminal/SSHTerminalBridge.swift /Users/m4ck/Desktop/projects/mssh/mssh/ViewModels/SessionManager.swift /Users/m4ck/Desktop/projects/mssh/mssh/Views/SessionTabView.swift /Users/m4ck/Desktop/projects/mssh/mssh/ViewModels/SessionViewModel.swift /Users/m4ck/Desktop/projects/mssh/mssh/Views/SettingsView.swift /Users/m4ck/Desktop/projects/mssh/mssh/Views/SyncStatusView.swift /Users/m4ck/Desktop/projects/mssh/mssh/Terminal/TerminalAccessoryBar.swift /Users/m4ck/Desktop/projects/mssh/mssh/Views/TerminalSessionView.swift /Users/m4ck/Desktop/projects/mssh/mssh/Terminal/TerminalTheme.swift /Users/m4ck/Desktop/projects/mssh/mssh/Terminal/TerminalViewWrapper.swift /Users/m4ck/Desktop/projects/mssh/mssh/Services/iCloudSyncService.swift /Users/m4ck/Desktop/projects/mssh/mssh/App/msshApp.swift /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/DerivedSources/GeneratedAssetSymbols.swift -emit-dependencies-path /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/Objects-normal/arm64/SSHService.d -emit-const-values-path /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/Objects-normal/arm64/SSHService.swiftconstvalues -emit-reference-dependencies-path /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/Objects-normal/arm64/SSHService.swiftdeps -serialize-diagnostics-path /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/Objects-normal/arm64/SSHService.dia -target arm64-apple-ios18.0-simulator -module-can-import-version DeveloperToolsSupport 23.40.26 23.40.26 -disable-cross-import-overlay-search -swift-module-cross-import CoreData /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/System/Library/Frameworks/CoreData.framework/Modules/CoreData.swiftcrossimport/CloudKit.swiftoverlay -swift-module-cross-import CoreData /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.4.sdk/System/Library/Frameworks/CoreData.framework/Modules/CoreData.swiftcrossimport/CloudKit.swiftoverlay -swift-module-cross-import Darwin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/usr/include/Darwin.swiftcrossimport/xlocale.swiftoverlay -swift-module-cross-import SwiftData /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.4.sdk/System/Library/Frameworks/SwiftData.framework/Modules/SwiftData.swiftcrossimport/CoreData.swiftoverlay -swift-module-cross-import SwiftData /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.4.sdk/System/Library/Frameworks/SwiftData.framework/Modules/SwiftData.swiftcrossimport/SwiftUI.swiftoverlay -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libFoundationMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#FoundationMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libObservationMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#ObservationMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libPreviewsMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#PreviewsMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libSwiftDataMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#SwiftDataMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libSwiftMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#SwiftMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libSwiftUIMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#SwiftUIMacros -disable-implicit-swift-modules -Xcc -fno-implicit-modules -Xcc -fno-implicit-module-maps -explicit-swift-module-map-file /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/Objects-normal/arm64/mssh-dependencies-1.json -debug-module-path /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/Objects-normal/arm64/mssh.swiftmodule -Xllvm -aarch64-use-tbi -enable-objc-interop -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.4.sdk -I /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator -no-color-diagnostics -Xcc -fno-color-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=5 -module-cache-path /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -swift-version 5 -Onone -D DEBUG -serialize-debugging-options -const-gather-protocols-file /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/Objects-normal/arm64/mssh_const_extract_protocols.json -enable-experimental-feature DebugDescriptionMacro -enable-bare-slash-regex -empty-abi-descriptor -validate-clang-modules-once -clang-build-session-file /Users/m4ck/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc /Users/m4ck/Desktop/projects/mssh -enable-anonymous-context-mangled-names -file-compilation-dir /Users/m4ck/Desktop/projects/mssh -Xcc -fmodule-map-file\=/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/CNIOPosix.modulemap -Xcc -fmodule-map-file\=/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/CNIOWASI.modulemap -Xcc -fmodule-map-file\=/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/CNIOLinux.modulemap -Xcc -fmodule-map-file\=/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/CNIODarwin.modulemap -Xcc -fmodule-map-file\=/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/CNIOOpenBSD.modulemap -Xcc -fmodule-map-file\=/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/CNIOAtomics.modulemap -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -Xcc -ivfsstatcache -Xcc /Users/m4ck/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.4-23E237-688ef53f1462e2c8f657fdc38a81448f686eebb5dc1d8ecb277353a59184f4aa.sdkstatcache -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/swift-overrides.hmap -Xcc -iquote -Xcc /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/mssh-generated-files.hmap -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/mssh-own-target-headers.hmap -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/mssh-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh-12daa42a10b7c36ab4051581bac0d8e9-VFS-iphonesimulator/all-product-headers.yaml -Xcc -iquote -Xcc /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/mssh-project-headers.hmap -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/SourcePackages/checkouts/swift-nio/Sources/CNIOPosix/include -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/SourcePackages/checkouts/swift-nio/Sources/CNIOWASI/include -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/SourcePackages/checkouts/swift-nio/Sources/CNIOWindows/include -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/SourcePackages/checkouts/swift-nio/Sources/CNIOLinux/include -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/SourcePackages/checkouts/swift-nio/Sources/CNIODarwin/include -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/SourcePackages/checkouts/swift-nio/Sources/CNIOOpenBSD/include -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/SourcePackages/checkouts/swift-nio/Sources/CNIOAtomics/include -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/SourcePackages/checkouts/swift-atomics/Sources/_AtomicsShims/include -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/SourcePackages/checkouts/swift-crypto/Sources/CCryptoBoringSSLShims/include -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/SourcePackages/checkouts/swift-crypto/Sources/CCryptoBoringSSL/include -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/SourcePackages/checkouts/Citadel/Sources/CCitadelBcrypt/include -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Products/Debug-iphonesimulator/include -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/DerivedSources-normal/arm64 -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/DerivedSources/arm64 -Xcc -I/Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/DerivedSources -Xcc -DDEBUG\=1 -no-auto-bridging-header-chaining -module-name mssh -frontend-parseable-output -disable-clang-spi -clang-target arm64-apple-ios26.4-simulator -target-sdk-version 26.4 -target-sdk-name iphonesimulator26.4 -in-process-plugin-server-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/libSwiftInProcPluginServer.dylib -o /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Build/Intermediates.noindex/mssh.build/Debug-iphonesimulator/mssh.build/Objects-normal/arm64/SSHService.o -index-unit-output-path /mssh.build/Debug-iphonesimulator/mssh.build/Objects-normal/arm64/SSHService.o -index-store-path /Users/m4ck/Library/Developer/Xcode/DerivedData/mssh-cvefxgpvdttgyofpgniosfxxhsjk/Index.noindex/DataStore -index-system-modules
+
+SwiftCompile normal arm64 /Users/m4ck/Desktop/projects/mssh/mssh/Services/SSHService.swift (in target 'mssh' from project 'mssh')
+    cd /Users/m4ck/Desktop/projects/mssh
+    
+/Users/m4ck/Desktop/projects/mssh/mssh/Services/SSHService.swift:39:45: warning: type 'any NIOSSHKeyExchangeAlgorithmProtocol.Type' does not conform to the 'Sendable' protocol; this is an error in the Swift 6 language mode
+        algorithms.keyExchangeAlgorithms = .add([
+                                            ^
+/Users/m4ck/Desktop/projects/mssh/mssh/Services/SSHService.swift:47:13: error: cannot find 'AES256CTR' in scope
+            AES256CTR.self,
+            ^~~~~~~~~
+
+SwiftCompile normal arm64 Compiling\ SessionViewModel.swift /Users/m4ck/Desktop/projects/mssh/mssh/ViewModels/SessionViewModel.swift (in target 'mssh' from project 'mssh')
+
+SwiftCompile normal arm64 /Users/m4ck/Desktop/projects/mssh/mssh/ViewModels/SessionViewModel.swift (in target 'mssh' from project 'mssh')
+    cd /Users/m4ck/Desktop/projects/mssh
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling GeneratedAssetSymbols.swift (in target 'mssh' from project 'mssh')
+
+** BUILD FAILED **
+
+
+The following build commands failed:
+	SwiftCompile normal arm64 Compiling\ SSHService.swift /Users/m4ck/Desktop/projects/mssh/mssh/Services/SSHService.swift (in target 'mssh' from project 'mssh')
+	SwiftCompile normal arm64 /Users/m4ck/Desktop/projects/mssh/mssh/Services/SSHService.swift (in target 'mssh' from project 'mssh')
+	Building project mssh with scheme mssh
+(3 failures)

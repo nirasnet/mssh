@@ -8,142 +8,110 @@ struct HostKeyPromptView: View {
     var body: some View {
         VStack(spacing: 0) {
             headerSection
-            Divider()
             detailSection
-            Divider()
             buttonSection
         }
         .frame(maxWidth: 360)
-        .background(.regularMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-        .shadow(color: .black.opacity(0.3), radius: 20, y: 10)
-        .padding(24)
+        .background(AppColors.surface)
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .strokeBorder(isWarning ? AppColors.error.opacity(0.3) : AppColors.accent.opacity(0.3), lineWidth: 0.5)
+        )
+        .shadow(color: .black.opacity(0.5), radius: 30, y: 10)
+        .padding(AppSpacing.xl)
+    }
+
+    private var isWarning: Bool {
+        if case .changedKey = promptType { return true }
+        return false
     }
 
     // MARK: - Sections
 
-    @ViewBuilder
     private var headerSection: some View {
-        VStack(spacing: 8) {
-            Image(systemName: iconName)
-                .font(.system(size: 36))
-                .foregroundStyle(iconColor)
-            Text(titleText)
-                .font(.headline)
-                .multilineTextAlignment(.center)
-        }
-        .padding(.horizontal, 20)
-        .padding(.top, 20)
-        .padding(.bottom, 12)
-    }
-
-    @ViewBuilder
-    private var detailSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text(messageText)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-
-            switch promptType {
-            case .newHost(let fingerprint, let keyType):
-                fingerprintRow(label: "Key type", value: keyType)
-                fingerprintRow(label: "Fingerprint", value: fingerprint)
-
-            case .changedKey(let oldFingerprint, let newFingerprint, let keyType):
-                fingerprintRow(label: "Key type", value: keyType)
-                fingerprintRow(label: "Previously trusted", value: oldFingerprint)
-                fingerprintRow(label: "Now presented", value: newFingerprint)
+        VStack(spacing: AppSpacing.sm) {
+            ZStack {
+                Circle()
+                    .fill(isWarning ? AppColors.errorDim : AppColors.accentDim)
+                    .frame(width: 56, height: 56)
+                Image(systemName: isWarning ? "exclamationmark.triangle.fill" : "key.fill")
+                    .font(.system(size: 24))
+                    .foregroundStyle(isWarning ? AppColors.error : AppColors.accent)
             }
+
+            Text(isWarning ? "Host Key Changed" : "Unknown Host Key")
+                .font(.system(.headline, design: .monospaced))
+                .foregroundStyle(AppColors.textPrimary)
         }
-        .padding(16)
+        .padding(.horizontal, AppSpacing.lg)
+        .padding(.top, AppSpacing.xl)
+        .padding(.bottom, AppSpacing.md)
     }
 
-    @ViewBuilder
+    private var detailSection: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.md) {
+            Text(isWarning
+                 ? "The host key has changed. This could indicate a MITM attack, or the server was reinstalled."
+                 : "First time connecting to this host. Verify the fingerprint before continuing."
+            )
+            .font(.caption)
+            .foregroundStyle(AppColors.textSecondary)
+            .fixedSize(horizontal: false, vertical: true)
+
+            VStack(alignment: .leading, spacing: AppSpacing.sm) {
+                switch promptType {
+                case .newHost(let fingerprint, let keyType):
+                    fingerprintRow("Type", keyType)
+                    fingerprintRow("Fingerprint", fingerprint)
+
+                case .changedKey(let oldFingerprint, let newFingerprint, let keyType):
+                    fingerprintRow("Type", keyType)
+                    fingerprintRow("Previous", oldFingerprint)
+                    fingerprintRow("Current", newFingerprint)
+                }
+            }
+            .padding(AppSpacing.md)
+            .background(AppColors.background)
+            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        }
+        .padding(.horizontal, AppSpacing.lg)
+        .padding(.bottom, AppSpacing.lg)
+    }
+
     private var buttonSection: some View {
-        HStack(spacing: 12) {
-            Button(role: .cancel, action: onReject) {
+        HStack(spacing: AppSpacing.md) {
+            Button(action: onReject) {
                 Text("Reject")
+                    .font(.system(.subheadline, weight: .medium))
                     .frame(maxWidth: .infinity)
+                    .padding(.vertical, AppSpacing.md)
             }
             .buttonStyle(.bordered)
+            .tint(AppColors.textSecondary)
 
             Button(action: onAccept) {
-                Text(acceptButtonText)
+                Text(isWarning ? "Trust Anyway" : "Trust")
+                    .font(.system(.subheadline, weight: .semibold))
                     .frame(maxWidth: .infinity)
+                    .padding(.vertical, AppSpacing.md)
             }
             .buttonStyle(.borderedProminent)
-            .tint(acceptButtonTint)
+            .tint(isWarning ? AppColors.error : AppColors.accent)
         }
-        .padding(16)
+        .padding(.horizontal, AppSpacing.lg)
+        .padding(.bottom, AppSpacing.lg)
     }
 
-    // MARK: - Subviews
-
-    @ViewBuilder
-    private func fingerprintRow(label: String, value: String) -> some View {
+    private func fingerprintRow(_ label: String, _ value: String) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(label)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(.system(size: 10, weight: .medium))
+                .foregroundStyle(AppColors.textTertiary)
             Text(value)
-                .font(.system(.caption, design: .monospaced))
+                .font(.system(size: 11, design: .monospaced))
+                .foregroundStyle(AppColors.textPrimary)
                 .textSelection(.enabled)
-        }
-    }
-
-    // MARK: - Computed Properties
-
-    private var iconName: String {
-        switch promptType {
-        case .newHost:
-            return "key.fill"
-        case .changedKey:
-            return "exclamationmark.triangle.fill"
-        }
-    }
-
-    private var iconColor: Color {
-        switch promptType {
-        case .newHost:
-            return .blue
-        case .changedKey:
-            return .red
-        }
-    }
-
-    private var titleText: String {
-        switch promptType {
-        case .newHost:
-            return "Unknown Host Key"
-        case .changedKey:
-            return "Host Key Changed"
-        }
-    }
-
-    private var messageText: String {
-        switch promptType {
-        case .newHost:
-            return "This is the first time connecting to this host. Verify the fingerprint before continuing."
-        case .changedKey:
-            return "WARNING: The host key has changed since the last connection. This could indicate a man-in-the-middle attack, or the server was reinstalled."
-        }
-    }
-
-    private var acceptButtonText: String {
-        switch promptType {
-        case .newHost:
-            return "Trust"
-        case .changedKey:
-            return "Trust Anyway"
-        }
-    }
-
-    private var acceptButtonTint: Color {
-        switch promptType {
-        case .newHost:
-            return .blue
-        case .changedKey:
-            return .red
         }
     }
 }

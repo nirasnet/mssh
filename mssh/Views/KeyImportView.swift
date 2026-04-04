@@ -13,29 +13,36 @@ struct KeyImportView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Key Details") {
+                Section {
                     TextField("Label", text: $label)
-                        .textInputAutocapitalization(.never)
-                }
-
-                Section("Private Key (PEM)") {
-                    TextEditor(text: $pemText)
-                        .font(.system(.caption, design: .monospaced))
-                        .frame(minHeight: 150)
-
-                    Button("Import from File") {
-                        showFilePicker = true
-                    }
+                        .font(.system(.body, design: .monospaced))
+                        .iOSOnlyTextInputAutocapitalization()
+                } header: {
+                    Text("Key Name")
                 }
 
                 Section {
-                    Text("Paste your PEM-encoded private key or import from a file. The key will be stored in the iOS Keychain.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    TextEditor(text: $pemText)
+                        .font(.system(size: 11, design: .monospaced))
+                        .foregroundStyle(AppColors.textPrimary)
+                        .frame(minHeight: 150)
+                        .scrollContentBackground(.hidden)
+
+                    Button {
+                        showFilePicker = true
+                    } label: {
+                        Label("Import from File", systemImage: "doc.badge.arrow.up")
+                    }
+                } header: {
+                    Text("Private Key (PEM)")
+                } footer: {
+                    Text("Paste your PEM-encoded private key or import from a file. Stored securely in the iOS Keychain.")
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(AppColors.background)
             .navigationTitle("Import Key")
-            .navigationBarTitleDisplayMode(.inline)
+            .iOSOnlyNavigationBarTitleDisplayMode()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
@@ -49,6 +56,7 @@ struct KeyImportView: View {
                         )
                         dismiss()
                     }
+                    .fontWeight(.semibold)
                     .disabled(pemText.isEmpty)
                 }
             }
@@ -71,5 +79,6 @@ struct KeyImportView: View {
                 }
             }
         }
+        .appTheme()
     }
 }

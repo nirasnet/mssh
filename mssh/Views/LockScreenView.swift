@@ -8,64 +8,78 @@ struct LockScreenView: View {
 
     private var biometricLabel: String {
         switch BiometricService.biometricType() {
-        case .faceID:
-            return "Unlock with Face ID"
-        case .touchID:
-            return "Unlock with Touch ID"
-        case .none:
-            return "Unlock"
+        case .faceID: return "Unlock with Face ID"
+        case .touchID: return "Unlock with Touch ID"
+        case .none: return "Unlock"
         }
     }
 
     private var biometricIcon: String {
         switch BiometricService.biometricType() {
-        case .faceID:
-            return "faceid"
-        case .touchID:
-            return "touchid"
-        case .none:
-            return "lock.open"
+        case .faceID: return "faceid"
+        case .touchID: return "touchid"
+        case .none: return "lock.open"
         }
     }
 
     var body: some View {
         ZStack {
-            // Blurred background
-            Rectangle()
-                .fill(.ultraThinMaterial)
+            // Dark background
+            AppColors.background
                 .ignoresSafeArea()
 
-            VStack(spacing: 32) {
+            VStack(spacing: AppSpacing.xxl) {
                 Spacer()
 
-                Image(systemName: "terminal.fill")
-                    .font(.system(size: 64))
-                    .foregroundStyle(.tint)
+                // App icon area
+                VStack(spacing: AppSpacing.lg) {
+                    ZStack {
+                        Circle()
+                            .fill(AppColors.surface)
+                            .frame(width: 88, height: 88)
+                            .overlay(
+                                Circle()
+                                    .strokeBorder(AppColors.border, lineWidth: 0.5)
+                            )
+                        Image(systemName: "terminal.fill")
+                            .font(.system(size: 36))
+                            .foregroundStyle(AppColors.accent)
+                    }
 
-                Text("mSSH")
-                    .font(.largeTitle.bold())
+                    Text("mSSH")
+                        .font(.system(size: 28, weight: .bold, design: .monospaced))
+                        .foregroundStyle(AppColors.textPrimary)
 
-                Text("Authentication Required")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-
-                Spacer()
-
-                Button {
-                    performAuth()
-                } label: {
-                    Label(biometricLabel, systemImage: biometricIcon)
-                        .font(.headline)
-                        .frame(maxWidth: 280)
-                        .padding(.vertical, 14)
+                    Text("Authentication Required")
+                        .font(.subheadline)
+                        .foregroundStyle(AppColors.textSecondary)
                 }
-                .buttonStyle(.borderedProminent)
-                .disabled(isAuthenticating)
 
-                if showError {
-                    Text("Authentication failed. Try again.")
-                        .font(.footnote)
-                        .foregroundStyle(.red)
+                Spacer()
+
+                // Unlock button
+                VStack(spacing: AppSpacing.md) {
+                    Button {
+                        performAuth()
+                    } label: {
+                        HStack(spacing: AppSpacing.sm) {
+                            Image(systemName: biometricIcon)
+                                .font(.system(size: 18))
+                            Text(biometricLabel)
+                                .font(.system(.body, weight: .semibold))
+                        }
+                        .frame(maxWidth: 280)
+                        .padding(.vertical, AppSpacing.md)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(AppColors.accent)
+                    .disabled(isAuthenticating)
+
+                    if showError {
+                        Text("Authentication failed. Try again.")
+                            .font(.caption)
+                            .foregroundStyle(AppColors.error)
+                    }
                 }
 
                 Spacer()
