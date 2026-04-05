@@ -31,7 +31,7 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.m4ck.mssh
         DEVELOPMENT_TEAM: CC24ZA67DK
         MARKETING_VERSION: "1.1.0"
-        CURRENT_PROJECT_VERSION: "3"
+        CURRENT_PROJECT_VERSION: "4"
         TARGETED_DEVICE_FAMILY: "1,2"
         INFOPLIST_KEY_UILaunchScreen_Generation: true
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
@@ -46,7 +46,7 @@ targets:
         CFBundleIdentifier: com.m4ck.mssh
         CFBundleDisplayName: mSSH
         CFBundleShortVersionString: "1.1.0"
-        CFBundleVersion: "3"
+        CFBundleVersion: "4"
         UILaunchScreen: {}
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false
@@ -84,7 +84,7 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.m4ck.mssh
         DEVELOPMENT_TEAM: CC24ZA67DK
         MARKETING_VERSION: "1.1.0"
-        CURRENT_PROJECT_VERSION: "3"
+        CURRENT_PROJECT_VERSION: "4"
     dependencies:
       - package: SwiftTerm
         product: SwiftTerm
@@ -95,7 +95,7 @@ targets:
       properties:
         CFBundleDisplayName: mSSH
         CFBundleShortVersionString: "1.1.0"
-        CFBundleVersion: "3"
+        CFBundleVersion: "4"
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
     entitlements:
