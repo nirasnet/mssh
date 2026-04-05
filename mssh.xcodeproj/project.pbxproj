@@ -145,6 +145,7 @@
 		959591801E0A0E56C1C1575D /* KeyManagementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyManagementService.swift; sourceTree = "<group>"; };
 		97296C3E64F40DE0B6AC61ED /* SFTPService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFTPService.swift; sourceTree = "<group>"; };
 		9D1DD2D0E11A233036AF9A05 /* SessionTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionTabView.swift; sourceTree = "<group>"; };
+		A21737FD14B7A95EE59AA7FD /* mssh.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = mssh.xcconfig; sourceTree = "<group>"; };
 		A393BE170AE14A24D7864115 /* mssh-mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "mssh-mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE6116FE729C6C60376A1F84 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		AEB3DD33B9CC1A612DC13A89 /* SyncStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncStatusView.swift; sourceTree = "<group>"; };
@@ -289,6 +290,7 @@
 				2DD643582D8A28DB8F21C40D /* Info.plist */,
 				4DD192862B1CE3BF82EBC703 /* mssh-mac.entitlements */,
 				377579C92F8C5B4D772D0DA0 /* mssh.entitlements */,
+				A21737FD14B7A95EE59AA7FD /* mssh.xcconfig */,
 				53F7EDC68E2EA4C88DC4C1AB /* App */,
 				3C3E1BA5E96344CE433E4BD8 /* Models */,
 				E702430DF272DDE509884A2B /* Resources */,
