@@ -3,7 +3,7 @@ import SwiftData
 
 @Model
 final class KnownHost {
-    @Attribute(.unique) var hostIdentifier: String
+    var hostIdentifier: String
     var host: String
     var port: Int
     var keyTypeDescription: String
