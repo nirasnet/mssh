@@ -86,14 +86,13 @@ struct msshApp: App {
     ///   4. Last resort: fall back to an in-memory store so the app always
     ///      launches rather than showing a white screen / crashing.
     private static func makeModelContainer(schema: Schema) -> ModelContainer {
-        // Check user preference for iCloud sync (defaults to true)
-        let cloudSyncEnabled = UserDefaults.standard.object(forKey: "cloudSyncEnabled") as? Bool ?? true
-        let hasICloud = FileManager.default.ubiquityIdentityToken != nil
-        let useCloud = cloudSyncEnabled && hasICloud
+        // Disable CloudKit sync for now — SwiftData + CloudKit has schema
+        // migration crashes on device. Passwords still sync via iCloud Keychain.
+        // TODO: Re-enable when Apple fixes SwiftData CloudKit migration.
         let config = ModelConfiguration(
             schema: schema,
             isStoredInMemoryOnly: false,
-            cloudKitDatabase: useCloud ? .automatic : .none
+            cloudKitDatabase: .none
         )
 
         // 1. Normal open
