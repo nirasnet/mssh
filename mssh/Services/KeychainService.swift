@@ -116,12 +116,71 @@ enum KeychainService {
             kSecAttrService as String: serviceName,
             kSecAttrAccount as String: "key-\(id)",
             kSecReturnData as String: true,
-            kSecMatchLimit as String: kSecMatchLimitOne
+            kSecMatchLimit as String: kSecMatchLimitOne,
+            // Match both device-local AND iCloud-synced items so the
+            // resolver finds a key regardless of which way the SSHKey's
+            // syncAcrossDevices flag was set at save time.
+            kSecAttrSynchronizable as String: kSecAttrSynchronizableAny
         ]
         var result: AnyObject?
         let status = SecItemCopyMatching(query as CFDictionary, &result)
         guard status == errSecSuccess, let data = result as? Data else { return nil }
         return data
+    }
+
+    // MARK: - Syncable Private Keys (opt-in, iCloud Keychain)
+
+    /// Saves a private key to iCloud Keychain so it becomes available on
+    /// other devices signed into the same Apple ID. iCloud Keychain is
+    /// end-to-end encrypted by Apple. Accessibility is `WhenUnlocked` (not
+    /// `ThisDeviceOnly`) because the item must survive sync.
+    static func savePrivateKeySyncable(id: String, pemData: Data) throws {
+        // Wipe both variants (local + syncable) so we never have conflicting
+        // bytes under the same account name after a flag toggle.
+        deletePrivateKey(id: id)
+
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: serviceName,
+            kSecAttrAccount as String: "key-\(id)",
+            kSecValueData as String: pemData,
+            kSecAttrAccessible as String: kSecAttrAccessibleWhenUnlocked,
+            kSecAttrSynchronizable as String: true
+        ]
+        let status = SecItemAdd(query as CFDictionary, nil)
+        guard status == errSecSuccess else {
+            throw KeychainError.saveFailed(status)
+        }
+    }
+
+    /// Re-save an existing key under the alternate sync disposition. Used
+    /// when the user toggles `SSHKey.syncAcrossDevices` on an already-imported
+    /// key. No-op (returns nil) if the key isn't in the Keychain here yet.
+    @discardableResult
+    static func repinPrivateKeySync(id: String, synced: Bool) -> Bool {
+        guard let existing = getPrivateKey(id: id) else { return false }
+        deletePrivateKey(id: id)
+        do {
+            if synced {
+                try savePrivateKeySyncable(id: id, pemData: existing)
+            } else {
+                try savePrivateKey(id: id, pemData: existing)
+            }
+            return true
+        } catch {
+            return false
+        }
+    }
+
+    /// Remove a private key regardless of its sync disposition.
+    static func deletePrivateKey(id: String) {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: serviceName,
+            kSecAttrAccount as String: "key-\(id)",
+            kSecAttrSynchronizable as String: kSecAttrSynchronizableAny
+        ]
+        SecItemDelete(query as CFDictionary)
     }
 
     // MARK: - Host Keys (device-only)

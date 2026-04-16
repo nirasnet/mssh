@@ -12,6 +12,7 @@ struct KeyManagerView: View {
     @State private var viewModel = KeyManagerViewModel()
     @State private var renamingKey: SSHKey?
     @State private var renameDraft = ""
+    @State private var syncToggleKey: SSHKey?
 
     var body: some View {
         Group {
@@ -111,6 +112,31 @@ struct KeyManagerView: View {
         } message: { key in
             Text("Rename \"\(key.label)\" to:")
         }
+        .alert("Sync This Key Across Devices?",
+               isPresented: .init(
+                   get: { syncToggleKey != nil },
+                   set: { if !$0 { syncToggleKey = nil } }
+               ),
+               presenting: syncToggleKey
+        ) { key in
+            Button(key.syncAcrossDevices ? "Stop Syncing" : "Enable Sync", role: key.syncAcrossDevices ? .destructive : .none) {
+                KeyManagementService.setSync(
+                    key,
+                    enabled: !key.syncAcrossDevices,
+                    modelContext: modelContext
+                )
+                syncToggleKey = nil
+            }
+            Button("Cancel", role: .cancel) {
+                syncToggleKey = nil
+            }
+        } message: { key in
+            if key.syncAcrossDevices {
+                Text("\"\(key.label)\" will be removed from iCloud Keychain and kept only on this device. It won't be available on your other devices until you re-enable sync.")
+            } else {
+                Text("\"\(key.label)\" will be stored in iCloud Keychain so it's available on every device signed into your Apple ID. iCloud Keychain is end-to-end encrypted by Apple — nobody else can read your key. Anyone with access to your Apple ID + device passcode can use it.")
+            }
+        }
     }
 
     // MARK: - Empty State
@@ -206,11 +232,19 @@ struct KeyManagerView: View {
                 .foregroundStyle(AppColors.textTertiary)
                 .lineLimit(2)
 
-            HStack {
+            HStack(spacing: AppSpacing.sm) {
                 Text("Created \(key.createdAt.formatted(.relative(presentation: .named)))")
                     .font(.system(size: 10))
                     .foregroundStyle(AppColors.textTertiary)
                 Spacer()
+                // iCloud sync badge — shows current sync disposition per key.
+                HStack(spacing: 3) {
+                    Image(systemName: key.syncAcrossDevices ? "icloud.fill" : "iphone")
+                        .font(.system(size: 9))
+                    Text(key.syncAcrossDevices ? "Synced" : "Local")
+                        .font(.system(size: 9, weight: .medium))
+                }
+                .foregroundStyle(key.syncAcrossDevices ? AppColors.accent : AppColors.textTertiary)
             }
         }
         .appCard()
@@ -225,6 +259,17 @@ struct KeyManagerView: View {
                 renamingKey = key
             } label: {
                 Label("Rename", systemImage: "pencil")
+            }
+            Button {
+                // Prompt for confirmation before flipping iCloud sync — users
+                // need to understand the E2EE model before keys leave the
+                // device. The actual flip happens in the alert handler.
+                syncToggleKey = key
+            } label: {
+                Label(
+                    key.syncAcrossDevices ? "Stop Syncing" : "Sync Across Devices",
+                    systemImage: key.syncAcrossDevices ? "icloud.slash" : "icloud"
+                )
             }
             Divider()
             Button(role: .destructive) {

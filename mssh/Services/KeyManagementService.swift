@@ -7,18 +7,28 @@ final class KeyManagementService {
 
     // MARK: - Ed25519 generation
 
-    static func generateEd25519Key(label: String, modelContext: ModelContext) throws -> SSHKey {
+    static func generateEd25519Key(label: String, modelContext: ModelContext, syncAcrossDevices: Bool = false) throws -> SSHKey {
         let privateKey = Curve25519.Signing.PrivateKey()
         let publicKey = privateKey.publicKey
         let keychainID = UUID().uuidString
 
-        try KeychainService.savePrivateKey(id: keychainID, pemData: privateKey.rawRepresentation)
+        if syncAcrossDevices {
+            try KeychainService.savePrivateKeySyncable(id: keychainID, pemData: privateKey.rawRepresentation)
+        } else {
+            try KeychainService.savePrivateKey(id: keychainID, pemData: privateKey.rawRepresentation)
+        }
 
         let publicKeyText = formatOpenSSHPublicKey(
             publicKey: publicKey.rawRepresentation, type: "ed25519", label: label
         )
 
-        let sshKey = SSHKey(label: label, keyType: "ed25519", keychainID: keychainID, publicKeyText: publicKeyText)
+        let sshKey = SSHKey(
+            label: label,
+            keyType: "ed25519",
+            keychainID: keychainID,
+            publicKeyText: publicKeyText,
+            syncAcrossDevices: syncAcrossDevices
+        )
         modelContext.insert(sshKey)
         try modelContext.save()
         return sshKey
@@ -31,7 +41,7 @@ final class KeyManagementService {
 
     // MARK: - Import
 
-    static func importKey(label: String, pemText: String, modelContext: ModelContext) throws -> SSHKey {
+    static func importKey(label: String, pemText: String, modelContext: ModelContext, syncAcrossDevices: Bool = false) throws -> SSHKey {
         guard let pemData = pemText.data(using: .utf8) else {
             throw KeyError.invalidPEM
         }
@@ -39,11 +49,21 @@ final class KeyManagementService {
         let keyType = PEMParser.detectKeyType(pem: pemText)
         let keychainID = UUID().uuidString
 
-        try KeychainService.savePrivateKey(id: keychainID, pemData: pemData)
+        if syncAcrossDevices {
+            try KeychainService.savePrivateKeySyncable(id: keychainID, pemData: pemData)
+        } else {
+            try KeychainService.savePrivateKey(id: keychainID, pemData: pemData)
+        }
 
         let publicKeyText = derivePublicKeyText(pem: pemText, keyType: keyType, label: label)
 
-        let sshKey = SSHKey(label: label, keyType: keyType, keychainID: keychainID, publicKeyText: publicKeyText)
+        let sshKey = SSHKey(
+            label: label,
+            keyType: keyType,
+            keychainID: keychainID,
+            publicKeyText: publicKeyText,
+            syncAcrossDevices: syncAcrossDevices
+        )
         modelContext.insert(sshKey)
         try modelContext.save()
         return sshKey
@@ -52,8 +72,23 @@ final class KeyManagementService {
     // MARK: - Delete
 
     static func deleteKey(_ key: SSHKey, modelContext: ModelContext) {
-        KeychainService.deleteItem(account: "key-\(key.keychainID)")
+        // Remove BOTH the local and iCloud-synced copies so a previously
+        // synced private key doesn't linger in the user's iCloud Keychain
+        // after they delete the key here.
+        KeychainService.deletePrivateKey(id: key.keychainID)
         modelContext.delete(key)
+    }
+
+    // MARK: - Toggle sync disposition of an existing key
+
+    /// Flip the sync flag on an existing SSHKey. Moves the private key bytes
+    /// between device-local and iCloud-synced Keychain variants so the other
+    /// devices can actually pick it up once the SwiftData row propagates.
+    static func setSync(_ key: SSHKey, enabled: Bool, modelContext: ModelContext) {
+        guard key.syncAcrossDevices != enabled else { return }
+        _ = KeychainService.repinPrivateKeySync(id: key.keychainID, synced: enabled)
+        key.syncAcrossDevices = enabled
+        try? modelContext.save()
     }
 
     // MARK: - Public key derivation

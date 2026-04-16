@@ -4,6 +4,7 @@ import SwiftData
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    @Environment(iCloudSyncService.self) private var syncService
     @State private var showClearDataAlert = false
     @State private var showRestartAlert = false
 
@@ -48,6 +49,16 @@ struct SettingsView: View {
 
     private var appBuild: String {
         Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "—"
+    }
+
+    private var syncStatusColor: Color {
+        switch syncService.status {
+        case .synced:       return AppColors.connected
+        case .syncing:      return AppColors.accent
+        case .notStarted:   return AppColors.textSecondary
+        case .notAvailable: return AppColors.warning
+        case .error:        return AppColors.error
+        }
     }
 
     var body: some View {
@@ -163,7 +174,7 @@ struct SettingsView: View {
                     }
                 }
 
-                // Sync
+                // Sync — live status from iCloudSyncService
                 Section {
                     Toggle(isOn: $cloudSyncEnabled) {
                         Label("iCloud Sync", systemImage: "icloud")
@@ -174,14 +185,30 @@ struct SettingsView: View {
 
                     if cloudSyncEnabled {
                         HStack {
-                            Label("Status", systemImage: "arrow.triangle.2.circlepath")
+                            Label("Status", systemImage: syncService.status.systemImage)
+                            Spacer()
+                            Text(syncService.status.label)
+                                .font(.caption)
+                                .foregroundStyle(syncStatusColor)
+                        }
+                        if let date = syncService.lastSyncDate {
+                            HStack {
+                                Label("Last Sync", systemImage: "clock.arrow.circlepath")
+                                Spacer()
+                                Text(date, style: .relative)
+                                    .font(.caption)
+                                    .foregroundStyle(AppColors.textSecondary)
+                            }
+                        }
+                        HStack {
+                            Label("iCloud Account", systemImage: "person.icloud")
                             Spacer()
                             if FileManager.default.ubiquityIdentityToken != nil {
-                                Text("Active")
+                                Text("Signed in")
                                     .font(.caption)
                                     .foregroundStyle(AppColors.connected)
                             } else {
-                                Text("No iCloud Account")
+                                Text("Not signed in")
                                     .font(.caption)
                                     .foregroundStyle(AppColors.warning)
                             }
@@ -189,7 +216,7 @@ struct SettingsView: View {
                         HStack {
                             Label("Keychain Sync", systemImage: "key.icloud")
                             Spacer()
-                            Text("Passwords")
+                            Text("Passwords · opt-in keys")
                                 .font(.caption)
                                 .foregroundStyle(AppColors.textSecondary)
                         }
@@ -198,7 +225,7 @@ struct SettingsView: View {
                     Label("Sync", systemImage: "arrow.triangle.2.circlepath")
                 } footer: {
                     if cloudSyncEnabled {
-                        Text("Connection profiles sync via iCloud. Passwords sync via iCloud Keychain. Private keys stay on-device.")
+                        Text("Connections, SSH key metadata, known hosts, snippets, and port forwards sync via iCloud. Passwords sync via iCloud Keychain. Private SSH key material is device-only unless you flip \"Sync across devices\" on a specific key in the Keys tab.")
                     } else {
                         Text("All data is stored locally on this device only. Turn on to sync across iPhone, iPad, and Mac.")
                     }
@@ -206,7 +233,7 @@ struct SettingsView: View {
                 .alert("Restart Required", isPresented: $showRestartAlert) {
                     Button("OK") {}
                 } message: {
-                    Text("Please restart mSSH for the sync change to take effect.")
+                    Text("Please quit and reopen mSSH for the sync change to take effect.")
                 }
 
                 // SSH (Known Hosts, Snippets)
