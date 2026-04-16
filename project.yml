@@ -111,6 +111,9 @@ targets:
       properties:
         com.apple.security.app-sandbox: true
         com.apple.security.network.client: true
+        # Read-only access to folders the user picks via NSOpenPanel —
+        # required so the .ssh importer can scan ~/.ssh/.
+        com.apple.security.files.user-selected.read-only: true
         com.apple.developer.icloud-services:
           - CloudKit
         com.apple.developer.icloud-container-identifiers:

@@ -7,6 +7,8 @@ struct SettingsView: View {
     @Environment(iCloudSyncService.self) private var syncService
     @State private var showClearDataAlert = false
     @State private var showRestartAlert = false
+    @State private var importSummary: String?
+    @State private var showImportResult = false
 
     @AppStorage(AppPreferences.Key.terminalThemeName)
     private var themeName = AppPreferences.Default.terminalThemeName
@@ -220,6 +222,17 @@ struct SettingsView: View {
                                 .font(.caption)
                                 .foregroundStyle(AppColors.textSecondary)
                         }
+                        #if os(macOS)
+                        Button {
+                            let result = SSHFolderImporter.promptAndImport(modelContext: modelContext)
+                            importSummary = result.humanSummary +
+                                (result.errors.isEmpty ? "" : "\n\n" + result.errors.joined(separator: "\n"))
+                            showImportResult = true
+                        } label: {
+                            Label("Import from ~/.ssh Folder", systemImage: "square.and.arrow.down.on.square")
+                                .foregroundStyle(AppColors.accent)
+                        }
+                        #endif
                     }
                 } header: {
                     Label("Sync", systemImage: "arrow.triangle.2.circlepath")
@@ -326,6 +339,11 @@ struct SettingsView: View {
                     Button("Done") { dismiss() }
                         .fontWeight(.semibold)
                 }
+            }
+            .alert("Import Complete", isPresented: $showImportResult) {
+                Button("OK") {}
+            } message: {
+                Text(importSummary ?? "")
             }
         }
         .appTheme()

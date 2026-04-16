@@ -1,5 +1,8 @@
 import SwiftUI
 import SwiftData
+#if os(macOS)
+import AppKit
+#endif
 
 @main
 struct msshApp: App {
@@ -60,11 +63,54 @@ struct msshApp: App {
                     isLocked = true
                 }
                 AutoImportService.importIfNeeded(modelContext: modelContainer.mainContext)
+                #if os(macOS)
+                // First-launch Mac UX: auto-prompt the user to import their
+                // existing ~/.ssh keys. Runs once (guarded by the importer's
+                // own didPromptKey flag). After onboarding, subsequent
+                // launches silently refresh from the bookmarked folder.
+                if hasCompletedOnboarding {
+                    autoRunSSHFolderImport(
+                        modelContext: modelContainer.mainContext
+                    )
+                }
+                #endif
             }
         }
         .modelContainer(modelContainer)
         #if os(macOS)
         .defaultSize(width: 900, height: 650)
+        .commands {
+            // App menu command: File → Sync → Import from ~/.ssh Folder
+            CommandGroup(after: .newItem) {
+                Divider()
+                Button("Sync · Import from ~/.ssh Folder…") {
+                    let result = SSHFolderImporter.promptAndImport(
+                        modelContext: modelContainer.mainContext
+                    )
+                    presentImportResultAlert(result: result)
+                }
+                .keyboardShortcut("i", modifiers: [.command, .shift])
+
+                Button("Sync · Refresh Now") {
+                    // Refresh by re-running the silent importer (pulls any
+                    // new keys added to ~/.ssh/ since last launch). CloudKit
+                    // itself syncs continuously — this is a user-visible
+                    // "I changed something, pull now" action.
+                    if let result = SSHFolderImporter.runWithStoredBookmark(
+                        modelContext: modelContainer.mainContext
+                    ) {
+                        presentImportResultAlert(result: result)
+                    } else {
+                        // No bookmark yet — fall back to prompt.
+                        let result = SSHFolderImporter.promptAndImport(
+                            modelContext: modelContainer.mainContext
+                        )
+                        presentImportResultAlert(result: result)
+                    }
+                }
+                .keyboardShortcut("r", modifiers: [.command, .shift])
+            }
+        }
         #endif
         .onChange(of: scenePhase) { _, newPhase in
             switch newPhase {
@@ -224,6 +270,45 @@ struct msshApp: App {
             }
         }
     }
+
+    #if os(macOS)
+    // MARK: - Mac ~/.ssh auto-import
+
+    /// First-launch UX on macOS: if the user hasn't yet granted folder
+    /// access, prompt them to pick `~/.ssh/` so their existing keys/config
+    /// flow into mSSH (and sync up to iCloud). On subsequent launches we
+    /// silently run through the stored bookmark to pick up new keys the
+    /// user added outside the app.
+    private func autoRunSSHFolderImport(modelContext: ModelContext) {
+        if SSHFolderImporter.shouldAutoPrompt {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                let result = SSHFolderImporter.promptAndImport(modelContext: modelContext)
+                if !result.isEmpty || !result.errors.isEmpty {
+                    presentImportResultAlert(result: result)
+                }
+            }
+            return
+        }
+        // Bookmark already granted — silent refresh (no alert unless there's
+        // something noteworthy to report).
+        if let result = SSHFolderImporter.runWithStoredBookmark(modelContext: modelContext),
+           (result.keysImported > 0 || result.profilesImported > 0) {
+            presentImportResultAlert(result: result)
+        }
+    }
+
+    private func presentImportResultAlert(result: SSHFolderImportResult) {
+        let alert = NSAlert()
+        alert.messageText = "Import from ~/.ssh"
+        var body = result.humanSummary
+        if !result.errors.isEmpty {
+            body += "\n\nSkipped files:\n" + result.errors.joined(separator: "\n")
+        }
+        alert.informativeText = body
+        alert.addButton(withTitle: "OK")
+        alert.runModal()
+    }
+    #endif
 
     // MARK: - Appearance
 
