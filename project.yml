@@ -25,7 +25,10 @@ targets:
     type: application
     platform: iOS
     sources:
-      - mssh
+      - path: mssh
+        excludes:
+          - "Info-macOS.plist"
+          - "mssh-mac.entitlements"
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.m4ck.mssh
@@ -79,7 +82,10 @@ targets:
     type: application
     platform: macOS
     sources:
-      - mssh
+      - path: mssh
+        excludes:
+          - "Info.plist"
+          - "mssh.entitlements"
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.m4ck.mssh

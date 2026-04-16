@@ -24,7 +24,7 @@ final class SSHService {
         modelContainer: ModelContainer,
         hostKeyPrompt: @escaping @Sendable (HostKeyPromptType) async -> HostKeyPromptResult
     ) async throws -> SSHClient {
-        let citadelAuth = authMethod.toCitadel(username: username)
+        let citadelAuth = try authMethod.toCitadel(username: username)
 
         let validator = SSHHostKeyValidator.tofu(
             host: host,
@@ -145,8 +145,20 @@ enum SSHAuthMethod {
     case privateKey(Data)
 }
 
+enum KeyParseError: LocalizedError {
+    case unsupportedFormat(byteCount: Int, headerHint: String?)
+
+    var errorDescription: String? {
+        switch self {
+        case .unsupportedFormat(let count, let hint):
+            let headerLine = hint.map { " Detected header: \($0)." } ?? ""
+            return "Could not parse the private key (\(count) bytes).\(headerLine) RSA keys must be in OpenSSH format — convert on your Mac with: ssh-keygen -p -N \"\" -o -f <keyfile>"
+        }
+    }
+}
+
 extension SSHAuthMethod {
-    func toCitadel(username: String) -> SSHAuthenticationMethod {
+    func toCitadel(username: String) throws -> SSHAuthenticationMethod {
         switch self {
         case .password(let password):
             return .passwordBased(username: username, password: password)
@@ -190,9 +202,14 @@ extension SSHAuthMethod {
                 return .p521(username: username, privateKey: pk)
             }
 
-            // Fallback -- nothing matched, will fail at authentication
-            print("[mSSH] WARNING: Could not parse private key (\(keyData.count) bytes). Key format may be unsupported.")
-            return .passwordBased(username: username, password: "")
+            // Nothing matched — surface a precise error instead of falling
+            // back to an empty password (which the server then rejects with
+            // a generic "Authentication failed" that hides the real cause).
+            let header = String(data: keyData, encoding: .utf8)?
+                .components(separatedBy: "\n")
+                .first
+                .map { String($0.prefix(60)) }
+            throw KeyParseError.unsupportedFormat(byteCount: keyData.count, headerHint: header)
         }
     }
 

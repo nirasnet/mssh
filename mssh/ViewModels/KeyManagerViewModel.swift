@@ -25,4 +25,11 @@ final class KeyManagerViewModel {
     func deleteKey(_ key: SSHKey, modelContext: ModelContext) {
         KeyManagementService.deleteKey(key, modelContext: modelContext)
     }
+
+    func renameKey(_ key: SSHKey, to newLabel: String, modelContext: ModelContext) {
+        let trimmed = newLabel.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        key.label = trimmed
+        try? modelContext.save()
+    }
 }

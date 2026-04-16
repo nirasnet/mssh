@@ -94,11 +94,27 @@ final class TerminalAccessoryBar: UIView {
         )
         addSubview(dismissButton)
 
+        // Snippets button — posts a notification that the active terminal view
+        // listens to in order to present the SnippetPickerView sheet.
+        let snippetButton = makeKeyButton(
+            title: nil,
+            icon: "text.badge.plus",
+            width: 40,
+            action: #selector(openSnippetPicker)
+        )
+        snippetButton.tintColor = accentColor
+        addSubview(snippetButton)
+
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: topAnchor, constant: 1),
             scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: dismissButton.leadingAnchor, constant: -4),
+            scrollView.trailingAnchor.constraint(equalTo: snippetButton.leadingAnchor, constant: -4),
+
+            snippetButton.topAnchor.constraint(equalTo: topAnchor, constant: 5),
+            snippetButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5),
+            snippetButton.trailingAnchor.constraint(equalTo: dismissButton.leadingAnchor, constant: -4),
+            snippetButton.widthAnchor.constraint(equalToConstant: 40),
 
             dismissButton.topAnchor.constraint(equalTo: topAnchor, constant: 5),
             dismissButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5),
@@ -183,6 +199,11 @@ final class TerminalAccessoryBar: UIView {
     @objc private func dismissKeyboard() {
         feedbackGenerator.impactOccurred()
         terminal?.resignFirstResponder()
+    }
+
+    @objc private func openSnippetPicker() {
+        feedbackGenerator.impactOccurred()
+        NotificationCenter.default.post(name: .openSnippetPicker, object: nil)
     }
 
     @objc private func keyTapped(_ sender: UIButton) {

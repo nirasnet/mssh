@@ -5,12 +5,22 @@ struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @State private var showClearDataAlert = false
-    @AppStorage("terminalThemeName") private var themeName = "Default"
-    @AppStorage("terminalFontSize") private var fontSize = 13.0
+    @State private var showRestartAlert = false
+
+    @AppStorage(AppPreferences.Key.terminalThemeName)
+    private var themeName = AppPreferences.Default.terminalThemeName
+    @AppStorage(AppPreferences.Key.terminalFontFamily)
+    private var fontFamily = AppPreferences.Default.terminalFontFamily
+    @AppStorage(AppPreferences.Key.terminalFontSize)
+    private var fontSize = AppPreferences.Default.terminalFontSize
+    @AppStorage(AppPreferences.Key.terminalCursorStyle)
+    private var cursorStyleRaw = AppPreferences.Default.terminalCursorStyle
+    @AppStorage(AppPreferences.Key.terminalBlinkCursor)
+    private var blinkCursor = AppPreferences.Default.terminalBlinkCursor
+
     @AppStorage("biometricEnabled") private var biometricEnabled = false
     @AppStorage("lockOnBackground") private var lockOnBackground = true
     @AppStorage("cloudSyncEnabled") private var cloudSyncEnabled = true
-    @State private var showRestartAlert = false
 
     private var biometricsAvailable: Bool {
         BiometricService.canUseBiometrics()
@@ -32,51 +42,98 @@ struct SettingsView: View {
         }
     }
 
+    private var appVersion: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "—"
+    }
+
+    private var appBuild: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "—"
+    }
+
     var body: some View {
         NavigationStack {
             Form {
+                // Appearance
+                Section {
+                    ForEach(TerminalTheme.allThemes, id: \.name) { theme in
+                        Button {
+                            themeName = theme.name
+                        } label: {
+                            HStack(spacing: AppSpacing.md) {
+                                ThemeSwatch(theme: theme)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(theme.name)
+                                        .font(.subheadline)
+                                        .foregroundStyle(AppColors.textPrimary)
+                                    Text("$ ssh root@host")
+                                        .font(.system(size: 11, design: .monospaced))
+                                        .foregroundStyle(theme.foreground.opacity(0.85))
+                                        .padding(.horizontal, 6)
+                                        .padding(.vertical, 2)
+                                        .background(theme.background)
+                                        .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
+                                }
+                                Spacer()
+                                if themeName == theme.name {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .foregroundStyle(AppColors.accent)
+                                }
+                            }
+                        }
+                        .buttonStyle(.plain)
+                    }
+                } header: {
+                    Label("Appearance", systemImage: "paintpalette")
+                } footer: {
+                    Text("Theme applies on the next terminal repaint or new session.")
+                }
+
                 // Terminal
                 Section {
-                    Picker("Theme", selection: $themeName) {
-                        ForEach(TerminalTheme.allThemes, id: \.name) { theme in
-                            HStack {
-                                Circle()
-                                    .fill(theme.background)
-                                    .frame(width: 16, height: 16)
-                                    .overlay(
-                                        Circle()
-                                            .strokeBorder(Color.white.opacity(0.2), lineWidth: 0.5)
-                                    )
-                                Text(theme.name)
-                            }
-                            .tag(theme.name)
+                    Picker(selection: $fontFamily) {
+                        ForEach(AppPreferences.availableFontFamilies, id: \.self) { name in
+                            Text(name).tag(name)
                         }
+                    } label: {
+                        Label("Font Family", systemImage: "textformat")
                     }
 
-                    VStack(spacing: AppSpacing.sm) {
-                        HStack {
-                            Text("Font Size")
-                            Spacer()
-                            Text("\(Int(fontSize))pt")
+                    HStack {
+                        Label("Font Size", systemImage: "textformat.size")
+                        Spacer()
+                        Stepper(value: $fontSize, in: AppPreferences.fontSizeRange) {
+                            Text("\(fontSize) pt")
                                 .font(.system(.caption, design: .monospaced))
                                 .foregroundStyle(AppColors.accent)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 2)
-                                .background(AppColors.accentDim)
-                                .clipShape(Capsule())
+                                .frame(minWidth: 44, alignment: .trailing)
                         }
-                        Slider(value: $fontSize, in: 8...24, step: 1)
-                            .tint(AppColors.accent)
                     }
 
-                    // Font preview
+                    Picker(selection: $cursorStyleRaw) {
+                        ForEach(AppPreferences.CursorStyle.allCases) { style in
+                            Text(style.displayName).tag(style.rawValue)
+                        }
+                    } label: {
+                        Label("Cursor", systemImage: "cursorarrow.click")
+                    }
+
+                    Toggle(isOn: $blinkCursor) {
+                        Label("Blink Cursor", systemImage: "cursorarrow.click.badge.clock")
+                    }
+                    .tint(AppColors.accent)
+
+                    // Live preview
                     HStack {
                         Text("Preview")
                             .foregroundStyle(AppColors.textSecondary)
                         Spacer()
                         Text("ssh root@host")
-                            .font(.system(size: CGFloat(fontSize), design: .monospaced))
-                            .foregroundStyle(AppColors.accent)
+                            .font(previewFont())
+                            .foregroundStyle(TerminalTheme.named(themeName).foreground)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(TerminalTheme.named(themeName).background)
+                            .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
                     }
                 } header: {
                     Label("Terminal", systemImage: "terminal")
@@ -104,17 +161,6 @@ struct SettingsView: View {
                     } else if biometricEnabled {
                         Text("Authentication required when opening the app\(lockOnBackground ? " and returning from background" : "").")
                     }
-                }
-
-                // SSH
-                Section {
-                    NavigationLink {
-                        KnownHostsView()
-                    } label: {
-                        Label("Known Hosts", systemImage: "server.rack")
-                    }
-                } header: {
-                    Label("SSH", systemImage: "network")
                 }
 
                 // Sync
@@ -163,6 +209,22 @@ struct SettingsView: View {
                     Text("Please restart mSSH for the sync change to take effect.")
                 }
 
+                // SSH (Known Hosts, Snippets)
+                Section {
+                    NavigationLink {
+                        KnownHostsView()
+                    } label: {
+                        Label("Known Hosts", systemImage: "server.rack")
+                    }
+                    NavigationLink {
+                        SnippetsView()
+                    } label: {
+                        Label("Snippets", systemImage: "text.badge.plus")
+                    }
+                } header: {
+                    Label("SSH", systemImage: "network")
+                }
+
                 // Data Management
                 Section {
                     Button(role: .destructive) {
@@ -174,7 +236,7 @@ struct SettingsView: View {
                 } header: {
                     Label("Data", systemImage: "externaldrive")
                 } footer: {
-                    Text("Removes all connections, keys, and known hosts from this device.")
+                    Text("Removes all connections, keys, snippets, port forwards, and known hosts from this device.")
                 }
                 .alert("Clear All Data?", isPresented: $showClearDataAlert) {
                     Button("Cancel", role: .cancel) {}
@@ -182,27 +244,50 @@ struct SettingsView: View {
                         clearAllData()
                     }
                 } message: {
-                    Text("This will delete all connections, SSH keys, and known hosts. This cannot be undone.")
+                    Text("This will delete all connections, SSH keys, snippets, port forwards, and known hosts. This cannot be undone.")
                 }
 
                 // About
                 Section {
                     HStack {
-                        Text("Version")
+                        Label("Version", systemImage: "info.circle")
                         Spacer()
-                        Text("1.0.0")
+                        Text(appVersion)
                             .font(.system(.caption, design: .monospaced))
                             .foregroundStyle(AppColors.textSecondary)
                     }
                     HStack {
-                        Text("Build")
+                        Label("Build", systemImage: "hammer")
                         Spacer()
-                        Text("1")
+                        Text(appBuild)
+                            .font(.system(.caption, design: .monospaced))
+                            .foregroundStyle(AppColors.textSecondary)
+                    }
+                    HStack {
+                        Label("SSH Engine", systemImage: "shippingbox")
+                        Spacer()
+                        Text("Citadel")
+                            .font(.system(.caption, design: .monospaced))
+                            .foregroundStyle(AppColors.textSecondary)
+                    }
+                    HStack {
+                        Label("Terminal Engine", systemImage: "shippingbox")
+                        Spacer()
+                        Text("SwiftTerm")
+                            .font(.system(.caption, design: .monospaced))
+                            .foregroundStyle(AppColors.textSecondary)
+                    }
+                    HStack {
+                        Label("Source", systemImage: "chevron.left.forwardslash.chevron.right")
+                        Spacer()
+                        Text("github.com/m4ck/mssh")
                             .font(.system(.caption, design: .monospaced))
                             .foregroundStyle(AppColors.textSecondary)
                     }
                 } header: {
                     Label("About", systemImage: "info.circle")
+                } footer: {
+                    Text("Built with Citadel (orlandos-nl) and SwiftTerm (migueldeicaza).")
                 }
             }
             .scrollContentBackground(.hidden)
@@ -219,15 +304,46 @@ struct SettingsView: View {
         .appTheme()
     }
 
+    /// Resolved preview font that honors family + size, with a system fallback.
+    private func previewFont() -> Font {
+        let pt = CGFloat(fontSize)
+        if fontFamily == "System" {
+            return .system(size: pt, design: .monospaced)
+        }
+        return .custom(fontFamily, size: pt)
+    }
+
     private func clearAllData() {
         let context = modelContext
         do {
             try context.delete(model: ConnectionProfile.self)
             try context.delete(model: SSHKey.self)
             try context.delete(model: KnownHost.self)
+            try context.delete(model: Snippet.self)
+            try context.delete(model: PortForward.self)
             try context.save()
         } catch {
             print("[mSSH] Failed to clear data: \(error)")
         }
+    }
+}
+
+// MARK: - Theme swatch for the appearance picker
+
+private struct ThemeSwatch: View {
+    let theme: TerminalTheme
+
+    var body: some View {
+        HStack(spacing: 0) {
+            theme.background
+            theme.foreground
+            theme.cursorColor
+        }
+        .frame(width: 36, height: 24)
+        .clipShape(RoundedRectangle(cornerRadius: 5, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 5, style: .continuous)
+                .strokeBorder(Color.white.opacity(0.15), lineWidth: 0.5)
+        )
     }
 }

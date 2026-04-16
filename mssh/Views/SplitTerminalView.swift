@@ -82,20 +82,15 @@ struct SplitSessionTabView: View {
                     .allowsHitTesting(false)
             }
 
-            // Disconnected overlay
-            if !session.isConnected && !session.statusMessage.contains("Connecting") {
-                VStack(spacing: AppSpacing.sm) {
-                    Image(systemName: "bolt.slash.fill")
-                        .font(.title2)
-                        .foregroundStyle(AppColors.textTertiary)
-                    Text(session.statusMessage)
-                        .font(.system(.caption2, design: .monospaced))
-                        .foregroundStyle(AppColors.textSecondary)
-                        .multilineTextAlignment(.center)
+            // Status banner: same loading + error treatment as the single
+            // pane, so a failure in either pane surfaces immediately.
+            if SessionBannerInfo.shouldShow(for: session) {
+                VStack {
+                    Spacer()
+                    sessionStatusBanner(session: session)
+                        .padding(AppSpacing.md)
                 }
-                .padding(AppSpacing.md)
-                .background(AppColors.background.opacity(0.85))
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
         .contentShape(Rectangle())
@@ -118,26 +113,85 @@ struct SplitSessionTabView: View {
                 )
             }
 
-            // Error overlay
-            if session.statusMessage.starts(with: "Connection failed") ||
-               session.statusMessage.starts(with: "Error:") ||
-               session.statusMessage.starts(with: "SSH key not found") {
+            // Status banner: visible whenever the session isn't connected and
+            // has anything to say. The earlier strict prefix check missed our
+            // pre-flight errors (KeyParseError / AuthResolutionError) so the
+            // user only saw a blinking cursor with no feedback.
+            if SessionBannerInfo.shouldShow(for: session) {
                 VStack {
                     Spacer()
-                    HStack(spacing: AppSpacing.sm) {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .foregroundStyle(AppColors.warning)
-                        Text(session.statusMessage)
-                            .font(.system(.caption, design: .monospaced))
-                            .foregroundStyle(AppColors.textPrimary)
+                    sessionStatusBanner(session: session)
+                        .padding(.horizontal, AppSpacing.lg)
+                        .padding(.bottom, AppSpacing.xxl)
+                }
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+        }
+        .animation(.easeInOut(duration: 0.25), value: session.statusMessage)
+        .animation(.easeInOut(duration: 0.25), value: session.isConnected)
+    }
+
+    /// Inline banner shared by single and split panes — loading style
+    /// (spinner, no buttons) while the SSH attempt is in flight, error style
+    /// (warning + Retry / Close) once it has settled into a failure.
+    private func sessionStatusBanner(session: SessionViewModel) -> some View {
+        let loading = SessionBannerInfo.isLoading(for: session)
+        return VStack(spacing: AppSpacing.md) {
+            HStack(alignment: .top, spacing: AppSpacing.sm) {
+                if loading {
+                    ProgressView()
+                        .controlSize(.small)
+                        .tint(AppColors.accent)
+                } else {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .foregroundStyle(AppColors.warning)
+                        .font(.callout)
+                }
+                Text(session.statusMessage)
+                    .font(.system(.caption, design: .monospaced))
+                    .foregroundStyle(AppColors.textPrimary)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(8)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+
+            if !loading {
+                HStack(spacing: AppSpacing.sm) {
+                    Button {
+                        Task { await session.connect() }
+                    } label: {
+                        Text("Retry")
+                            .font(AppFonts.label)
+                            .foregroundStyle(AppColors.accent)
+                            .padding(.horizontal, AppSpacing.xl)
+                            .padding(.vertical, AppSpacing.sm)
+                            .background(AppColors.accentDim)
+                            .clipShape(Capsule())
                     }
-                    .padding(AppSpacing.md)
-                    .background(AppColors.surface.opacity(0.95))
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                    .padding(.bottom, AppSpacing.xxl)
+                    Button {
+                        sessionManager.closeSession(session.id)
+                    } label: {
+                        Text("Close")
+                            .font(AppFonts.label)
+                            .foregroundStyle(AppColors.textSecondary)
+                            .padding(.horizontal, AppSpacing.xl)
+                            .padding(.vertical, AppSpacing.sm)
+                            .background(AppColors.surfaceElevated)
+                            .clipShape(Capsule())
+                    }
                 }
             }
         }
+        .padding(AppSpacing.lg)
+        .background(AppColors.surface.opacity(0.95))
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .strokeBorder(
+                    (loading ? AppColors.accent : AppColors.error).opacity(0.3),
+                    lineWidth: 0.5
+                )
+        )
     }
 
     // MARK: - Toolbar
@@ -313,5 +367,26 @@ struct SplitSessionTabView: View {
         guard let session = splitSession, session.isConnected else { return }
         let bytes = Array("claude\n".utf8)
         session.bridge.sendToSSH(data: ArraySlice(bytes))
+    }
+}
+
+// MARK: - Banner classification
+
+/// Pure helpers for deciding what status banner to show for a session.
+/// Centralised so single-pane and split-pane stay in sync. Marked @MainActor
+/// because `SessionViewModel`'s `isConnected` / `statusMessage` are isolated
+/// to the main actor.
+@MainActor
+private enum SessionBannerInfo {
+    static func shouldShow(for session: SessionViewModel) -> Bool {
+        if session.isConnected { return false }
+        let s = session.statusMessage
+        return !s.isEmpty && s != "Disconnected"
+    }
+
+    static func isLoading(for session: SessionViewModel) -> Bool {
+        !session.isConnected
+            && (session.statusMessage == "Connecting..."
+                || session.statusMessage == "Opening terminal...")
     }
 }

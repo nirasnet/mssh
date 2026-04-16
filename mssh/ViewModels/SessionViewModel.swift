@@ -21,6 +21,7 @@ final class SessionViewModel: Identifiable {
     var connectionAttempts: Int = 0
 
     private let sshService = SSHService()
+    private let portForwardManager = PortForwardManager()
     private(set) var client: SSHClient?
     private var hostKeyPromptContinuation: CheckedContinuation<HostKeyPromptResult, Never>?
 
@@ -48,9 +49,21 @@ final class SessionViewModel: Identifiable {
         connectionAttempts += 1
         statusMessage = "Connecting..."
 
+        let authMethod: SSHAuthMethod
         do {
-            let authMethod = resolveAuthMethod()
+            authMethod = try resolveAuthMethod()
+        } catch let resolutionError as AuthResolutionError {
+            // Pre-flight failure (e.g. key not on this device) — never attempt
+            // the SSH handshake, otherwise the server's generic
+            // "key authentication failed" overwrites our explanation.
+            statusMessage = resolutionError.errorDescription ?? "Authentication unavailable."
+            return
+        } catch {
+            statusMessage = "Authentication setup failed: \(error.localizedDescription)"
+            return
+        }
 
+        do {
             let client = try await sshService.connect(
                 host: profile.host,
                 port: profile.port,
@@ -70,10 +83,28 @@ final class SessionViewModel: Identifiable {
             // Reset attempt counter on success
             connectionAttempts = 0
 
+            // Start port forwards (non-blocking — failures surface as a
+            // status message but never abort the SSH session).
+            if let container = self.modelContainer {
+                let errors = portForwardManager.startAll(
+                    for: profile,
+                    on: client,
+                    modelContext: container.mainContext
+                )
+                if let firstError = errors.first {
+                    statusMessage = firstError.errorDescription ?? "Port forward failed"
+                }
+            }
+
             // Start terminal session with default size (will resize on layout)
             bridge.connect(client: client, cols: 80, rows: 24)
         } catch let error as SSHConnectionError {
             statusMessage = "Connection failed: \(error.localizedDescription)"
+        } catch let error as KeyParseError {
+            // Surface verbatim — the message already includes the conversion
+            // command. No "Connection failed:" prefix, since the failure was
+            // before the connection attempt.
+            statusMessage = error.errorDescription ?? "Could not parse private key."
         } catch {
             // Provide user-friendly error messages
             let friendlyMessage = friendlyErrorMessage(error)
@@ -83,6 +114,7 @@ final class SessionViewModel: Identifiable {
 
     func disconnect() {
         bridge.disconnect()
+        portForwardManager.stopAll(for: profile)
         // If a host key prompt is pending, reject it so the continuation
         // does not hang indefinitely.
         if hostKeyPromptContinuation != nil {
@@ -118,7 +150,7 @@ final class SessionViewModel: Identifiable {
 
     // MARK: - Private
 
-    private func resolveAuthMethod() -> SSHAuthMethod {
+    private func resolveAuthMethod() throws -> SSHAuthMethod {
         switch profile.authType {
         case .password:
             // Try device-local first, then fall back to iCloud Keychain
@@ -127,16 +159,39 @@ final class SessionViewModel: Identifiable {
                 ?? ""
             return .password(password)
         case .key:
-            if let keyID = profile.keyID,
-               let keyData = KeychainService.getPrivateKey(id: keyID) {
+            if let keyData = lookupPrivateKeyForProfile() {
                 return .privateKey(keyData)
             }
-            // Key not found on this device — could be a synced profile
-            // where the private key hasn't been imported yet.
-            // Set a clear status so the user knows what happened.
-            statusMessage = "SSH key not found on this device. Import it from the Keys tab."
-            return .password("")
+            // Key isn't on this device — surface a clear, actionable error
+            // and DO NOT proceed with the SSH attempt (otherwise the server's
+            // generic "key authentication failed" overwrites this).
+            throw AuthResolutionError.keyMissingOnDevice(profileLabel: profile.label)
         }
+    }
+
+    /// Look up the private key bytes for this profile.
+    ///
+    /// Resolution order (defends against the device-specific keychainID
+    /// stored in `ConnectionProfile.keyID`):
+    ///   1. Treat `keyID` as a Keychain account suffix — works for keys
+    ///      imported on this device.
+    ///   2. Treat `keyID` as an `SSHKey.syncID` and look up the matching
+    ///      SSHKey row to get the local `keychainID`. Recovers the case
+    ///      where the user re-imports the same key on a new device.
+    private func lookupPrivateKeyForProfile() -> Data? {
+        guard let keyID = profile.keyID, !keyID.isEmpty else { return nil }
+
+        if let data = KeychainService.getPrivateKey(id: keyID) {
+            return data
+        }
+
+        guard let context = modelContainer?.mainContext else { return nil }
+        let predicate = #Predicate<SSHKey> { $0.syncID == keyID || $0.keychainID == keyID }
+        let descriptor = FetchDescriptor<SSHKey>(predicate: predicate)
+        if let key = try? context.fetch(descriptor).first {
+            return KeychainService.getPrivateKey(id: key.keychainID)
+        }
+        return nil
     }
 
     /// Convert common errors to user-friendly messages
@@ -224,5 +279,22 @@ final class SessionViewModel: Identifiable {
         }
 
         return error.localizedDescription
+    }
+}
+
+// MARK: - Auth Resolution Errors
+
+/// Pre-flight authentication failure raised before the SSH handshake. Lets
+/// `SessionViewModel.connect()` surface a precise reason (e.g. "key not on
+/// device") instead of letting the server respond with a generic
+/// "Authentication failed" that overwrites the real diagnosis.
+enum AuthResolutionError: LocalizedError {
+    case keyMissingOnDevice(profileLabel: String)
+
+    var errorDescription: String? {
+        switch self {
+        case .keyMissingOnDevice(let label):
+            return "Connection failed: the SSH key for \"\(label)\" isn't on this device. Open the Keys tab to import the matching private key, then re-open this connection."
+        }
     }
 }

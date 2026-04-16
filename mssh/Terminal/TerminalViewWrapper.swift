@@ -1,15 +1,45 @@
 import SwiftUI
 import SwiftTerm
 
+/// DECSCUSR cursor-shape escape sequence for the user's preference.
+/// `\e[N q` where N is 1-6 (block/underline/bar × blink/steady).
+/// Lives at file scope so iOS and macOS wrappers share one source of truth.
+private func decscusrEscape(style: AppPreferences.CursorStyle, blink: Bool) -> [UInt8] {
+    let code: Int
+    switch (style, blink) {
+    case (.block, true):      code = 1
+    case (.block, false):     code = 2
+    case (.underline, true):  code = 3
+    case (.underline, false): code = 4
+    case (.bar, true):        code = 5
+    case (.bar, false):       code = 6
+    }
+    return Array("\u{1B}[\(code) q".utf8)
+}
+
 #if os(iOS)
 /// UIViewRepresentable wrapper for SwiftTerm's TerminalView (iOS)
 struct TerminalViewWrapper: UIViewRepresentable {
     @ObservedObject var bridge: SSHTerminalBridge
-    @AppStorage("terminalThemeName") private var themeName = "Default"
-    @AppStorage("terminalFontSize") private var fontSize = 13.0
+    @AppStorage(AppPreferences.Key.terminalThemeName)
+    private var themeName = AppPreferences.Default.terminalThemeName
+    @AppStorage(AppPreferences.Key.terminalFontFamily)
+    private var fontFamily = AppPreferences.Default.terminalFontFamily
+    @AppStorage(AppPreferences.Key.terminalFontSize)
+    private var fontSize = AppPreferences.Default.terminalFontSize
+    @AppStorage(AppPreferences.Key.terminalCursorStyle)
+    private var cursorStyleRaw = AppPreferences.Default.terminalCursorStyle
+    @AppStorage(AppPreferences.Key.terminalBlinkCursor)
+    private var blinkCursor = AppPreferences.Default.terminalBlinkCursor
 
-    private var theme: TerminalTheme {
-        TerminalTheme.allThemes.first { $0.name == themeName } ?? .default
+    private var theme: TerminalTheme { TerminalTheme.named(themeName) }
+
+    private var resolvedFont: UIFont {
+        let pt = CGFloat(fontSize)
+        if fontFamily != "System", let f = UIFont(name: fontFamily, size: pt) {
+            return f
+        }
+        return UIFont.monospacedSystemFont(ofSize: pt, weight: .regular)
     }
 
     func makeUIView(context: Context) -> TerminalView {
@@ -17,12 +47,11 @@ struct TerminalViewWrapper: UIViewRepresentable {
         terminal.terminalDelegate = context.coordinator
         terminal.nativeBackgroundColor = UIColor(theme.background)
         terminal.nativeForegroundColor = UIColor(theme.foreground)
-
-        let effectiveFontSize: CGFloat = fontSize > 0 ? CGFloat(fontSize) : (UIDevice.current.userInterfaceIdiom == .pad ? 14 : 12)
-        terminal.font = UIFont.monospacedSystemFont(ofSize: effectiveFontSize, weight: .regular)
-
+        terminal.font = resolvedFont
         terminal.inputAccessoryView = TerminalAccessoryBar(terminal: terminal)
         bridge.terminalView = terminal
+
+        applyCursorStyle(to: terminal)
 
         if bridge.isConnected {
             Self.focusWithRetry(terminal)
@@ -35,15 +64,24 @@ struct TerminalViewWrapper: UIViewRepresentable {
         uiView.nativeBackgroundColor = UIColor(theme.background)
         uiView.nativeForegroundColor = UIColor(theme.foreground)
 
-        let effectiveFontSize = CGFloat(fontSize)
-        let currentSize = uiView.font.pointSize
-        if abs(currentSize - effectiveFontSize) > 0.5 {
-            uiView.font = UIFont.monospacedSystemFont(ofSize: effectiveFontSize, weight: .regular)
+        let target = resolvedFont
+        if uiView.font.fontName != target.fontName
+            || abs(uiView.font.pointSize - target.pointSize) > 0.5 {
+            uiView.font = target
         }
+
+        applyCursorStyle(to: uiView)
 
         if bridge.isConnected && !uiView.isFirstResponder {
             Self.focusWithRetry(uiView)
         }
+    }
+
+    /// Apply the user's cursor preference. `feed(byteArray:)` is public on
+    /// both platforms; SwiftTerm's `terminal` property is internal on iOS.
+    private func applyCursorStyle(to terminal: TerminalView) {
+        let style = AppPreferences.CursorStyle(rawValue: cursorStyleRaw) ?? .block
+        terminal.feed(byteArray: ArraySlice(decscusrEscape(style: style, blink: blinkCursor)))
     }
 
     private static func focusWithRetry(_ view: TerminalView, attempt: Int = 0) {
@@ -106,11 +144,25 @@ struct TerminalViewWrapper: UIViewRepresentable {
 /// NSViewRepresentable wrapper for SwiftTerm's TerminalView (macOS)
 struct TerminalViewWrapper: NSViewRepresentable {
     @ObservedObject var bridge: SSHTerminalBridge
-    @AppStorage("terminalThemeName") private var themeName = "Default"
-    @AppStorage("terminalFontSize") private var fontSize = 14.0
+    @AppStorage(AppPreferences.Key.terminalThemeName)
+    private var themeName = AppPreferences.Default.terminalThemeName
+    @AppStorage(AppPreferences.Key.terminalFontFamily)
+    private var fontFamily = AppPreferences.Default.terminalFontFamily
+    @AppStorage(AppPreferences.Key.terminalFontSize)
+    private var fontSize = AppPreferences.Default.terminalFontSize
+    @AppStorage(AppPreferences.Key.terminalCursorStyle)
+    private var cursorStyleRaw = AppPreferences.Default.terminalCursorStyle
+    @AppStorage(AppPreferences.Key.terminalBlinkCursor)
+    private var blinkCursor = AppPreferences.Default.terminalBlinkCursor
 
-    private var theme: TerminalTheme {
-        TerminalTheme.allThemes.first { $0.name == themeName } ?? .default
+    private var theme: TerminalTheme { TerminalTheme.named(themeName) }
+
+    private var resolvedFont: NSFont {
+        let pt = CGFloat(fontSize)
+        if fontFamily != "System", let f = NSFont(name: fontFamily, size: pt) {
+            return f
+        }
+        return NSFont.monospacedSystemFont(ofSize: pt, weight: .regular)
     }
 
     func makeNSView(context: Context) -> TerminalView {
@@ -118,11 +170,10 @@ struct TerminalViewWrapper: NSViewRepresentable {
         terminal.terminalDelegate = context.coordinator
         terminal.nativeBackgroundColor = NSColor(theme.background)
         terminal.nativeForegroundColor = NSColor(theme.foreground)
-
-        let effectiveFontSize: CGFloat = fontSize > 0 ? CGFloat(fontSize) : 14
-        terminal.font = NSFont.monospacedSystemFont(ofSize: effectiveFontSize, weight: .regular)
-
+        terminal.font = resolvedFont
         bridge.terminalView = terminal
+
+        applyCursorStyle(to: terminal)
 
         if bridge.isConnected {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -137,11 +188,13 @@ struct TerminalViewWrapper: NSViewRepresentable {
         nsView.nativeBackgroundColor = NSColor(theme.background)
         nsView.nativeForegroundColor = NSColor(theme.foreground)
 
-        let effectiveFontSize = CGFloat(fontSize)
-        let currentSize = nsView.font.pointSize
-        if abs(currentSize - effectiveFontSize) > 0.5 {
-            nsView.font = NSFont.monospacedSystemFont(ofSize: effectiveFontSize, weight: .regular)
+        let target = resolvedFont
+        if nsView.font.fontName != target.fontName
+            || abs(nsView.font.pointSize - target.pointSize) > 0.5 {
+            nsView.font = target
         }
+
+        applyCursorStyle(to: nsView)
 
         if bridge.isConnected {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -150,6 +203,12 @@ struct TerminalViewWrapper: NSViewRepresentable {
                 }
             }
         }
+    }
+
+    /// Apply cursor style via DECSCUSR (shared with iOS).
+    private func applyCursorStyle(to terminal: TerminalView) {
+        let style = AppPreferences.CursorStyle(rawValue: cursorStyleRaw) ?? .block
+        terminal.feed(byteArray: ArraySlice(decscusrEscape(style: style, blink: blinkCursor)))
     }
 
     func makeCoordinator() -> Coordinator {

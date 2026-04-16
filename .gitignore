@@ -1,0 +1,36 @@
+# macOS
+.DS_Store
+
+# Xcode build artifacts
+build/
+DerivedData/
+*.xcuserdata/
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcscheme
+
+# Swift Package Manager
+.swiftpm/
+.build/
+Package.resolved
+
+# Fastlane / TestFlight export intermediates
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Secrets
+*.p8
+*.p12
+*.mobileprovision
+
+# OMC (oh-my-claudecode) runtime state — regenerated per session
+.omc/
+
+# Claude Code local tooling state
+.claude/

@@ -16,14 +16,15 @@
 		0BDD981235392C8F1C762F93 /* SFTPTransferView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C18C4B3A4DEA5E444D93BD /* SFTPTransferView.swift */; };
 		1219BA643A2398FAD7EA5504 /* KnownHostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41320225638BEEB94441D486 /* KnownHostsView.swift */; };
 		126543FE8A1831B51D63C4F1 /* SSHConfigImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF50C575581C506DC0E26B6 /* SSHConfigImportView.swift */; };
+		1410CA363B4B82E2286243A7 /* AppPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9BA75AA8A7880B0A2F2599 /* AppPreferences.swift */; };
 		14E9201083B036E3A306148F /* TerminalTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C007979A6AFF27A4F07916 /* TerminalTheme.swift */; };
 		1561EB21ADDD8BA606C043A8 /* TerminalSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E091B6EA3FE96947A16A8641 /* TerminalSessionView.swift */; };
 		1795BE6D0BFC0698C21263EC /* PEMParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6E596D8EC9AFA9A13E5A10 /* PEMParser.swift */; };
 		182DD8A850908B2B53A1255E /* HostKeyPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D682AFC8C0FBF595E06213A /* HostKeyPromptView.swift */; };
 		1DBCAD3E207A95F7FCC3CC4F /* BiometricService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B0A02843D03F8D3DB0FF33F /* BiometricService.swift */; };
 		1F275A4DBB983110A4334115 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4C36F5844F7FC5EB61B9584 /* WelcomeView.swift */; };
-		1F4AAE5BE4DE949DF0B3A807 /* Info-macOS.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3612AFAD62D90C2E0B19CD89 /* Info-macOS.plist */; };
 		2205C924B930CF5A11D41E28 /* KeyManagerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C883C5CC1BD60019B3BD2E61 /* KeyManagerViewModel.swift */; };
+		24CC55D3EAF9766900D4E83C /* Snippet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E60B31C190DFB0902376E10 /* Snippet.swift */; };
 		2962683E98D245BCE66CA7D1 /* SessionTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D1DD2D0E11A233036AF9A05 /* SessionTabView.swift */; };
 		2DD8D73BA708E67500F7FC3A /* TerminalViewWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E188C58C72662C38AC229F1 /* TerminalViewWrapper.swift */; };
 		3108F246605DEF952B6B9FD2 /* msshApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601B09C1DDBC50A7980F5926 /* msshApp.swift */; };
@@ -38,6 +39,7 @@
 		40A6D46585E3B53F8A5ABCDA /* TerminalAccessoryBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B875D9609D72F2D0756DD352 /* TerminalAccessoryBar.swift */; };
 		42B9DFE4347D73CA4688291B /* SSHConfigParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB031C08400C9C03B917CA29 /* SSHConfigParser.swift */; };
 		433EB81205933F06DB257C60 /* ConnectionFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2139BEC22559334C39E1D6B /* ConnectionFormView.swift */; };
+		46ABBADD1356356BF3CCB200 /* Snippet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E60B31C190DFB0902376E10 /* Snippet.swift */; };
 		47C7F7CFD7B0FB3B237B4828 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4C36F5844F7FC5EB61B9584 /* WelcomeView.swift */; };
 		49A8C7D92068EE3FCEF1AC56 /* ByteBufferExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93EB2F91FD2A41BF4C5A034 /* ByteBufferExtensions.swift */; };
 		49E6ADBBA45A4B4D498F6A6B /* PlatformHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46CA4175507906978E2FF531 /* PlatformHelpers.swift */; };
@@ -45,10 +47,15 @@
 		4AE3ADB61A071BDBDF69DD2B /* SSHConfigImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF50C575581C506DC0E26B6 /* SSHConfigImportView.swift */; };
 		4D97DBF2E60FE1ACFFB62DD7 /* SwiftTerm in Frameworks */ = {isa = PBXBuildFile; productRef = 92DC4C7B3FB1989C7E410053 /* SwiftTerm */; };
 		4DACAF1BBC41EE0B15C8EC62 /* BiometricService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B0A02843D03F8D3DB0FF33F /* BiometricService.swift */; };
+		4FC8C09D984B7EEAC0F711E2 /* PortForwardEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3397030C752ACA31B33F3C22 /* PortForwardEditorView.swift */; };
 		5067704C93FFE411AB4DBA8F /* TerminalTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C007979A6AFF27A4F07916 /* TerminalTheme.swift */; };
+		51CC9A5C9244C911B07716BC /* AppPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9BA75AA8A7880B0A2F2599 /* AppPreferences.swift */; };
 		5340709E55BCC80C17348BC2 /* SSHKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC70BFE08258E7A59F450968 /* SSHKey.swift */; };
 		5A20B86CD3050278DB9751BC /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909FDD65165046F700279ABD /* KeychainService.swift */; };
 		5D34C88E7D66B04C74BFF544 /* AutoImportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7053580E1B161DA68239009C /* AutoImportService.swift */; };
+		65B18FB15574DE08AC16E538 /* PortForward.swift in Sources */ = {isa = PBXBuildFile; fileRef = D23C1F032FD0B5514C3C2951 /* PortForward.swift */; };
+		68C33641827F1C36B6D74830 /* PortForwardEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3397030C752ACA31B33F3C22 /* PortForwardEditorView.swift */; };
+		6A62933847D0CF28AB37A958 /* SnippetsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA359666A83DEB8251A8B7F /* SnippetsView.swift */; };
 		6A8AFDF2DB0EEA3C734691E7 /* LockScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4779110E52A9215B817C36AA /* LockScreenView.swift */; };
 		6CBF6EB685F45C3F61146415 /* Citadel in Frameworks */ = {isa = PBXBuildFile; productRef = D026A404D69C780DF051173B /* Citadel */; };
 		71E0924B81202CB3AED9D69D /* SFTPService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97296C3E64F40DE0B6AC61ED /* SFTPService.swift */; };
@@ -63,6 +70,7 @@
 		86B52BEE451EB1B230A203D5 /* SFTPTransferView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C18C4B3A4DEA5E444D93BD /* SFTPTransferView.swift */; };
 		8CB85E8A47D7C29F3CF8F3E0 /* SFTPBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 745AECEC67D542E067D9EAED /* SFTPBrowserView.swift */; };
 		8DD8B5864812FBAC78891FE0 /* HostKeyPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D682AFC8C0FBF595E06213A /* HostKeyPromptView.swift */; };
+		8F6789E25A41C29150DEFFF5 /* PortForward.swift in Sources */ = {isa = PBXBuildFile; fileRef = D23C1F032FD0B5514C3C2951 /* PortForward.swift */; };
 		92D55A48F7B725C926A325F0 /* iCloudSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70F20C3600FF37D726D14A77 /* iCloudSyncService.swift */; };
 		970D9CC52F02F0B93F7C3D16 /* MacSetupGuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FAED55A9BED2A99EA4C34AE /* MacSetupGuideView.swift */; };
 		A54317015627578CD1ECBA57 /* KeyManagementService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 959591801E0A0E56C1C1575D /* KeyManagementService.swift */; };
@@ -72,12 +80,13 @@
 		A8B2CCC70DA89FC78F27FCFB /* SFTPService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97296C3E64F40DE0B6AC61ED /* SFTPService.swift */; };
 		A8DDD18A368887DEAED9F42D /* KeyManagerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C883C5CC1BD60019B3BD2E61 /* KeyManagerViewModel.swift */; };
 		ACE9950BF4DC5397E3753EED /* KeyImportWizardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F688018A6DA8B0736D35DEF5 /* KeyImportWizardView.swift */; };
+		AE109019642DB4A700D07017 /* PortForwardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9093553206D96659540571B9 /* PortForwardManager.swift */; };
 		AEE062095C8122E12B785505 /* TerminalAccessoryBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B875D9609D72F2D0756DD352 /* TerminalAccessoryBar.swift */; };
 		B2A7542C9039D43F2EAE3AA4 /* KnownHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62FC07E100CD49FD12473CCF /* KnownHost.swift */; };
 		B30CEF7D44B3DF42C74A7BA8 /* SwiftTerm in Frameworks */ = {isa = PBXBuildFile; productRef = 43567A3E4811E967A3E77ECA /* SwiftTerm */; };
 		B44BFC94363BB60974D4C903 /* SSHService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A5B5883EC818692D422181 /* SSHService.swift */; };
+		B5B14D25DEC4B44518080853 /* PortForwardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9093553206D96659540571B9 /* PortForwardManager.swift */; };
 		B87DCB05B567F73B5ABD5311 /* KeyImportWizardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F688018A6DA8B0736D35DEF5 /* KeyImportWizardView.swift */; };
-		C0CEDD2C97375C0AE045059F /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2DD643582D8A28DB8F21C40D /* Info.plist */; };
 		C26CACA86303777DA0624411 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909FDD65165046F700279ABD /* KeychainService.swift */; };
 		C3DBE9AFFDB97EB7DC7680CD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2B45634D7704BBD2F583A582 /* Assets.xcassets */; };
 		CDFD7C744EACBD0640751A23 /* msshApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601B09C1DDBC50A7980F5926 /* msshApp.swift */; };
@@ -101,6 +110,7 @@
 		E9283B3C48F5D1B93A56F49B /* SFTPViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451DE0A6A7201F76BE83768F /* SFTPViewModel.swift */; };
 		EBFE8A7408B73F678263DE6B /* HostKeyValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DB0AE96C99F31755DBC6D6 /* HostKeyValidator.swift */; };
 		ECFFC8BBCD42371C3A2A4D46 /* SFTPViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451DE0A6A7201F76BE83768F /* SFTPViewModel.swift */; };
+		EF40E9E0338D2D5B983192B5 /* SnippetsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA359666A83DEB8251A8B7F /* SnippetsView.swift */; };
 		F025632ABB2866A36B2EB100 /* SSHConfigParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB031C08400C9C03B917CA29 /* SSHConfigParser.swift */; };
 		F36FF70227679589A5F80913 /* KeyManagementService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 959591801E0A0E56C1C1575D /* KeyManagementService.swift */; };
 		F419A36D23E0FB6F19912C20 /* ConnectionListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5668BC9CD5B66CBC9CF53E94 /* ConnectionListViewModel.swift */; };
@@ -121,6 +131,7 @@
 		2CBA64AAB32623E773DF1A60 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
 		2DD643582D8A28DB8F21C40D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		2E188C58C72662C38AC229F1 /* TerminalViewWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalViewWrapper.swift; sourceTree = "<group>"; };
+		3397030C752ACA31B33F3C22 /* PortForwardEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortForwardEditorView.swift; sourceTree = "<group>"; };
 		3612AFAD62D90C2E0B19CD89 /* Info-macOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Info-macOS.plist"; sourceTree = "<group>"; };
 		377579C92F8C5B4D772D0DA0 /* mssh.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = mssh.entitlements; sourceTree = "<group>"; };
 		3AB961701961DBB93FCCD0EE /* SFTPFileItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFTPFileItem.swift; sourceTree = "<group>"; };
@@ -129,6 +140,7 @@
 		46CA4175507906978E2FF531 /* PlatformHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformHelpers.swift; sourceTree = "<group>"; };
 		4779110E52A9215B817C36AA /* LockScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockScreenView.swift; sourceTree = "<group>"; };
 		4DD192862B1CE3BF82EBC703 /* mssh-mac.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "mssh-mac.entitlements"; sourceTree = "<group>"; };
+		4E60B31C190DFB0902376E10 /* Snippet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Snippet.swift; sourceTree = "<group>"; };
 		5668BC9CD5B66CBC9CF53E94 /* ConnectionListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionListViewModel.swift; sourceTree = "<group>"; };
 		601B09C1DDBC50A7980F5926 /* msshApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = msshApp.swift; sourceTree = "<group>"; };
 		60756400F8CF8C922D9D2F93 /* KeyManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyManagerView.swift; sourceTree = "<group>"; };
@@ -136,11 +148,13 @@
 		616E7251A02F9663551227E0 /* SSHKeyImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSHKeyImporter.swift; sourceTree = "<group>"; };
 		62FC07E100CD49FD12473CCF /* KnownHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnownHost.swift; sourceTree = "<group>"; };
 		68A5B5883EC818692D422181 /* SSHService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSHService.swift; sourceTree = "<group>"; };
+		6AA359666A83DEB8251A8B7F /* SnippetsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnippetsView.swift; sourceTree = "<group>"; };
 		6B0A02843D03F8D3DB0FF33F /* BiometricService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricService.swift; sourceTree = "<group>"; };
 		7053580E1B161DA68239009C /* AutoImportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoImportService.swift; sourceTree = "<group>"; };
 		70F20C3600FF37D726D14A77 /* iCloudSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iCloudSyncService.swift; sourceTree = "<group>"; };
 		745AECEC67D542E067D9EAED /* SFTPBrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFTPBrowserView.swift; sourceTree = "<group>"; };
 		7FAED55A9BED2A99EA4C34AE /* MacSetupGuideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSetupGuideView.swift; sourceTree = "<group>"; };
+		9093553206D96659540571B9 /* PortForwardManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortForwardManager.swift; sourceTree = "<group>"; };
 		909FDD65165046F700279ABD /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
 		959591801E0A0E56C1C1575D /* KeyManagementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyManagementService.swift; sourceTree = "<group>"; };
 		97296C3E64F40DE0B6AC61ED /* SFTPService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFTPService.swift; sourceTree = "<group>"; };
@@ -154,12 +168,14 @@
 		B93EB2F91FD2A41BF4C5A034 /* ByteBufferExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ByteBufferExtensions.swift; sourceTree = "<group>"; };
 		BC70BFE08258E7A59F450968 /* SSHKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSHKey.swift; sourceTree = "<group>"; };
 		BD1AC64D7020EC63201B43CB /* SplitTerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitTerminalView.swift; sourceTree = "<group>"; };
+		BF9BA75AA8A7880B0A2F2599 /* AppPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPreferences.swift; sourceTree = "<group>"; };
 		C4C36F5844F7FC5EB61B9584 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		C51DD844D6D264DF30FC66E0 /* SSHTerminalBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSHTerminalBridge.swift; sourceTree = "<group>"; };
 		C6C007979A6AFF27A4F07916 /* TerminalTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalTheme.swift; sourceTree = "<group>"; };
 		C883C5CC1BD60019B3BD2E61 /* KeyManagerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyManagerViewModel.swift; sourceTree = "<group>"; };
 		CA12F18B4D80D05F9622B33B /* KeyImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyImportView.swift; sourceTree = "<group>"; };
 		CEF50C575581C506DC0E26B6 /* SSHConfigImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSHConfigImportView.swift; sourceTree = "<group>"; };
+		D23C1F032FD0B5514C3C2951 /* PortForward.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortForward.swift; sourceTree = "<group>"; };
 		DC6E596D8EC9AFA9A13E5A10 /* PEMParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PEMParser.swift; sourceTree = "<group>"; };
 		E091B6EA3FE96947A16A8641 /* TerminalSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalSessionView.swift; sourceTree = "<group>"; };
 		E2139BEC22559334C39E1D6B /* ConnectionFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionFormView.swift; sourceTree = "<group>"; };
@@ -202,10 +218,12 @@
 				41320225638BEEB94441D486 /* KnownHostsView.swift */,
 				4779110E52A9215B817C36AA /* LockScreenView.swift */,
 				7FAED55A9BED2A99EA4C34AE /* MacSetupGuideView.swift */,
+				3397030C752ACA31B33F3C22 /* PortForwardEditorView.swift */,
 				9D1DD2D0E11A233036AF9A05 /* SessionTabView.swift */,
 				0177C7A2D63FC83B69B99586 /* SettingsView.swift */,
 				745AECEC67D542E067D9EAED /* SFTPBrowserView.swift */,
 				E8C18C4B3A4DEA5E444D93BD /* SFTPTransferView.swift */,
+				6AA359666A83DEB8251A8B7F /* SnippetsView.swift */,
 				BD1AC64D7020EC63201B43CB /* SplitTerminalView.swift */,
 				CEF50C575581C506DC0E26B6 /* SSHConfigImportView.swift */,
 				AEB3DD33B9CC1A612DC13A89 /* SyncStatusView.swift */,
@@ -229,7 +247,9 @@
 				1C76084B6EF306F1DF28D7B5 /* AuthenticationType.swift */,
 				ED9C617783AEA639EC35E064 /* ConnectionProfile.swift */,
 				62FC07E100CD49FD12473CCF /* KnownHost.swift */,
+				D23C1F032FD0B5514C3C2951 /* PortForward.swift */,
 				3AB961701961DBB93FCCD0EE /* SFTPFileItem.swift */,
+				4E60B31C190DFB0902376E10 /* Snippet.swift */,
 				BC70BFE08258E7A59F450968 /* SSHKey.swift */,
 			);
 			path = Models;
@@ -270,12 +290,14 @@
 		6CAC416807C909BCBDC81ECF /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				BF9BA75AA8A7880B0A2F2599 /* AppPreferences.swift */,
 				7053580E1B161DA68239009C /* AutoImportService.swift */,
 				6B0A02843D03F8D3DB0FF33F /* BiometricService.swift */,
 				B4DB0AE96C99F31755DBC6D6 /* HostKeyValidator.swift */,
 				70F20C3600FF37D726D14A77 /* iCloudSyncService.swift */,
 				909FDD65165046F700279ABD /* KeychainService.swift */,
 				959591801E0A0E56C1C1575D /* KeyManagementService.swift */,
+				9093553206D96659540571B9 /* PortForwardManager.swift */,
 				97296C3E64F40DE0B6AC61ED /* SFTPService.swift */,
 				616E7251A02F9663551227E0 /* SSHKeyImporter.swift */,
 				68A5B5883EC818692D422181 /* SSHService.swift */,
@@ -422,7 +444,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3DBE9AFFDB97EB7DC7680CD /* Assets.xcassets in Resources */,
-				1F4AAE5BE4DE949DF0B3A807 /* Info-macOS.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -431,7 +452,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				72948488E49D0C8E096E5CCB /* Assets.xcassets in Resources */,
-				C0CEDD2C97375C0AE045059F /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -442,6 +462,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1410CA363B4B82E2286243A7 /* AppPreferences.swift in Sources */,
 				85B3E4D56D024C9C09C382E7 /* AuthenticationType.swift in Sources */,
 				FA370E41962E46646C2271BD /* AutoImportService.swift in Sources */,
 				1DBCAD3E207A95F7FCC3CC4F /* BiometricService.swift in Sources */,
@@ -465,6 +486,9 @@
 				CF6828563E5D538451B33C3A /* MacSetupGuideView.swift in Sources */,
 				A6417AAE39F2FF2A56DDE3A6 /* PEMParser.swift in Sources */,
 				49E6ADBBA45A4B4D498F6A6B /* PlatformHelpers.swift in Sources */,
+				65B18FB15574DE08AC16E538 /* PortForward.swift in Sources */,
+				68C33641827F1C36B6D74830 /* PortForwardEditorView.swift in Sources */,
+				B5B14D25DEC4B44518080853 /* PortForwardManager.swift in Sources */,
 				38749EBC6D505A6A6516067B /* SFTPBrowserView.swift in Sources */,
 				3628E46DB78E8ADCD9369A4D /* SFTPFileItem.swift in Sources */,
 				71E0924B81202CB3AED9D69D /* SFTPService.swift in Sources */,
@@ -480,6 +504,8 @@
 				FCDB8EBF8EAC0E4F37DE1372 /* SessionTabView.swift in Sources */,
 				FF0821E697EE6C21E28396EF /* SessionViewModel.swift in Sources */,
 				7D7AFE741554A75CD7AE23EA /* SettingsView.swift in Sources */,
+				46ABBADD1356356BF3CCB200 /* Snippet.swift in Sources */,
+				EF40E9E0338D2D5B983192B5 /* SnippetsView.swift in Sources */,
 				E27BF93012E65C43FF1F26BF /* SplitTerminalView.swift in Sources */,
 				D4289FE162E0D075AE09107A /* SyncStatusView.swift in Sources */,
 				AEE062095C8122E12B785505 /* TerminalAccessoryBar.swift in Sources */,
@@ -496,6 +522,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51CC9A5C9244C911B07716BC /* AppPreferences.swift in Sources */,
 				06430AE6AAA488D239CDA5E6 /* AuthenticationType.swift in Sources */,
 				5D34C88E7D66B04C74BFF544 /* AutoImportService.swift in Sources */,
 				4DACAF1BBC41EE0B15C8EC62 /* BiometricService.swift in Sources */,
@@ -519,6 +546,9 @@
 				970D9CC52F02F0B93F7C3D16 /* MacSetupGuideView.swift in Sources */,
 				1795BE6D0BFC0698C21263EC /* PEMParser.swift in Sources */,
 				D22D8B0F4562B7667885FF6B /* PlatformHelpers.swift in Sources */,
+				8F6789E25A41C29150DEFFF5 /* PortForward.swift in Sources */,
+				4FC8C09D984B7EEAC0F711E2 /* PortForwardEditorView.swift in Sources */,
+				AE109019642DB4A700D07017 /* PortForwardManager.swift in Sources */,
 				8CB85E8A47D7C29F3CF8F3E0 /* SFTPBrowserView.swift in Sources */,
 				A82CFA4CDD11E443C1E05ADD /* SFTPFileItem.swift in Sources */,
 				A8B2CCC70DA89FC78F27FCFB /* SFTPService.swift in Sources */,
@@ -534,6 +564,8 @@
 				2962683E98D245BCE66CA7D1 /* SessionTabView.swift in Sources */,
 				FE1153B9538544468EB22CA4 /* SessionViewModel.swift in Sources */,
 				DC0032AB50CDA2A46090E194 /* SettingsView.swift in Sources */,
+				24CC55D3EAF9766900D4E83C /* Snippet.swift in Sources */,
+				6A62933847D0CF28AB37A958 /* SnippetsView.swift in Sources */,
 				853653873B67227BF5CA1236 /* SplitTerminalView.swift in Sources */,
 				3E69E04C18A4720B34291EF3 /* SyncStatusView.swift in Sources */,
 				40A6D46585E3B53F8A5ABCDA /* TerminalAccessoryBar.swift in Sources */,

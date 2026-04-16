@@ -48,6 +48,11 @@ final class SSHTerminalBridge: NSObject, ObservableObject {
 
         connectionTask = Task { [weak self] in
             guard let self else { return }
+            // Track whether a catch arm set an actionable error — without
+            // this flag the cleanup `updateState(... "Disconnected")` below
+            // overwrites the real reason and the UI shows only a blinking
+            // cursor with no diagnosis.
+            var didSetTerminalError = false
             do {
                 try await self.runPTYSession(client: client, cols: cols, rows: rows)
             } catch is CancellationError {
@@ -55,13 +60,15 @@ final class SSHTerminalBridge: NSObject, ObservableObject {
             } catch let error as NIOSSHError {
                 let msg = self.friendlySSHError(error)
                 self.updateState(connected: false, status: msg)
+                didSetTerminalError = true
             } catch {
                 if !self.isDisconnecting {
                     self.updateState(connected: false, status: "Error: \(error.localizedDescription)")
+                    didSetTerminalError = true
                 }
             }
             self.writer = nil
-            if !self.isDisconnecting {
+            if !self.isDisconnecting && !didSetTerminalError {
                 self.updateState(connected: false, status: "Disconnected")
             }
         }

@@ -51,4 +51,10 @@ struct TerminalTheme: Equatable {
     static let allThemes: [TerminalTheme] = [
         .default, .solarizedDark, .monokai, .nord, .dracula, .tokyoNight
     ]
+
+    /// Look up a theme by its display name. Falls back to `.default` for
+    /// unknown names so a stale UserDefaults value never crashes the UI.
+    static func named(_ name: String) -> TerminalTheme {
+        allThemes.first { $0.name == name } ?? .default
+    }
 }

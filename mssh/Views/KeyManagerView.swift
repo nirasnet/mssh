@@ -10,6 +10,8 @@ struct KeyManagerView: View {
     @State private var showConfigImport = false
     @State private var showMacGuide = false
     @State private var viewModel = KeyManagerViewModel()
+    @State private var renamingKey: SSHKey?
+    @State private var renameDraft = ""
 
     var body: some View {
         Group {
@@ -86,6 +88,28 @@ struct KeyManagerView: View {
             Button("OK") { viewModel.errorMessage = nil }
         } message: {
             Text(viewModel.errorMessage ?? "")
+        }
+        .alert("Rename Key",
+               isPresented: .init(
+                   get: { renamingKey != nil },
+                   set: { if !$0 { renamingKey = nil } }
+               ),
+               presenting: renamingKey
+        ) { _ in
+            TextField("Label", text: $renameDraft)
+                .iOSOnlyTextInputAutocapitalization()
+                .autocorrectionDisabled()
+            Button("Save") {
+                if let key = renamingKey {
+                    viewModel.renameKey(key, to: renameDraft, modelContext: modelContext)
+                }
+                renamingKey = nil
+            }
+            Button("Cancel", role: .cancel) {
+                renamingKey = nil
+            }
+        } message: { key in
+            Text("Rename \"\(key.label)\" to:")
         }
     }
 
@@ -195,6 +219,12 @@ struct KeyManagerView: View {
                 AppClipboard.copy(key.publicKeyText)
             } label: {
                 Label("Copy Public Key", systemImage: "doc.on.doc")
+            }
+            Button {
+                renameDraft = key.label
+                renamingKey = key
+            } label: {
+                Label("Rename", systemImage: "pencil")
             }
             Divider()
             Button(role: .destructive) {

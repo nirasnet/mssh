@@ -17,7 +17,13 @@ struct msshApp: App {
         // Build the SwiftData container with graceful recovery so that a
         // corrupted store (e.g. after a force-kill mid-write) never causes the
         // app to crash on launch and show a permanent white screen.
-        let schema = Schema([ConnectionProfile.self, SSHKey.self, KnownHost.self])
+        let schema = Schema([
+            ConnectionProfile.self,
+            SSHKey.self,
+            KnownHost.self,
+            Snippet.self,
+            PortForward.self
+        ])
         modelContainer = Self.makeModelContainer(schema: schema)
 
         // Force dark mode appearance globally

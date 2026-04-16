@@ -1,10 +1,12 @@
 import SwiftUI
 import SwiftData
+import Network
 
 struct ConnectionFormView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Query private var keys: [SSHKey]
+    @Query private var allConnections: [ConnectionProfile]
 
     let existingProfile: ConnectionProfile?
 
@@ -18,6 +20,15 @@ struct ConnectionFormView: View {
     @State private var portValidationError: String?
     @State private var isTestingConnection = false
     @State private var testResult: ConnectionTestResult?
+
+    // Organization fields (US-002)
+    @State private var isFavorite: Bool = false
+    @State private var groupName: String = ""
+    @State private var colorTag: String? = nil
+
+    private var existingGroupNames: [String] {
+        ConnectionListSorter.existingGroupNames(allConnections)
+    }
 
     private var viewModel = ConnectionListViewModel()
 
@@ -86,7 +97,10 @@ struct ConnectionFormView: View {
                                     Text("(\(key.keyType))")
                                         .foregroundStyle(.secondary)
                                 }
-                                .tag(Optional(key.keychainID))
+                                // Tag by syncID (stable across devices) so a
+                                // synced profile keeps pointing at the same
+                                // key even after re-importing on a new device.
+                                .tag(Optional(key.syncID))
                             }
                         }
 
@@ -105,6 +119,58 @@ struct ConnectionFormView: View {
                     }
                 } header: {
                     Text("Authentication")
+                }
+
+                // Organization (Termius-style)
+                Section {
+                    Toggle(isOn: $isFavorite) {
+                        Label("Favorite", systemImage: isFavorite ? "star.fill" : "star")
+                    }
+                    .tint(AppColors.accent)
+
+                    HStack {
+                        Image(systemName: "folder")
+                            .foregroundStyle(AppColors.accent)
+                        TextField("Group", text: $groupName, prompt: Text("e.g. Production").foregroundStyle(AppColors.textTertiary))
+                            .iOSOnlyTextInputAutocapitalization()
+                            .autocorrectionDisabled()
+                        if !existingGroupNames.isEmpty {
+                            Menu {
+                                ForEach(existingGroupNames, id: \.self) { name in
+                                    Button(name) { groupName = name }
+                                }
+                                if !groupName.isEmpty {
+                                    Divider()
+                                    Button("Clear", role: .destructive) { groupName = "" }
+                                }
+                            } label: {
+                                Image(systemName: "chevron.down.circle")
+                                    .foregroundStyle(AppColors.textSecondary)
+                            }
+                        }
+                    }
+
+                    HStack(spacing: AppSpacing.sm) {
+                        Image(systemName: "tag")
+                            .foregroundStyle(AppColors.accent)
+                        Text("Color Tag")
+                        Spacer()
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 8) {
+                                tagSwatch(name: nil, isSelected: colorTag == nil)
+                                ForEach(ConnectionProfile.tagPalette, id: \.self) { name in
+                                    tagSwatch(name: name, isSelected: colorTag == name)
+                                }
+                            }
+                        }
+                    }
+                } header: {
+                    Text("Organization")
+                }
+
+                // Port forwarding (existing profiles only — needs a stable syncID)
+                if let p = existingProfile {
+                    PortForwardListSection(profileSyncID: p.syncID)
                 }
 
                 // Test connection
@@ -188,7 +254,24 @@ struct ConnectionFormView: View {
                     port = String(p.port)
                     username = p.username
                     authType = p.authType
-                    selectedKeyID = p.keyID
+                    // Picker tags are SSHKey.syncID. Older profiles stored
+                    // the device-specific keychainID — convert to syncID so
+                    // the picker preselects correctly. Save() will then
+                    // persist the syncID and the legacy value vanishes.
+                    if let stored = p.keyID, !stored.isEmpty {
+                        if keys.contains(where: { $0.syncID == stored }) {
+                            selectedKeyID = stored
+                        } else if let match = keys.first(where: { $0.keychainID == stored }) {
+                            selectedKeyID = match.syncID
+                        } else {
+                            selectedKeyID = stored
+                        }
+                    } else {
+                        selectedKeyID = nil
+                    }
+                    isFavorite = p.isFavorite
+                    groupName = p.groupName ?? ""
+                    colorTag = p.colorTag
                 }
             }
         }
@@ -196,6 +279,41 @@ struct ConnectionFormView: View {
     }
 
     // MARK: - Helpers
+
+    /// Small circular swatch for the color-tag picker. nil maps to a "no tag"
+    /// dot (transparent with a stroke) so the user can also clear the tag.
+    @ViewBuilder
+    private func tagSwatch(name: String?, isSelected: Bool) -> some View {
+        let resolved: Color = ConnectionProfile.tagColor(named: name) ?? .clear
+
+        Button {
+            colorTag = name
+        } label: {
+            ZStack {
+                Circle()
+                    .fill(resolved)
+                    .frame(width: 22, height: 22)
+                    .overlay(
+                        Circle()
+                            .strokeBorder(
+                                name == nil ? AppColors.textTertiary : Color.white.opacity(0.2),
+                                lineWidth: name == nil ? 1.0 : 0.5
+                            )
+                    )
+                if name == nil {
+                    Image(systemName: "slash.circle")
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundStyle(AppColors.textSecondary)
+                }
+                if isSelected {
+                    Circle()
+                        .strokeBorder(AppColors.accent, lineWidth: 2)
+                        .frame(width: 26, height: 26)
+                }
+            }
+        }
+        .buttonStyle(.plain)
+    }
 
     private func formField(_ title: String, text: Binding<String>, placeholder: String = "", keyboard: Any? = nil, autocap: Bool = true) -> some View {
         TextField(title, text: text, prompt: Text(placeholder).foregroundStyle(AppColors.textTertiary))
@@ -217,53 +335,95 @@ struct ConnectionFormView: View {
         }
     }
 
+    /// Real TCP reachability check (the old version did `URLSession.bytes` over
+    /// HTTP against an SSH port — wrong protocol, so it always reported the
+    /// SSH server as unreachable). NWConnection here does a raw TCP connect
+    /// and, if it succeeds, reads up to 64 bytes of the server greeting so
+    /// we can confidently report "SSH server detected" when the banner
+    /// starts with "SSH-".
     private func testConnection() {
-        guard !host.isEmpty, !username.isEmpty, let portInt = parsedPort else { return }
+        guard !host.isEmpty, let portInt = parsedPort else { return }
         isTestingConnection = true
         testResult = nil
 
         Task {
-            do {
-                let _ = try await withThrowingTaskGroup(of: Bool.self) { group in
-                    group.addTask {
-                        let _ = try await URLSession.shared.bytes(
-                            from: URL(string: "http://\(host):\(portInt)")!
-                        )
-                        return true
+            let result = await Self.probeTCP(host: host, port: portInt, timeout: 5)
+            await MainActor.run {
+                testResult = result
+                isTestingConnection = false
+            }
+        }
+    }
+
+    private static func probeTCP(host: String, port: Int, timeout: TimeInterval) async -> ConnectionTestResult {
+        await withCheckedContinuation { (continuation: CheckedContinuation<ConnectionTestResult, Never>) in
+            guard let nwPort = NWEndpoint.Port(rawValue: UInt16(port)) else {
+                continuation.resume(returning: ConnectionTestResult(success: false, message: "Invalid port \(port)"))
+                return
+            }
+
+            let conn = NWConnection(host: NWEndpoint.Host(host), port: nwPort, using: .tcp)
+            let queue = DispatchQueue.global(qos: .userInitiated)
+            let lock = NSLock()
+            var resumed = false
+
+            func finish(_ result: ConnectionTestResult) {
+                lock.lock()
+                defer { lock.unlock() }
+                guard !resumed else { return }
+                resumed = true
+                conn.cancel()
+                continuation.resume(returning: result)
+            }
+
+            conn.stateUpdateHandler = { state in
+                switch state {
+                case .ready:
+                    // TCP handshake succeeded — try to read the SSH banner.
+                    conn.receive(minimumIncompleteLength: 1, maximumLength: 64) { data, _, _, _ in
+                        let banner = data.flatMap { String(data: $0, encoding: .utf8) } ?? ""
+                        let trimmed = banner.trimmingCharacters(in: .whitespacesAndNewlines)
+                        if trimmed.hasPrefix("SSH-") {
+                            let summary = trimmed.split(separator: "\n").first.map(String.init) ?? trimmed
+                            finish(ConnectionTestResult(success: true, message: "SSH server: \(summary)"))
+                        } else if !banner.isEmpty {
+                            finish(ConnectionTestResult(success: true, message: "Port \(port) reachable (no SSH banner)"))
+                        } else {
+                            finish(ConnectionTestResult(success: true, message: "Port \(port) reachable"))
+                        }
                     }
-                    group.addTask {
-                        try await Task.sleep(for: .seconds(5))
-                        throw CancellationError()
+                case .failed(let error):
+                    let desc = "\(error)".lowercased()
+                    let msg: String
+                    if desc.contains("refused") {
+                        msg = "Connection refused — \(port) is closed on \(host)"
+                    } else if desc.contains("nodename") || desc.contains("not known") || desc.contains("hostnotfound") {
+                        msg = "Cannot resolve host \(host)"
+                    } else if desc.contains("network is unreachable") || desc.contains("no route") {
+                        msg = "No network route to \(host)"
+                    } else {
+                        msg = "Cannot reach \(host):\(port)"
                     }
-                    let result = try await group.next() ?? false
-                    group.cancelAll()
-                    return result
-                }
-                testResult = ConnectionTestResult(
-                    success: true,
-                    message: "\(host):\(portInt) reachable"
-                )
-            } catch {
-                let errorDesc = error.localizedDescription.lowercased()
-                if errorDesc.contains("refused") || errorDesc.contains("reset") {
-                    testResult = ConnectionTestResult(
-                        success: true,
-                        message: "\(host):\(portInt) reachable (port responded)"
-                    )
-                } else {
-                    testResult = ConnectionTestResult(
-                        success: false,
-                        message: "Cannot reach \(host):\(portInt)"
-                    )
+                    finish(ConnectionTestResult(success: false, message: msg))
+                case .cancelled:
+                    break
+                default:
+                    break
                 }
             }
-            isTestingConnection = false
+
+            conn.start(queue: queue)
+
+            queue.asyncAfter(deadline: .now() + timeout) {
+                finish(ConnectionTestResult(success: false, message: "Timed out after \(Int(timeout))s — host may be blocked by a firewall"))
+            }
         }
     }
 
     private func save() {
         let portInt = parsedPort ?? 22
         let effectiveLabel = label.isEmpty ? "\(username)@\(host)" : label
+        let trimmedGroup = groupName.trimmingCharacters(in: .whitespacesAndNewlines)
         viewModel.saveConnection(
             profile: existingProfile,
             label: effectiveLabel,
@@ -273,6 +433,9 @@ struct ConnectionFormView: View {
             authType: authType,
             password: authType == .password ? password : nil,
             keyID: authType == .key ? selectedKeyID : nil,
+            isFavorite: isFavorite,
+            groupName: trimmedGroup.isEmpty ? nil : trimmedGroup,
+            colorTag: colorTag,
             modelContext: modelContext
         )
     }

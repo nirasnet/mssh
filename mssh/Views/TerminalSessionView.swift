@@ -6,6 +6,7 @@ struct TerminalSessionView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var showSFTPBrowser = false
     @State private var showConnectionInfo = false
+    @State private var showSnippetPicker = false
     @State private var connectionStartTime = Date()
 
     var body: some View {
@@ -17,9 +18,12 @@ struct TerminalSessionView: View {
             TerminalViewWrapper(bridge: session.bridge)
                 .ignoresSafeArea(.container, edges: .bottom)
 
-            // Connection error overlay
-            if session.statusMessage.starts(with: "Connection failed") ||
-               session.statusMessage.starts(with: "Error:") {
+            // Connection error overlay — show whenever the session isn't
+            // connected and the status message isn't a transient "happy" state.
+            // The earlier strict "Connection failed" / "Error:" prefix-match
+            // missed our pre-flight errors (KeyParseError, AuthResolutionError),
+            // leaving the user with a blank cursor and no explanation.
+            if shouldShowErrorOverlay {
                 VStack {
                     Spacer()
                     errorBanner
@@ -78,6 +82,14 @@ struct TerminalSessionView: View {
             ToolbarItemGroup(placement: .primaryAction) {
                 HStack(spacing: AppSpacing.xs) {
                     Button {
+                        showSnippetPicker = true
+                    } label: {
+                        Image(systemName: "text.badge.plus")
+                            .font(.system(size: 14))
+                    }
+                    .disabled(!session.isConnected)
+
+                    Button {
                         pasteFromClipboard()
                     } label: {
                         Image(systemName: "doc.on.clipboard")
@@ -108,34 +120,98 @@ struct TerminalSessionView: View {
                 SFTPBrowserView(client: client)
             }
         }
+        .sheet(isPresented: $showSnippetPicker) {
+            SnippetPickerView { snippet in
+                sendSnippet(snippet)
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .openSnippetPicker)) { _ in
+            // The iOS keyboard accessory bar can't present sheets directly;
+            // it broadcasts this notification so the active terminal view
+            // can put up the picker.
+            if session.id == sessionManager.activeSessionID {
+                showSnippetPicker = true
+            }
+        }
         .appTheme()
+    }
+
+    private func sendSnippet(_ snippet: Snippet) {
+        let bytes = Array(snippet.command.utf8)
+        guard !bytes.isEmpty else { return }
+        session.bridge.sendToSSH(data: ArraySlice(bytes))
+    }
+
+    /// Show the error banner whenever we're not connected and we have a
+    /// non-empty status to display. Catches every failure path including
+    /// pre-flight errors (KeyParseError, AuthResolutionError) whose messages
+    /// don't start with "Connection failed", AND the loading states so the
+    /// user gets immediate feedback instead of a silent blinking cursor.
+    private var shouldShowErrorOverlay: Bool {
+        if session.isConnected { return false }
+        if session.statusMessage.isEmpty || session.statusMessage == "Disconnected" {
+            return false
+        }
+        return true
+    }
+
+    /// True while the session is mid-handshake. Drives the banner's loading
+    /// style (spinner instead of warning icon, no Retry/Close).
+    private var isLoading: Bool {
+        !session.isConnected
+            && (session.statusMessage == "Connecting..." || session.statusMessage == "Opening terminal...")
     }
 
     // MARK: - Error Banner
 
     private var errorBanner: some View {
         VStack(spacing: AppSpacing.md) {
-            HStack(spacing: AppSpacing.sm) {
-                Image(systemName: "exclamationmark.triangle.fill")
-                    .foregroundStyle(AppColors.warning)
-                    .font(.callout)
+            HStack(alignment: .top, spacing: AppSpacing.sm) {
+                if isLoading {
+                    ProgressView()
+                        .controlSize(.small)
+                        .tint(AppColors.accent)
+                } else {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .foregroundStyle(AppColors.warning)
+                        .font(.callout)
+                }
                 Text(session.statusMessage)
                     .font(.system(.caption, design: .monospaced))
                     .foregroundStyle(AppColors.textPrimary)
                     .multilineTextAlignment(.leading)
-                    .lineLimit(3)
+                    .lineLimit(6)
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
 
-            Button {
-                Task { await session.connect() }
-            } label: {
-                Text("Retry")
-                    .font(AppFonts.label)
-                    .foregroundStyle(AppColors.accent)
-                    .padding(.horizontal, AppSpacing.xl)
-                    .padding(.vertical, AppSpacing.sm)
-                    .background(AppColors.accentDim)
-                    .clipShape(Capsule())
+            // Hide action buttons while we're still trying — they only make
+            // sense once the attempt has settled into a failure state.
+            if !isLoading {
+                HStack(spacing: AppSpacing.sm) {
+                    Button {
+                        Task { await session.connect() }
+                    } label: {
+                        Text("Retry")
+                            .font(AppFonts.label)
+                            .foregroundStyle(AppColors.accent)
+                            .padding(.horizontal, AppSpacing.xl)
+                            .padding(.vertical, AppSpacing.sm)
+                            .background(AppColors.accentDim)
+                            .clipShape(Capsule())
+                    }
+
+                    Button {
+                        sessionManager.closeSession(session.id)
+                    } label: {
+                        Text("Close")
+                            .font(AppFonts.label)
+                            .foregroundStyle(AppColors.textSecondary)
+                            .padding(.horizontal, AppSpacing.xl)
+                            .padding(.vertical, AppSpacing.sm)
+                            .background(AppColors.surfaceElevated)
+                            .clipShape(Capsule())
+                    }
+                }
             }
         }
         .padding(AppSpacing.lg)
@@ -143,7 +219,10 @@ struct TerminalSessionView: View {
         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .strokeBorder(AppColors.error.opacity(0.3), lineWidth: 0.5)
+                .strokeBorder(
+                    (isLoading ? AppColors.accent : AppColors.error).opacity(0.3),
+                    lineWidth: 0.5
+                )
         )
     }
 
