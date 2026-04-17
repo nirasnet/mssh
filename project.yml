@@ -77,6 +77,7 @@ targets:
           - iCloud.com.m4ck.mssh
         keychain-access-groups:
           - $(AppIdentifierPrefix)com.m4ck.mssh
+        com.apple.developer.ubiquity-kvstore-identifier: $(TeamIdentifierPrefix)com.m4ck.mssh
 
   mssh-mac:
     type: application
@@ -120,6 +121,7 @@ targets:
           - iCloud.com.m4ck.mssh
         keychain-access-groups:
           - $(AppIdentifierPrefix)com.m4ck.mssh
+        com.apple.developer.ubiquity-kvstore-identifier: $(TeamIdentifierPrefix)com.m4ck.mssh
 
 schemes:
   mssh:
