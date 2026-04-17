@@ -36,6 +36,13 @@ struct msshApp: App {
     var body: some Scene {
         WindowGroup {
             Group {
+                #if os(macOS)
+                // macOS 26.3 workaround: the full ContentView triggers a
+                // recursive NSHostingView constraint crash during initial
+                // window layout. Use a stripped-down view until Apple ships
+                // a fix. iOS/iPadOS use the full UI.
+                MacContentView()
+                #else
                 if !hasCompletedOnboarding {
                     WelcomeView {
                         withAnimation {
@@ -55,6 +62,7 @@ struct msshApp: App {
                             }
                         }
                 }
+                #endif
             }
             .environment(sessionManager)
             .environment(syncService)

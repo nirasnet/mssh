@@ -64,6 +64,7 @@
 		72948488E49D0C8E096E5CCB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2B45634D7704BBD2F583A582 /* Assets.xcassets */; };
 		7CB5346775B62038501998EE /* KeyImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA12F18B4D80D05F9622B33B /* KeyImportView.swift */; };
 		7D7AFE741554A75CD7AE23EA /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0177C7A2D63FC83B69B99586 /* SettingsView.swift */; };
+		7E6737CFE82FE6BEE79564A5 /* MacContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8142C7EB7687BFCF239A44F9 /* MacContentView.swift */; };
 		7E9F0B0912483FE5380A316D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6116FE729C6C60376A1F84 /* ContentView.swift */; };
 		7FBB2D69487B1587844A70D7 /* ByteBufferExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93EB2F91FD2A41BF4C5A034 /* ByteBufferExtensions.swift */; };
 		853653873B67227BF5CA1236 /* SplitTerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD1AC64D7020EC63201B43CB /* SplitTerminalView.swift */; };
@@ -89,6 +90,7 @@
 		B44BFC94363BB60974D4C903 /* SSHService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A5B5883EC818692D422181 /* SSHService.swift */; };
 		B5B14D25DEC4B44518080853 /* PortForwardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9093553206D96659540571B9 /* PortForwardManager.swift */; };
 		B87DCB05B567F73B5ABD5311 /* KeyImportWizardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F688018A6DA8B0736D35DEF5 /* KeyImportWizardView.swift */; };
+		BC29C4444BA1B461071CF959 /* MacContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8142C7EB7687BFCF239A44F9 /* MacContentView.swift */; };
 		C26CACA86303777DA0624411 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909FDD65165046F700279ABD /* KeychainService.swift */; };
 		C3DBE9AFFDB97EB7DC7680CD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2B45634D7704BBD2F583A582 /* Assets.xcassets */; };
 		CDFD7C744EACBD0640751A23 /* msshApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601B09C1DDBC50A7980F5926 /* msshApp.swift */; };
@@ -157,6 +159,7 @@
 		70F20C3600FF37D726D14A77 /* iCloudSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iCloudSyncService.swift; sourceTree = "<group>"; };
 		745AECEC67D542E067D9EAED /* SFTPBrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFTPBrowserView.swift; sourceTree = "<group>"; };
 		7FAED55A9BED2A99EA4C34AE /* MacSetupGuideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSetupGuideView.swift; sourceTree = "<group>"; };
+		8142C7EB7687BFCF239A44F9 /* MacContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacContentView.swift; sourceTree = "<group>"; };
 		9093553206D96659540571B9 /* PortForwardManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortForwardManager.swift; sourceTree = "<group>"; };
 		909FDD65165046F700279ABD /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
 		959591801E0A0E56C1C1575D /* KeyManagementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyManagementService.swift; sourceTree = "<group>"; };
@@ -220,6 +223,7 @@
 				60756400F8CF8C922D9D2F93 /* KeyManagerView.swift */,
 				41320225638BEEB94441D486 /* KnownHostsView.swift */,
 				4779110E52A9215B817C36AA /* LockScreenView.swift */,
+				8142C7EB7687BFCF239A44F9 /* MacContentView.swift */,
 				7FAED55A9BED2A99EA4C34AE /* MacSetupGuideView.swift */,
 				3397030C752ACA31B33F3C22 /* PortForwardEditorView.swift */,
 				9D1DD2D0E11A233036AF9A05 /* SessionTabView.swift */,
@@ -487,6 +491,7 @@
 				E3094C13FF49E4AC57C6AD37 /* KnownHost.swift in Sources */,
 				1219BA643A2398FAD7EA5504 /* KnownHostsView.swift in Sources */,
 				0471C5C0EAEAD768378F3176 /* LockScreenView.swift in Sources */,
+				BC29C4444BA1B461071CF959 /* MacContentView.swift in Sources */,
 				CF6828563E5D538451B33C3A /* MacSetupGuideView.swift in Sources */,
 				A6417AAE39F2FF2A56DDE3A6 /* PEMParser.swift in Sources */,
 				49E6ADBBA45A4B4D498F6A6B /* PlatformHelpers.swift in Sources */,
@@ -548,6 +553,7 @@
 				B2A7542C9039D43F2EAE3AA4 /* KnownHost.swift in Sources */,
 				85AFF3888C131DD27170F9F9 /* KnownHostsView.swift in Sources */,
 				6A8AFDF2DB0EEA3C734691E7 /* LockScreenView.swift in Sources */,
+				7E6737CFE82FE6BEE79564A5 /* MacContentView.swift in Sources */,
 				970D9CC52F02F0B93F7C3D16 /* MacSetupGuideView.swift in Sources */,
 				1795BE6D0BFC0698C21263EC /* PEMParser.swift in Sources */,
 				D22D8B0F4562B7667885FF6B /* PlatformHelpers.swift in Sources */,
