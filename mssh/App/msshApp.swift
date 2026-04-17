@@ -145,7 +145,18 @@ struct msshApp: App {
         if defaults.object(forKey: "cloudSyncEnabled") == nil {
             defaults.set(true, forKey: "cloudSyncEnabled")
         }
+
+        // macOS 26.3 has a SwiftUI/AppKit crash: CloudKit change notifications
+        // during the first NSHostingView layout trigger recursive
+        // _informContainerThatSubviewsNeedUpdateConstraints → abort(). Force
+        // local-only on Mac until Apple ships a fix. Data still reaches the
+        // Mac via the ~/.ssh folder importer + iCloud Keychain for
+        // passwords and opt-in private keys.
+        #if os(macOS)
+        let syncEnabled = false
+        #else
         let syncEnabled = defaults.bool(forKey: "cloudSyncEnabled")
+        #endif
 
         // Dual-store strategy (per architect review): when sync is enabled,
         // use a DIFFERENT store file (`default-cloud.store`) so the legacy
