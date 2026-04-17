@@ -75,6 +75,7 @@
 		85AFF3888C131DD27170F9F9 /* KnownHostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41320225638BEEB94441D486 /* KnownHostsView.swift */; };
 		85B3E4D56D024C9C09C382E7 /* AuthenticationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C76084B6EF306F1DF28D7B5 /* AuthenticationType.swift */; };
 		86B52BEE451EB1B230A203D5 /* SFTPTransferView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C18C4B3A4DEA5E444D93BD /* SFTPTransferView.swift */; };
+		8B6DB7507959710213193BF6 /* Configuration.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 11AED4AB9F8340495097EE5C /* Configuration.storekit */; };
 		8CB85E8A47D7C29F3CF8F3E0 /* SFTPBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 745AECEC67D542E067D9EAED /* SFTPBrowserView.swift */; };
 		8DD8B5864812FBAC78891FE0 /* HostKeyPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D682AFC8C0FBF595E06213A /* HostKeyPromptView.swift */; };
 		8EE748254360F60D45AFC7E1 /* TipJarService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D4B7EC104C5580CC73626EF /* TipJarService.swift */; };
@@ -95,6 +96,7 @@
 		B30CEF7D44B3DF42C74A7BA8 /* SwiftTerm in Frameworks */ = {isa = PBXBuildFile; productRef = 43567A3E4811E967A3E77ECA /* SwiftTerm */; };
 		B44BFC94363BB60974D4C903 /* SSHService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A5B5883EC818692D422181 /* SSHService.swift */; };
 		B5B14D25DEC4B44518080853 /* PortForwardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9093553206D96659540571B9 /* PortForwardManager.swift */; };
+		B62EE1A523B1B8B947347867 /* Configuration.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 11AED4AB9F8340495097EE5C /* Configuration.storekit */; };
 		B87DCB05B567F73B5ABD5311 /* KeyImportWizardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F688018A6DA8B0736D35DEF5 /* KeyImportWizardView.swift */; };
 		BC29C4444BA1B461071CF959 /* MacContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8142C7EB7687BFCF239A44F9 /* MacContentView.swift */; };
 		C26CACA86303777DA0624411 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909FDD65165046F700279ABD /* KeychainService.swift */; };
@@ -133,6 +135,7 @@
 
 /* Begin PBXFileReference section */
 		0177C7A2D63FC83B69B99586 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		11AED4AB9F8340495097EE5C /* Configuration.storekit */ = {isa = PBXFileReference; path = Configuration.storekit; sourceTree = "<group>"; };
 		1C76084B6EF306F1DF28D7B5 /* AuthenticationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationType.swift; sourceTree = "<group>"; };
 		1D682AFC8C0FBF595E06213A /* HostKeyPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostKeyPromptView.swift; sourceTree = "<group>"; };
 		218DA3724C2366E3F304F869 /* SSHFolderImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSHFolderImporter.swift; sourceTree = "<group>"; };
@@ -328,6 +331,7 @@
 		81E6EDC524512AD9A9967E95 /* mssh */ = {
 			isa = PBXGroup;
 			children = (
+				11AED4AB9F8340495097EE5C /* Configuration.storekit */,
 				3612AFAD62D90C2E0B19CD89 /* Info-macOS.plist */,
 				2DD643582D8A28DB8F21C40D /* Info.plist */,
 				4DD192862B1CE3BF82EBC703 /* mssh-mac.entitlements */,
@@ -464,6 +468,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3DBE9AFFDB97EB7DC7680CD /* Assets.xcassets in Resources */,
+				B62EE1A523B1B8B947347867 /* Configuration.storekit in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -472,6 +477,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				72948488E49D0C8E096E5CCB /* Assets.xcassets in Resources */,
+				8B6DB7507959710213193BF6 /* Configuration.storekit in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -674,7 +680,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = mssh/mssh.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_TEAM = CC24ZA67DK;
 				INFOPLIST_FILE = mssh/Info.plist;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -696,7 +702,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "mssh/mssh-mac.entitlements";
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_TEAM = CC24ZA67DK;
 				INFOPLIST_FILE = "mssh/Info-macOS.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -715,7 +721,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "mssh/mssh-mac.entitlements";
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_TEAM = CC24ZA67DK;
 				INFOPLIST_FILE = "mssh/Info-macOS.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -734,7 +740,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = mssh/mssh.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEVELOPMENT_TEAM = CC24ZA67DK;
 				INFOPLIST_FILE = mssh/Info.plist;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
