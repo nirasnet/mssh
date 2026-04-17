@@ -21,6 +21,9 @@ struct MacContentView: View {
     @State private var showAddConnection = false
     @State private var showImportConfig = false
 
+    @State private var syncMessage: String?
+    @State private var showSyncAlert = false
+
     enum MacSidebarItem: String, Hashable, CaseIterable {
         case connections = "Connections"
         case keys = "Keys"
@@ -39,6 +42,32 @@ struct MacContentView: View {
                 Section {
                     Label("Settings", systemImage: "gear")
                         .tag(MacSidebarItem.settings)
+                }
+
+                Section("Sync") {
+                    Button {
+                        let r = ConnectionSyncBridge.push(modelContext: modelContext)
+                        syncMessage = "Pushed \(r.connections) connections + \(r.snippets) snippets to iCloud."
+                        showSyncAlert = true
+                    } label: {
+                        Label("Push to iCloud", systemImage: "icloud.and.arrow.up")
+                    }
+
+                    Button {
+                        let r = ConnectionSyncBridge.pull(modelContext: modelContext)
+                        syncMessage = "Pulled \(r.connections) new connections + \(r.snippets) new snippets from iCloud."
+                        showSyncAlert = true
+                    } label: {
+                        Label("Pull from iCloud", systemImage: "icloud.and.arrow.down")
+                    }
+
+                    Button {
+                        let r = SSHFolderImporter.promptAndImport(modelContext: modelContext)
+                        syncMessage = r.humanSummary
+                        showSyncAlert = true
+                    } label: {
+                        Label("Import ~/.ssh", systemImage: "square.and.arrow.down.on.square")
+                    }
                 }
 
                 if !sessionManager.sessions.isEmpty {
@@ -109,6 +138,11 @@ struct MacContentView: View {
             SSHConfigImportView()
         }
         .appTheme()
+        .alert("Sync", isPresented: $showSyncAlert) {
+            Button("OK") {}
+        } message: {
+            Text(syncMessage ?? "")
+        }
     }
 
     // MARK: - Connections list (flat, no sections/searchable)
