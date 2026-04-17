@@ -1,0 +1,57 @@
+{
+  "identifier" : "com.m4ck.mssh.storekit",
+  "type" : "Configuration",
+  "version" : 3,
+  "products" : [
+    {
+      "displayPrice" : "0.99",
+      "familyShareable" : false,
+      "internalID" : "tip_coffee",
+      "localizations" : [
+        {
+          "description" : "Support mSSH development with a small tip.",
+          "displayName" : "Coffee Tip",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.m4ck.mssh.tip.coffee",
+      "referenceName" : "Coffee Tip",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "4.99",
+      "familyShareable" : false,
+      "internalID" : "tip_lunch",
+      "localizations" : [
+        {
+          "description" : "Support mSSH development with a generous tip.",
+          "displayName" : "Lunch Tip",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.m4ck.mssh.tip.lunch",
+      "referenceName" : "Lunch Tip",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "9.99",
+      "familyShareable" : false,
+      "internalID" : "tip_dinner",
+      "localizations" : [
+        {
+          "description" : "Support mSSH development with a big tip. Thank you!",
+          "displayName" : "Dinner Tip",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.m4ck.mssh.tip.dinner",
+      "referenceName" : "Dinner Tip",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "",
+    "_developerTeamID" : "CC24ZA67DK",
+    "_lastSynchronizedDate" : ""
+  }
+}
