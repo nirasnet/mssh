@@ -16,6 +16,7 @@
 		0BDD981235392C8F1C762F93 /* SFTPTransferView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C18C4B3A4DEA5E444D93BD /* SFTPTransferView.swift */; };
 		1219BA643A2398FAD7EA5504 /* KnownHostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41320225638BEEB94441D486 /* KnownHostsView.swift */; };
 		126543FE8A1831B51D63C4F1 /* SSHConfigImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF50C575581C506DC0E26B6 /* SSHConfigImportView.swift */; };
+		13DCA65A56C89F26C7AAC6ED /* TipJarService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D4B7EC104C5580CC73626EF /* TipJarService.swift */; };
 		1410CA363B4B82E2286243A7 /* AppPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9BA75AA8A7880B0A2F2599 /* AppPreferences.swift */; };
 		14E9201083B036E3A306148F /* TerminalTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C007979A6AFF27A4F07916 /* TerminalTheme.swift */; };
 		1561EB21ADDD8BA606C043A8 /* TerminalSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E091B6EA3FE96947A16A8641 /* TerminalSessionView.swift */; };
@@ -55,6 +56,7 @@
 		57312E6C831ABBA6724DBC97 /* SSHFolderImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 218DA3724C2366E3F304F869 /* SSHFolderImporter.swift */; };
 		5A20B86CD3050278DB9751BC /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909FDD65165046F700279ABD /* KeychainService.swift */; };
 		5D34C88E7D66B04C74BFF544 /* AutoImportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7053580E1B161DA68239009C /* AutoImportService.swift */; };
+		613340113453BE63BC83957B /* TipJarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A88373AF9E1BB384B1AF5A4A /* TipJarView.swift */; };
 		65B18FB15574DE08AC16E538 /* PortForward.swift in Sources */ = {isa = PBXBuildFile; fileRef = D23C1F032FD0B5514C3C2951 /* PortForward.swift */; };
 		68773F0B7F939441DE8C5CC5 /* ConnectionSyncBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97BFB4268BCC30A8300F83D2 /* ConnectionSyncBridge.swift */; };
 		68C33641827F1C36B6D74830 /* PortForwardEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3397030C752ACA31B33F3C22 /* PortForwardEditorView.swift */; };
@@ -75,6 +77,7 @@
 		86B52BEE451EB1B230A203D5 /* SFTPTransferView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8C18C4B3A4DEA5E444D93BD /* SFTPTransferView.swift */; };
 		8CB85E8A47D7C29F3CF8F3E0 /* SFTPBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 745AECEC67D542E067D9EAED /* SFTPBrowserView.swift */; };
 		8DD8B5864812FBAC78891FE0 /* HostKeyPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D682AFC8C0FBF595E06213A /* HostKeyPromptView.swift */; };
+		8EE748254360F60D45AFC7E1 /* TipJarService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D4B7EC104C5580CC73626EF /* TipJarService.swift */; };
 		8F6789E25A41C29150DEFFF5 /* PortForward.swift in Sources */ = {isa = PBXBuildFile; fileRef = D23C1F032FD0B5514C3C2951 /* PortForward.swift */; };
 		92D55A48F7B725C926A325F0 /* iCloudSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70F20C3600FF37D726D14A77 /* iCloudSyncService.swift */; };
 		970D9CC52F02F0B93F7C3D16 /* MacSetupGuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FAED55A9BED2A99EA4C34AE /* MacSetupGuideView.swift */; };
@@ -84,6 +87,7 @@
 		A82CFA4CDD11E443C1E05ADD /* SFTPFileItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB961701961DBB93FCCD0EE /* SFTPFileItem.swift */; };
 		A8B2CCC70DA89FC78F27FCFB /* SFTPService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97296C3E64F40DE0B6AC61ED /* SFTPService.swift */; };
 		A8DDD18A368887DEAED9F42D /* KeyManagerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C883C5CC1BD60019B3BD2E61 /* KeyManagerViewModel.swift */; };
+		A9A320A6615E9ACDFBF300F7 /* TipJarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A88373AF9E1BB384B1AF5A4A /* TipJarView.swift */; };
 		ACE9950BF4DC5397E3753EED /* KeyImportWizardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F688018A6DA8B0736D35DEF5 /* KeyImportWizardView.swift */; };
 		AE109019642DB4A700D07017 /* PortForwardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9093553206D96659540571B9 /* PortForwardManager.swift */; };
 		AEE062095C8122E12B785505 /* TerminalAccessoryBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B875D9609D72F2D0756DD352 /* TerminalAccessoryBar.swift */; };
@@ -162,6 +166,7 @@
 		745AECEC67D542E067D9EAED /* SFTPBrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFTPBrowserView.swift; sourceTree = "<group>"; };
 		7FAED55A9BED2A99EA4C34AE /* MacSetupGuideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSetupGuideView.swift; sourceTree = "<group>"; };
 		8142C7EB7687BFCF239A44F9 /* MacContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacContentView.swift; sourceTree = "<group>"; };
+		8D4B7EC104C5580CC73626EF /* TipJarService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipJarService.swift; sourceTree = "<group>"; };
 		9093553206D96659540571B9 /* PortForwardManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortForwardManager.swift; sourceTree = "<group>"; };
 		909FDD65165046F700279ABD /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
 		959591801E0A0E56C1C1575D /* KeyManagementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyManagementService.swift; sourceTree = "<group>"; };
@@ -170,6 +175,7 @@
 		9D1DD2D0E11A233036AF9A05 /* SessionTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionTabView.swift; sourceTree = "<group>"; };
 		A21737FD14B7A95EE59AA7FD /* mssh.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = mssh.xcconfig; sourceTree = "<group>"; };
 		A393BE170AE14A24D7864115 /* mssh-mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "mssh-mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A88373AF9E1BB384B1AF5A4A /* TipJarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipJarView.swift; sourceTree = "<group>"; };
 		AE6116FE729C6C60376A1F84 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		AEB3DD33B9CC1A612DC13A89 /* SyncStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncStatusView.swift; sourceTree = "<group>"; };
 		B4DB0AE96C99F31755DBC6D6 /* HostKeyValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostKeyValidator.swift; sourceTree = "<group>"; };
@@ -238,6 +244,7 @@
 				CEF50C575581C506DC0E26B6 /* SSHConfigImportView.swift */,
 				AEB3DD33B9CC1A612DC13A89 /* SyncStatusView.swift */,
 				E091B6EA3FE96947A16A8641 /* TerminalSessionView.swift */,
+				A88373AF9E1BB384B1AF5A4A /* TipJarView.swift */,
 				C4C36F5844F7FC5EB61B9584 /* WelcomeView.swift */,
 			);
 			path = Views;
@@ -313,6 +320,7 @@
 				218DA3724C2366E3F304F869 /* SSHFolderImporter.swift */,
 				616E7251A02F9663551227E0 /* SSHKeyImporter.swift */,
 				68A5B5883EC818692D422181 /* SSHService.swift */,
+				8D4B7EC104C5580CC73626EF /* TipJarService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -527,6 +535,8 @@
 				1561EB21ADDD8BA606C043A8 /* TerminalSessionView.swift in Sources */,
 				5067704C93FFE411AB4DBA8F /* TerminalTheme.swift in Sources */,
 				D11DD0786FA894A407DF54F1 /* TerminalViewWrapper.swift in Sources */,
+				13DCA65A56C89F26C7AAC6ED /* TipJarService.swift in Sources */,
+				A9A320A6615E9ACDFBF300F7 /* TipJarView.swift in Sources */,
 				1F275A4DBB983110A4334115 /* WelcomeView.swift in Sources */,
 				92D55A48F7B725C926A325F0 /* iCloudSyncService.swift in Sources */,
 				3108F246605DEF952B6B9FD2 /* msshApp.swift in Sources */,
@@ -590,6 +600,8 @@
 				D87ABB2E3C98A4C3453F55B3 /* TerminalSessionView.swift in Sources */,
 				14E9201083B036E3A306148F /* TerminalTheme.swift in Sources */,
 				2DD8D73BA708E67500F7FC3A /* TerminalViewWrapper.swift in Sources */,
+				8EE748254360F60D45AFC7E1 /* TipJarService.swift in Sources */,
+				613340113453BE63BC83957B /* TipJarView.swift in Sources */,
 				47C7F7CFD7B0FB3B237B4828 /* WelcomeView.swift in Sources */,
 				39C41163FEEB4B74BF92FBB7 /* iCloudSyncService.swift in Sources */,
 				CDFD7C744EACBD0640751A23 /* msshApp.swift in Sources */,

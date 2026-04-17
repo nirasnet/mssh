@@ -313,6 +313,15 @@ struct SettingsView: View {
                     Text("This will delete all connections, SSH keys, snippets, port forwards, and known hosts. This cannot be undone.")
                 }
 
+                // Support / Tip Jar
+                Section {
+                    TipJarView()
+                } header: {
+                    Label("Support mSSH", systemImage: "heart.fill")
+                } footer: {
+                    Text("mSSH is free and open source. Tips help keep development going. Thank you!")
+                }
+
                 // About
                 Section {
                     HStack {
