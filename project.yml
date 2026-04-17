@@ -33,7 +33,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.m4ck.mssh
         DEVELOPMENT_TEAM: CC24ZA67DK
-        MARKETING_VERSION: "1.1.0"
+        MARKETING_VERSION: "1.2.0"
         CURRENT_PROJECT_VERSION: "10"
         TARGETED_DEVICE_FAMILY: "1,2"
         INFOPLIST_KEY_UILaunchScreen_Generation: true
@@ -48,7 +48,7 @@ targets:
       properties:
         CFBundleIdentifier: com.m4ck.mssh
         CFBundleDisplayName: mSSH
-        CFBundleShortVersionString: "1.1.0"
+        CFBundleShortVersionString: "1.2.0"
         CFBundleVersion: "10"
         UILaunchScreen: {}
         UIApplicationSceneManifest:
@@ -91,7 +91,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.m4ck.mssh
         DEVELOPMENT_TEAM: CC24ZA67DK
-        MARKETING_VERSION: "1.1.0"
+        MARKETING_VERSION: "1.2.0"
         CURRENT_PROJECT_VERSION: "10"
     dependencies:
       - package: SwiftTerm
@@ -102,7 +102,7 @@ targets:
       path: mssh/Info-macOS.plist
       properties:
         CFBundleDisplayName: mSSH
-        CFBundleShortVersionString: "1.1.0"
+        CFBundleShortVersionString: "1.2.0"
         CFBundleVersion: "10"
         ITSAppUsesNonExemptEncryption: false
         NSAppTransportSecurity:
