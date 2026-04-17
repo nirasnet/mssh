@@ -222,37 +222,6 @@ struct SettingsView: View {
                                 .font(.caption)
                                 .foregroundStyle(AppColors.textSecondary)
                         }
-                        // Push/Pull via NSUbiquitousKeyValueStore — works
-                        // on all platforms without CloudKit.
-                        Button {
-                            let result = ConnectionSyncBridge.push(modelContext: modelContext)
-                            importSummary = "Pushed \(result.connections) connection\(result.connections == 1 ? "" : "s") + \(result.snippets) snippet\(result.snippets == 1 ? "" : "s") to iCloud."
-                            showImportResult = true
-                        } label: {
-                            Label("Push to iCloud", systemImage: "icloud.and.arrow.up")
-                                .foregroundStyle(AppColors.accent)
-                        }
-
-                        Button {
-                            let result = ConnectionSyncBridge.pull(modelContext: modelContext)
-                            importSummary = "Pulled \(result.connections) new connection\(result.connections == 1 ? "" : "s") + \(result.snippets) new snippet\(result.snippets == 1 ? "" : "s") from iCloud."
-                            showImportResult = true
-                        } label: {
-                            Label("Pull from iCloud", systemImage: "icloud.and.arrow.down")
-                                .foregroundStyle(AppColors.accent)
-                        }
-
-                        #if os(macOS)
-                        Button {
-                            let result = SSHFolderImporter.promptAndImport(modelContext: modelContext)
-                            importSummary = result.humanSummary +
-                                (result.errors.isEmpty ? "" : "\n\n" + result.errors.joined(separator: "\n"))
-                            showImportResult = true
-                        } label: {
-                            Label("Import from ~/.ssh Folder", systemImage: "square.and.arrow.down.on.square")
-                                .foregroundStyle(AppColors.accent)
-                        }
-                        #endif
                     }
                 } header: {
                     Label("Sync", systemImage: "arrow.triangle.2.circlepath")
@@ -267,6 +236,43 @@ struct SettingsView: View {
                     Button("OK") {}
                 } message: {
                     Text("Please quit and reopen mSSH for the sync change to take effect.")
+                }
+
+                // Cross-device sync (always visible, uses KVS not CloudKit)
+                Section {
+                    Button {
+                        let result = ConnectionSyncBridge.push(modelContext: modelContext)
+                        importSummary = "Pushed \(result.connections) connection\(result.connections == 1 ? "" : "s") + \(result.snippets) snippet\(result.snippets == 1 ? "" : "s") to iCloud."
+                        showImportResult = true
+                    } label: {
+                        Label("Push to iCloud", systemImage: "icloud.and.arrow.up")
+                            .foregroundStyle(AppColors.accent)
+                    }
+
+                    Button {
+                        let result = ConnectionSyncBridge.pull(modelContext: modelContext)
+                        importSummary = "Pulled \(result.connections) new connection\(result.connections == 1 ? "" : "s") + \(result.snippets) new snippet\(result.snippets == 1 ? "" : "s") from iCloud."
+                        showImportResult = true
+                    } label: {
+                        Label("Pull from iCloud", systemImage: "icloud.and.arrow.down")
+                            .foregroundStyle(AppColors.accent)
+                    }
+
+                    #if os(macOS)
+                    Button {
+                        let result = SSHFolderImporter.promptAndImport(modelContext: modelContext)
+                        importSummary = result.humanSummary +
+                            (result.errors.isEmpty ? "" : "\n\n" + result.errors.joined(separator: "\n"))
+                        showImportResult = true
+                    } label: {
+                        Label("Import from ~/.ssh Folder", systemImage: "square.and.arrow.down.on.square")
+                            .foregroundStyle(AppColors.accent)
+                    }
+                    #endif
+                } header: {
+                    Label("Sync Actions", systemImage: "arrow.triangle.2.circlepath.icloud")
+                } footer: {
+                    Text("Push sends your connections and snippets to iCloud. Pull downloads connections from other devices. Works across iPhone, iPad, and Mac.")
                 }
 
                 // SSH (Known Hosts, Snippets)
