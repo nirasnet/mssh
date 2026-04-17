@@ -56,7 +56,9 @@
 		5A20B86CD3050278DB9751BC /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909FDD65165046F700279ABD /* KeychainService.swift */; };
 		5D34C88E7D66B04C74BFF544 /* AutoImportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7053580E1B161DA68239009C /* AutoImportService.swift */; };
 		65B18FB15574DE08AC16E538 /* PortForward.swift in Sources */ = {isa = PBXBuildFile; fileRef = D23C1F032FD0B5514C3C2951 /* PortForward.swift */; };
+		68773F0B7F939441DE8C5CC5 /* ConnectionSyncBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97BFB4268BCC30A8300F83D2 /* ConnectionSyncBridge.swift */; };
 		68C33641827F1C36B6D74830 /* PortForwardEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3397030C752ACA31B33F3C22 /* PortForwardEditorView.swift */; };
+		69DE0290C701776F1E75934D /* ConnectionSyncBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97BFB4268BCC30A8300F83D2 /* ConnectionSyncBridge.swift */; };
 		6A62933847D0CF28AB37A958 /* SnippetsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA359666A83DEB8251A8B7F /* SnippetsView.swift */; };
 		6A8AFDF2DB0EEA3C734691E7 /* LockScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4779110E52A9215B817C36AA /* LockScreenView.swift */; };
 		6CBF6EB685F45C3F61146415 /* Citadel in Frameworks */ = {isa = PBXBuildFile; productRef = D026A404D69C780DF051173B /* Citadel */; };
@@ -164,6 +166,7 @@
 		909FDD65165046F700279ABD /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
 		959591801E0A0E56C1C1575D /* KeyManagementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyManagementService.swift; sourceTree = "<group>"; };
 		97296C3E64F40DE0B6AC61ED /* SFTPService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFTPService.swift; sourceTree = "<group>"; };
+		97BFB4268BCC30A8300F83D2 /* ConnectionSyncBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionSyncBridge.swift; sourceTree = "<group>"; };
 		9D1DD2D0E11A233036AF9A05 /* SessionTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionTabView.swift; sourceTree = "<group>"; };
 		A21737FD14B7A95EE59AA7FD /* mssh.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = mssh.xcconfig; sourceTree = "<group>"; };
 		A393BE170AE14A24D7864115 /* mssh-mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "mssh-mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -300,6 +303,7 @@
 				BF9BA75AA8A7880B0A2F2599 /* AppPreferences.swift */,
 				7053580E1B161DA68239009C /* AutoImportService.swift */,
 				6B0A02843D03F8D3DB0FF33F /* BiometricService.swift */,
+				97BFB4268BCC30A8300F83D2 /* ConnectionSyncBridge.swift */,
 				B4DB0AE96C99F31755DBC6D6 /* HostKeyValidator.swift */,
 				70F20C3600FF37D726D14A77 /* iCloudSyncService.swift */,
 				909FDD65165046F700279ABD /* KeychainService.swift */,
@@ -478,6 +482,7 @@
 				433EB81205933F06DB257C60 /* ConnectionFormView.swift in Sources */,
 				051EB0B26D3E7B1129D9796C /* ConnectionListViewModel.swift in Sources */,
 				3A8D99AAB45ECB9E2F49F0F4 /* ConnectionProfile.swift in Sources */,
+				68773F0B7F939441DE8C5CC5 /* ConnectionSyncBridge.swift in Sources */,
 				D74D33BB704C4FD47C7FAD17 /* ContentView.swift in Sources */,
 				4A92B78CC9478AC85A7C5D65 /* DesignSystem.swift in Sources */,
 				182DD8A850908B2B53A1255E /* HostKeyPromptView.swift in Sources */,
@@ -540,6 +545,7 @@
 				3328B5BA19468F8E563CD144 /* ConnectionFormView.swift in Sources */,
 				F419A36D23E0FB6F19912C20 /* ConnectionListViewModel.swift in Sources */,
 				E8601118D48E6FD2F5CE3477 /* ConnectionProfile.swift in Sources */,
+				69DE0290C701776F1E75934D /* ConnectionSyncBridge.swift in Sources */,
 				7E9F0B0912483FE5380A316D /* ContentView.swift in Sources */,
 				DA6933207609936384751164 /* DesignSystem.swift in Sources */,
 				8DD8B5864812FBAC78891FE0 /* HostKeyPromptView.swift in Sources */,

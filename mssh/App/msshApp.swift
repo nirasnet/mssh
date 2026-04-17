@@ -72,10 +72,16 @@ struct msshApp: App {
                 }
                 AutoImportService.importIfNeeded(modelContext: modelContainer.mainContext)
                 #if os(macOS)
-                // First-launch Mac UX: auto-prompt the user to import their
-                // existing ~/.ssh keys. Runs once (guarded by the importer's
-                // own didPromptKey flag). After onboarding, subsequent
-                // launches silently refresh from the bookmarked folder.
+                // Auto-pull connections from iCloud KVS on every Mac launch
+                // so profiles created on iPhone/iPad appear here.
+                let pullResult = ConnectionSyncBridge.pull(
+                    modelContext: modelContainer.mainContext
+                )
+                if pullResult.connections > 0 || pullResult.snippets > 0 {
+                    print("[mSSH] Auto-pulled \(pullResult.connections) connections + \(pullResult.snippets) snippets from iCloud KVS")
+                }
+
+                // First-launch: auto-prompt the user to import ~/.ssh keys.
                 if hasCompletedOnboarding {
                     autoRunSSHFolderImport(
                         modelContext: modelContainer.mainContext

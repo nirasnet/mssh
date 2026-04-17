@@ -222,6 +222,26 @@ struct SettingsView: View {
                                 .font(.caption)
                                 .foregroundStyle(AppColors.textSecondary)
                         }
+                        // Push/Pull via NSUbiquitousKeyValueStore — works
+                        // on all platforms without CloudKit.
+                        Button {
+                            let result = ConnectionSyncBridge.push(modelContext: modelContext)
+                            importSummary = "Pushed \(result.connections) connection\(result.connections == 1 ? "" : "s") + \(result.snippets) snippet\(result.snippets == 1 ? "" : "s") to iCloud."
+                            showImportResult = true
+                        } label: {
+                            Label("Push to iCloud", systemImage: "icloud.and.arrow.up")
+                                .foregroundStyle(AppColors.accent)
+                        }
+
+                        Button {
+                            let result = ConnectionSyncBridge.pull(modelContext: modelContext)
+                            importSummary = "Pulled \(result.connections) new connection\(result.connections == 1 ? "" : "s") + \(result.snippets) new snippet\(result.snippets == 1 ? "" : "s") from iCloud."
+                            showImportResult = true
+                        } label: {
+                            Label("Pull from iCloud", systemImage: "icloud.and.arrow.down")
+                                .foregroundStyle(AppColors.accent)
+                        }
+
                         #if os(macOS)
                         Button {
                             let result = SSHFolderImporter.promptAndImport(modelContext: modelContext)
