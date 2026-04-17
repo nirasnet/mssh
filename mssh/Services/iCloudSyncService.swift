@@ -48,8 +48,16 @@ final class iCloudSyncService {
     private var observers: [Any] = []
 
     init() {
-        startObserving()
-        checkiCloudAvailability()
+        // Defer observer setup + availability check past the first
+        // SwiftUI layout cycle. On macOS 26.3 an @Observable mutation
+        // during NSHostingView's initial window-sizing animation triggers
+        // recursive _informContainerThatSubviewsNeedUpdateConstraints →
+        // SIGABRT. Posting async ensures the first layout pass finishes
+        // before any status property changes fire.
+        DispatchQueue.main.async { [weak self] in
+            self?.startObserving()
+            self?.checkiCloudAvailability()
+        }
     }
 
     deinit {
@@ -78,9 +86,11 @@ final class iCloudSyncService {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            self?.lastSyncDate = Date()
-            if self?.status != .notAvailable {
-                self?.status = .synced
+            DispatchQueue.main.async {
+                self?.lastSyncDate = Date()
+                if self?.status != .notAvailable {
+                    self?.status = .synced
+                }
             }
         }
 
@@ -88,22 +98,24 @@ final class iCloudSyncService {
     }
 
     private func handleCloudKitEvent(_ notification: Notification) {
-        // The event userInfo contains an NSPersistentCloudKitContainer.Event
-        // We inspect it via key paths since the type is internal to CoreData.
         guard let event = notification.userInfo?["event"] as? NSObject else { return }
 
         let endDate = event.value(forKey: "endDate")
         let succeeded = (event.value(forKey: "succeeded") as? Bool) ?? false
         let errorValue = event.value(forKey: "error") as? NSError
 
-        if endDate == nil {
-            // Event is still in progress
-            status = .syncing
-        } else if let error = errorValue, !succeeded {
-            status = .error(error.localizedDescription)
-        } else {
-            status = .synced
-            lastSyncDate = Date()
+        // Defer property mutations so they never land inside an
+        // NSHostingView layout pass (macOS 26.3 crash workaround).
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            if endDate == nil {
+                self.status = .syncing
+            } else if let error = errorValue, !succeeded {
+                self.status = .error(error.localizedDescription)
+            } else {
+                self.status = .synced
+                self.lastSyncDate = Date()
+            }
         }
     }
 }
