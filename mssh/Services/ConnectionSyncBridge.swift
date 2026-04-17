@@ -16,13 +16,14 @@ enum ConnectionSyncBridge {
     private static let kvs = NSUbiquitousKeyValueStore.default
     private static let connectionsKey = "mssh.syncedConnections"
     private static let snippetsKey = "mssh.syncedSnippets"
+    private static let keysKey = "mssh.syncedKeys"
 
     // MARK: - Push (export to iCloud KVS)
 
     /// Serialize all local ConnectionProfiles + Snippets to iCloud KVS.
     /// Call from any device that has data to share.
     @MainActor
-    static func push(modelContext: ModelContext) -> (connections: Int, snippets: Int) {
+    static func push(modelContext: ModelContext) -> (connections: Int, snippets: Int, keys: Int) {
         var connectionCount = 0
         var snippetCount = 0
 
@@ -42,8 +43,17 @@ enum ConnectionSyncBridge {
             }
         }
 
+        var keyCount = 0
+        if let keys = try? modelContext.fetch(FetchDescriptor<SSHKey>()) {
+            let syncable = keys.map { SyncableKey(from: $0) }
+            if let data = try? JSONEncoder().encode(syncable) {
+                kvs.set(data, forKey: keysKey)
+                keyCount = syncable.count
+            }
+        }
+
         kvs.synchronize()
-        return (connectionCount, snippetCount)
+        return (connectionCount, snippetCount, keyCount)
     }
 
     // MARK: - Pull (import from iCloud KVS)
@@ -52,10 +62,11 @@ enum ConnectionSyncBridge {
     /// the local SwiftData store. De-duplicates by syncID so running pull
     /// multiple times is safe.
     @MainActor
-    static func pull(modelContext: ModelContext) -> (connections: Int, snippets: Int) {
+    static func pull(modelContext: ModelContext) -> (connections: Int, snippets: Int, keys: Int) {
         kvs.synchronize()
         var newConnections = 0
         var newSnippets = 0
+        var newKeys = 0
 
         // -- Connections --
         if let data = kvs.data(forKey: connectionsKey),
@@ -97,10 +108,30 @@ enum ConnectionSyncBridge {
             }
         }
 
-        if newConnections > 0 || newSnippets > 0 {
+        // -- Keys --
+        if let data = kvs.data(forKey: keysKey),
+           let remote = try? JSONDecoder().decode([SyncableKey].self, from: data) {
+            let existing = (try? modelContext.fetch(FetchDescriptor<SSHKey>())) ?? []
+            let existingSyncIDs = Set(existing.map { $0.syncID })
+
+            for item in remote where !existingSyncIDs.contains(item.syncID) {
+                let key = SSHKey(
+                    label: item.label,
+                    keyType: item.keyType,
+                    keychainID: item.keychainID,
+                    publicKeyText: item.publicKeyText,
+                    syncAcrossDevices: item.syncAcrossDevices
+                )
+                key.syncID = item.syncID
+                modelContext.insert(key)
+                newKeys += 1
+            }
+        }
+
+        if newConnections > 0 || newSnippets > 0 || newKeys > 0 {
             try? modelContext.save()
         }
-        return (newConnections, newSnippets)
+        return (newConnections, newSnippets, newKeys)
     }
 }
 
@@ -143,5 +174,23 @@ private struct SyncableSnippet: Codable {
         self.label = snippet.label
         self.command = snippet.command
         self.useCount = snippet.useCount
+    }
+}
+
+private struct SyncableKey: Codable {
+    let syncID: String
+    let label: String
+    let keyType: String
+    let keychainID: String
+    let publicKeyText: String
+    let syncAcrossDevices: Bool
+
+    init(from key: SSHKey) {
+        self.syncID = key.syncID
+        self.label = key.label
+        self.keyType = key.keyType
+        self.keychainID = key.keychainID
+        self.publicKeyText = key.publicKeyText
+        self.syncAcrossDevices = key.syncAcrossDevices
     }
 }

@@ -242,7 +242,7 @@ struct SettingsView: View {
                 Section {
                     Button {
                         let result = ConnectionSyncBridge.push(modelContext: modelContext)
-                        importSummary = "Pushed \(result.connections) connection\(result.connections == 1 ? "" : "s") + \(result.snippets) snippet\(result.snippets == 1 ? "" : "s") to iCloud."
+                        importSummary = "Pushed \(result.connections) connection\(result.connections == 1 ? "" : "s"), \(result.snippets) snippet\(result.snippets == 1 ? "" : "s"), \(result.keys) key\(result.keys == 1 ? "" : "s") to iCloud."
                         showImportResult = true
                     } label: {
                         Label("Push to iCloud", systemImage: "icloud.and.arrow.up")
@@ -251,7 +251,7 @@ struct SettingsView: View {
 
                     Button {
                         let result = ConnectionSyncBridge.pull(modelContext: modelContext)
-                        importSummary = "Pulled \(result.connections) new connection\(result.connections == 1 ? "" : "s") + \(result.snippets) new snippet\(result.snippets == 1 ? "" : "s") from iCloud."
+                        importSummary = "Pulled \(result.connections) new connection\(result.connections == 1 ? "" : "s"), \(result.snippets) new snippet\(result.snippets == 1 ? "" : "s"), \(result.keys) new key\(result.keys == 1 ? "" : "s") from iCloud."
                         showImportResult = true
                     } label: {
                         Label("Pull from iCloud", systemImage: "icloud.and.arrow.down")

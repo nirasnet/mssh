@@ -47,7 +47,7 @@ struct MacContentView: View {
                 Section("Sync") {
                     Button {
                         let r = ConnectionSyncBridge.push(modelContext: modelContext)
-                        syncMessage = "Pushed \(r.connections) connections + \(r.snippets) snippets to iCloud."
+                        syncMessage = "Pushed \(r.connections) connections, \(r.snippets) snippets, \(r.keys) keys to iCloud."
                         showSyncAlert = true
                     } label: {
                         Label("Push to iCloud", systemImage: "icloud.and.arrow.up")
@@ -55,7 +55,7 @@ struct MacContentView: View {
 
                     Button {
                         let r = ConnectionSyncBridge.pull(modelContext: modelContext)
-                        syncMessage = "Pulled \(r.connections) new connections + \(r.snippets) new snippets from iCloud."
+                        syncMessage = "Pulled \(r.connections) new connections, \(r.snippets) new snippets, \(r.keys) new keys from iCloud."
                         showSyncAlert = true
                     } label: {
                         Label("Pull from iCloud", systemImage: "icloud.and.arrow.down")
