@@ -78,7 +78,10 @@ struct msshApp: App {
         }
         .modelContainer(modelContainer)
         #if os(macOS)
-        .defaultSize(width: 900, height: 650)
+        // NOTE: .defaultSize removed — macOS 26.3 has a SwiftUI bug where
+        // NSHostingView.updateAnimatedWindowSize during the first layout
+        // triggers recursive _informContainerThatSubviewsNeedUpdateConstraints
+        // → SIGABRT. Letting AppKit auto-size avoids the crash entirely.
         .commands {
             // App menu command: File → Sync → Import from ~/.ssh Folder
             CommandGroup(after: .newItem) {
@@ -292,7 +295,10 @@ struct msshApp: App {
     /// user added outside the app.
     private func autoRunSSHFolderImport(modelContext: ModelContext) {
         if SSHFolderImporter.shouldAutoPrompt {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+            // Defer well past the initial layout cycle — showing
+            // NSOpenPanel during SwiftUI's first window sizing triggers
+            // the same recursive-constraint crash on macOS 26.3.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
                 let result = SSHFolderImporter.promptAndImport(modelContext: modelContext)
                 if !result.isEmpty || !result.errors.isEmpty {
                     presentImportResultAlert(result: result)
