@@ -20,9 +20,18 @@ struct TipJarView: View {
                     Spacer()
                 }
             } else if tipJar.products.isEmpty {
-                Text("Tips unavailable — check your internet connection.")
-                    .font(.caption)
-                    .foregroundStyle(AppColors.textTertiary)
+                VStack(spacing: AppSpacing.sm) {
+                    Text("Tips loading — if this persists, tips may not be available yet in your region.")
+                        .font(.caption)
+                        .foregroundStyle(AppColors.textTertiary)
+                    Button {
+                        Task { await tipJar.loadProducts() }
+                    } label: {
+                        Label("Retry", systemImage: "arrow.clockwise")
+                            .font(.caption)
+                            .foregroundStyle(AppColors.accent)
+                    }
+                }
             } else {
                 ForEach(tipJar.products, id: \.id) { product in
                     tipRow(product)
