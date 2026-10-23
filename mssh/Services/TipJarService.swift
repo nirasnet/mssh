@@ -18,20 +18,38 @@ final class TipJarService {
     var products: [Product] = []
     var purchaseMessage: String?
     var isLoading = false
+    var loadErrorMessage: String?
+    var missingProductIDs: [String] = []
 
     private init() {}
 
     /// Load available tip products from App Store.
     func loadProducts() async {
-        guard products.isEmpty else { return }
+        guard products.isEmpty && !isLoading else { return }
         isLoading = true
+        loadErrorMessage = nil
+        missingProductIDs = []
         do {
-            products = try await Product.products(for: Self.productIDs)
+            let fetchedProducts = try await Product.products(for: Self.productIDs)
                 .sorted { $0.price < $1.price }
+            products = fetchedProducts
+
+            let returnedIDs = Set(fetchedProducts.map(\.id))
+            missingProductIDs = Self.productIDs.filter { !returnedIDs.contains($0) }
+
+            if fetchedProducts.isEmpty {
+                loadErrorMessage = "No App Store products were returned for this build."
+            }
         } catch {
             print("[mSSH] Failed to load tip products: \(error)")
+            loadErrorMessage = "StoreKit error: \(error.localizedDescription)"
         }
         isLoading = false
+    }
+
+    func reloadProducts() async {
+        products = []
+        await loadProducts()
     }
 
     /// Purchase a tip. Consumables are finished immediately.
@@ -87,5 +105,12 @@ extension TipJarService {
         default:
             return ("💝", "Leave a tip")
         }
+    }
+
+    static func availabilityHelpText(missingCount: Int) -> String {
+        if missingCount > 0 {
+            return "Some tip products are missing from App Store Connect for this storefront."
+        }
+        return "Tips are still unavailable. Check App Store Connect status, availability, tax/banking agreements, and product IDs."
     }
 }

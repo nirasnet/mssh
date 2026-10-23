@@ -21,11 +21,20 @@ struct TipJarView: View {
                 }
             } else if tipJar.products.isEmpty {
                 VStack(spacing: AppSpacing.sm) {
-                    Text("Tips loading — if this persists, tips may not be available yet in your region.")
+                    Text(tipJar.loadErrorMessage ?? TipJarService.availabilityHelpText(missingCount: tipJar.missingProductIDs.count))
                         .font(.caption)
                         .foregroundStyle(AppColors.textTertiary)
+                        .multilineTextAlignment(.center)
+
+                    if !tipJar.missingProductIDs.isEmpty {
+                        Text("Missing product IDs: \(tipJar.missingProductIDs.joined(separator: ", "))")
+                            .font(.system(.caption2, design: .monospaced))
+                            .foregroundStyle(AppColors.textSecondary)
+                            .multilineTextAlignment(.center)
+                    }
+
                     Button {
-                        Task { await tipJar.loadProducts() }
+                        Task { await tipJar.reloadProducts() }
                     } label: {
                         Label("Retry", systemImage: "arrow.clockwise")
                             .font(.caption)

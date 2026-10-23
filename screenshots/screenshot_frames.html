@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>mSSH App Store Screenshots</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #111; font-family: -apple-system, 'SF Pro Display', sans-serif; padding: 40px; }
+
+.frame {
+    width: 1290px;
+    height: 2796px;
+    background: linear-gradient(180deg, #0a1628 0%, #0d2137 40%, #122a40 100%);
+    display: inline-block;
+    margin: 20px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 60px;
+}
+
+.headline {
+    text-align: center;
+    padding: 160px 80px 40px;
+    color: #fff;
+}
+.headline h1 {
+    font-size: 72px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    margin-bottom: 24px;
+}
+.headline .accent { color: #4dd9d9; }
+.headline p {
+    font-size: 36px;
+    color: rgba(255,255,255,0.6);
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+.device-frame {
+    width: 1000px;
+    height: 2000px;
+    margin: 40px auto 0;
+    background: #0e0e12;
+    border-radius: 48px;
+    border: 4px solid rgba(255,255,255,0.08);
+    overflow: hidden;
+    position: relative;
+}
+
+.mock-screen { width: 100%; height: 100%; }
+
+/* Screen 1: Connections */
+.screen-connections { background: #12121a; padding: 60px 40px; }
+.screen-connections .nav { color: #eee; font-size: 52px; font-weight: 700; margin-bottom: 40px; font-family: monospace; }
+.conn-card {
+    background: #1c1c24;
+    border-radius: 20px;
+    padding: 36px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+.conn-icon {
+    width: 64px; height: 64px;
+    background: rgba(77,217,217,0.12);
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    color: #4dd9d9;
+    font-size: 28px;
+}
+.conn-label { color: #eee; font-size: 32px; font-weight: 600; font-family: monospace; }
+.conn-host { color: #777; font-size: 24px; font-family: monospace; margin-top: 6px; }
+.conn-badge { margin-left: auto; color: #4dd9d9; font-size: 20px; font-weight: 700; background: rgba(77,217,217,0.12); padding: 8px 16px; border-radius: 20px; }
+.conn-star { color: #ffc107; font-size: 28px; margin-left: 16px; }
+.conn-tag { width: 6px; height: 50px; border-radius: 3px; background: #4caf50; }
+
+/* Screen 2: Terminal */
+.screen-terminal { background: #0f0f14; padding: 60px 30px; font-family: 'Menlo', monospace; }
+.term-prompt { color: #4dd9d9; font-size: 26px; line-height: 2; }
+.term-output { color: #ddd; font-size: 26px; line-height: 2; }
+.term-cursor { display: inline-block; width: 16px; height: 32px; background: #4dd9d9; animation: blink 1s step-end infinite; vertical-align: middle; }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* Screen 3: Settings */
+.screen-settings { background: #12121a; padding: 60px 40px; }
+.setting-section { color: #777; font-size: 22px; text-transform: uppercase; letter-spacing: 2px; margin: 40px 0 16px; }
+.setting-row {
+    background: #1c1c24;
+    padding: 28px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.setting-row:first-of-type { border-radius: 16px 16px 0 0; }
+.setting-row:last-of-type { border-radius: 0 0 16px 16px; border-bottom: none; }
+.setting-label { color: #eee; font-size: 28px; }
+.setting-value { color: #4dd9d9; font-size: 24px; }
+.theme-dots { display: flex; gap: 12px; }
+.theme-dot { width: 32px; height: 32px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); }
+
+/* Screen 4: Sync */
+.screen-sync { background: #12121a; padding: 60px 40px; }
+.sync-hero {
+    text-align: center;
+    padding: 60px 0;
+}
+.sync-devices {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin: 40px 0;
+}
+.sync-device {
+    text-align: center;
+    color: rgba(255,255,255,0.7);
+    font-size: 24px;
+}
+.sync-device-icon { font-size: 80px; margin-bottom: 12px; }
+.sync-arrow { color: #4dd9d9; font-size: 48px; align-self: center; }
+.sync-status {
+    background: rgba(77,217,217,0.12);
+    color: #4dd9d9;
+    text-align: center;
+    padding: 20px;
+    border-radius: 16px;
+    font-size: 28px;
+    margin-top: 40px;
+}
+</style>
+</head>
+<body>
+
+<!-- Screenshot 1: Connections -->
+<div class="frame">
+    <div class="headline">
+        <h1>Your Servers,<br><span class="accent">Organized</span></h1>
+        <p>Favorites, groups, color tags & search</p>
+    </div>
+    <div class="device-frame">
+        <div class="mock-screen screen-connections">
+            <div class="nav">mSSH</div>
+            <div class="conn-card">
+                <div class="conn-tag" style="background: #f44336;"></div>
+                <div class="conn-icon">⚡</div>
+                <div>
+                    <div class="conn-label">GW_AWS4Year</div>
+                    <div class="conn-host">ubuntu@13.239.246.61:22</div>
+                </div>
+                <div class="conn-badge">Key</div>
+                <div class="conn-star">★</div>
+            </div>
+            <div class="conn-card">
+                <div class="conn-tag" style="background: #2196f3;"></div>
+                <div class="conn-icon">⚡</div>
+                <div>
+                    <div class="conn-label">prod-api-01</div>
+                    <div class="conn-host">deploy@api.example.com:22</div>
+                </div>
+                <div class="conn-badge">Key</div>
+            </div>
+            <div class="conn-card">
+                <div class="conn-tag" style="background: #4caf50;"></div>
+                <div class="conn-icon">⚡</div>
+                <div>
+                    <div class="conn-label">homelab-nas</div>
+                    <div class="conn-host">admin@192.168.1.50:22</div>
+                </div>
+                <div class="conn-badge">Pass</div>
+                <div class="conn-star">★</div>
+            </div>
+            <div class="conn-card">
+                <div class="conn-icon">⚡</div>
+                <div>
+                    <div class="conn-label">staging-db</div>
+                    <div class="conn-host">root@staging.internal:3306</div>
+                </div>
+                <div class="conn-badge">Key</div>
+            </div>
+            <div class="conn-card">
+                <div class="conn-icon">⚡</div>
+                <div>
+                    <div class="conn-label">raspberry-pi</div>
+                    <div class="conn-host">pi@192.168.1.100:22</div>
+                </div>
+                <div class="conn-badge">Pass</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Screenshot 2: Terminal -->
+<div class="frame">
+    <div class="headline">
+        <h1>Pro Terminal,<br><span class="accent">6 Themes</span></h1>
+        <p>Solarized, Dracula, Nord, Monokai & more</p>
+    </div>
+    <div class="device-frame">
+        <div class="mock-screen screen-terminal">
+            <div class="term-prompt">ubuntu@aws:~$ <span class="term-output">htop</span></div>
+            <div class="term-output" style="color:#4dd9d9;">  CPU[||||||||||||       42.3%]</div>
+            <div class="term-output" style="color:#4dd9d9;">  Mem[|||||||            1.2G/4G]</div>
+            <div class="term-output" style="color:#4dd9d9;">  Swp[||                 0.4G/2G]</div>
+            <div class="term-output">&nbsp;</div>
+            <div class="term-output" style="color:#888;">  PID USER      PR  NI  RES   CPU% MEM%</div>
+            <div class="term-output" style="color:#4caf50;">  847 nginx     20   0  24M   12.3  0.6</div>
+            <div class="term-output" style="color:#ff9800;">  923 node      20   0 184M    8.7  4.5</div>
+            <div class="term-output"> 1024 postgres  20   0  96M    3.2  2.3</div>
+            <div class="term-output"> 1156 redis     20   0  12M    1.1  0.3</div>
+            <div class="term-output">&nbsp;</div>
+            <div class="term-prompt">ubuntu@aws:~$ <span class="term-output">docker ps</span></div>
+            <div class="term-output" style="color:#888;">CONTAINER ID  IMAGE          STATUS</div>
+            <div class="term-output">a1b2c3d4e5f6  nginx:latest   Up 14 days</div>
+            <div class="term-output">f6e5d4c3b2a1  node:18-slim   Up 14 days</div>
+            <div class="term-output">1a2b3c4d5e6f  postgres:15    Up 14 days</div>
+            <div class="term-output">&nbsp;</div>
+            <div class="term-prompt">ubuntu@aws:~$ <span class="term-cursor"></span></div>
+        </div>
+    </div>
+</div>
+
+<!-- Screenshot 3: Themes & Settings -->
+<div class="frame">
+    <div class="headline">
+        <h1>Customize<br><span class="accent">Everything</span></h1>
+        <p>Themes, fonts, cursor style & biometrics</p>
+    </div>
+    <div class="device-frame">
+        <div class="mock-screen screen-settings">
+            <div class="nav" style="color:#eee; font-size:44px; font-weight:700; margin-bottom:20px;">Settings</div>
+            <div class="setting-section">Appearance</div>
+            <div class="setting-row" style="border-radius:16px 16px 0 0;">
+                <span class="setting-label">Theme</span>
+                <div class="theme-dots">
+                    <div class="theme-dot" style="background:#0f0f14; border-color:#4dd9d9;"></div>
+                    <div class="theme-dot" style="background:#002b36;"></div>
+                    <div class="theme-dot" style="background:#272822;"></div>
+                    <div class="theme-dot" style="background:#2e3440;"></div>
+                    <div class="theme-dot" style="background:#282a36;"></div>
+                    <div class="theme-dot" style="background:#1a1b26;"></div>
+                </div>
+            </div>
+            <div class="setting-section">Terminal</div>
+            <div class="setting-row" style="border-radius:16px 16px 0 0;">
+                <span class="setting-label">Font Family</span>
+                <span class="setting-value">Menlo</span>
+            </div>
+            <div class="setting-row">
+                <span class="setting-label">Font Size</span>
+                <span class="setting-value">14 pt</span>
+            </div>
+            <div class="setting-row">
+                <span class="setting-label">Cursor</span>
+                <span class="setting-value">Block</span>
+            </div>
+            <div class="setting-row" style="border-radius:0 0 16px 16px;">
+                <span class="setting-label">Blink Cursor</span>
+                <span class="setting-value" style="color:#4caf50;">●</span>
+            </div>
+            <div class="setting-section">Security</div>
+            <div class="setting-row" style="border-radius:16px;">
+                <span class="setting-label">🔐 Require Face ID</span>
+                <span class="setting-value" style="color:#4caf50;">●</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Screenshot 4: Cross-Device Sync -->
+<div class="frame">
+    <div class="headline">
+        <h1>Sync Across<br><span class="accent">All Devices</span></h1>
+        <p>iCloud sync for connections, keys & snippets</p>
+    </div>
+    <div class="device-frame">
+        <div class="mock-screen screen-sync">
+            <div class="sync-hero">
+                <div style="font-size:120px; margin-bottom:20px;">☁️</div>
+                <div style="color:#eee; font-size:44px; font-weight:700;">iCloud Sync</div>
+                <div style="color:#888; font-size:28px; margin-top:12px;">End-to-end encrypted</div>
+            </div>
+            <div class="sync-devices">
+                <div class="sync-device">
+                    <div class="sync-device-icon">📱</div>
+                    <div>iPhone</div>
+                </div>
+                <div class="sync-arrow">⟷</div>
+                <div class="sync-device">
+                    <div class="sync-device-icon">📱</div>
+                    <div>iPad</div>
+                </div>
+                <div class="sync-arrow">⟷</div>
+                <div class="sync-device">
+                    <div class="sync-device-icon">💻</div>
+                    <div>Mac</div>
+                </div>
+            </div>
+            <div class="sync-status">✓ Synced · Last sync 2 min ago</div>
+            <div style="padding:40px 0;">
+                <div class="conn-card">
+                    <div class="conn-icon">🔑</div>
+                    <div>
+                        <div class="conn-label">gwdx_ed25519</div>
+                        <div class="conn-host">ed25519 · iCloud Synced</div>
+                    </div>
+                    <div class="conn-badge">☁️ Synced</div>
+                </div>
+                <div class="conn-card">
+                    <div class="conn-icon">🔑</div>
+                    <div>
+                        <div class="conn-label">plg</div>
+                        <div class="conn-host">rsa · Local Only</div>
+                    </div>
+                    <div class="conn-badge" style="background:rgba(255,255,255,0.06); color:#777;">📱 Local</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Screenshot 5: Snippets -->
+<div class="frame">
+    <div class="headline">
+        <h1>Saved Commands,<br><span class="accent">One Tap</span></h1>
+        <p>Snippets for your most-used commands</p>
+    </div>
+    <div class="device-frame">
+        <div class="mock-screen screen-connections">
+            <div class="nav">Snippets</div>
+            <div class="conn-card">
+                <div class="conn-icon" style="background:rgba(77,217,217,0.12);">▶</div>
+                <div>
+                    <div class="conn-label">Deploy production</div>
+                    <div class="conn-host" style="font-family:monospace;">cd /app && git pull && pm2 restart all</div>
+                </div>
+                <div class="conn-badge">×12</div>
+            </div>
+            <div class="conn-card">
+                <div class="conn-icon" style="background:rgba(77,217,217,0.12);">▶</div>
+                <div>
+                    <div class="conn-label">Tail syslog</div>
+                    <div class="conn-host" style="font-family:monospace;">tail -f /var/log/syslog | grep error</div>
+                </div>
+                <div class="conn-badge">×8</div>
+            </div>
+            <div class="conn-card">
+                <div class="conn-icon" style="background:rgba(77,217,217,0.12);">▶</div>
+                <div>
+                    <div class="conn-label">Docker cleanup</div>
+                    <div class="conn-host" style="font-family:monospace;">docker system prune -af --volumes</div>
+                </div>
+                <div class="conn-badge">×5</div>
+            </div>
+            <div class="conn-card">
+                <div class="conn-icon" style="background:rgba(77,217,217,0.12);">▶</div>
+                <div>
+                    <div class="conn-label">Check disk space</div>
+                    <div class="conn-host" style="font-family:monospace;">df -h && du -sh /var/log/*</div>
+                </div>
+                <div class="conn-badge">×3</div>
+            </div>
+            <div class="conn-card">
+                <div class="conn-icon" style="background:rgba(77,217,217,0.12);">▶</div>
+                <div>
+                    <div class="conn-label">Restart nginx</div>
+                    <div class="conn-host" style="font-family:monospace;">sudo systemctl restart nginx && nginx -t</div>
+                </div>
+                <div class="conn-badge">×2</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
